@@ -46,4 +46,30 @@ public class QuestionController {
                 Response.failed(HttpStatus.NOT_FOUND, "Question not found!")
         );
     }
+
+    @DeleteMapping(path="/{id}")
+    public Response deleteQuestion(@PathVariable("id") Long id){
+        Optional<QuestionEntity> foundQuestion = questionService.findOne(id);
+        return foundQuestion.map(questionEntity -> {
+            QuestionDto questionDto = questionMapper.mapTo(questionEntity);
+            questionService.delete(id);
+            return Response.ok(questionDto, "Question <" + questionDto.getTitle() + "> deleted successfully!");
+        }) .orElse(
+                Response.failed(HttpStatus.NOT_FOUND, "Question not found!")
+        );
+    }
+
+    @PutMapping(path="/{id}")
+    public Response updateQuestion(
+            @PathVariable("id") Long id,
+            @RequestBody QuestionDto questionDto
+    ){
+        if (!questionService.isExist(id)){
+            return Response.failed(HttpStatus.NOT_FOUND, "Question not found!");
+        }
+        QuestionEntity questionEntity = questionMapper.mapFrom(questionDto);
+        QuestionEntity updatedQuestion = questionService.partialUpdate(id, questionEntity);
+        return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
+    }
+
 }

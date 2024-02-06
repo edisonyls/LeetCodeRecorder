@@ -28,4 +28,27 @@ public class QuestionService {
     public Optional<QuestionEntity> findOne(Long id) {
         return questionRepository.findById(id);
     }
+
+    public void delete(Long id) {
+        questionRepository.deleteById(id);
+    }
+
+    public boolean isExist(Long id) {
+        return questionRepository.existsById(id);
+    }
+
+    public QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity) {
+        questionEntity.setId(id);
+        return questionRepository.findById(id).map(existingQuestion -> {
+            Optional.ofNullable(questionEntity.getNumber()).ifPresent(existingQuestion::setNumber);
+            Optional.ofNullable(questionEntity.getTitle()).ifPresent(existingQuestion::setTitle);
+            Optional.ofNullable(questionEntity.getDifficulty()).ifPresent(existingQuestion::setDifficulty);
+            Optional.ofNullable(questionEntity.getDateOfCompletion()).ifPresent(existingQuestion::setDateOfCompletion);
+            Optional.ofNullable(questionEntity.getSuccess()).ifPresent(existingQuestion::setSuccess);
+            Optional.ofNullable(questionEntity.getAttempts()).ifPresent(existingQuestion::setAttempts);
+            Optional.ofNullable(questionEntity.getTimeOfCompletion()).ifPresent(existingQuestion::setTimeOfCompletion);
+            Optional.ofNullable(questionEntity.getThinkingProcess()).ifPresent(existingQuestion::setThinkingProcess);
+            return questionRepository.save(existingQuestion);
+        }).orElseThrow(() -> new RuntimeException("Question update failed"));
+    }
 }
