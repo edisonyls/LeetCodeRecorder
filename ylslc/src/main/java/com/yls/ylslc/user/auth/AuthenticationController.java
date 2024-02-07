@@ -1,4 +1,4 @@
-package com.yls.ylslc.auth;
+package com.yls.ylslc.user.auth;
 
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.user.UserEntity;
@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/auth")
 public class AuthenticationController {
-    private AuthenticationService authenticationService;
+    private AuthServiceImpl authServiceImpl;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    public AuthenticationController(AuthServiceImpl authServiceImpl) {
+        this.authServiceImpl = authServiceImpl;
     }
 
     @PostMapping(path = "/register")
     public Response register(@RequestBody UserEntity request){
-        return Response.ok(authenticationService.register(request), "User register successfully!");
+        return authServiceImpl.register(request);
     }
 
     @PostMapping(path = "/authenticate")
     public Response login(@RequestBody UserEntity request){
         System.out.println("Hello");
-        return Response.ok(authenticationService.authenticate(request), "User is authenticated!");
+        return authServiceImpl.authenticate(request);
     }
 }
