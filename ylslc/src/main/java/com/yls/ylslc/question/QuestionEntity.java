@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table
+@Table(name="question")
 public class QuestionEntity {
     @Id
     @SequenceGenerator(

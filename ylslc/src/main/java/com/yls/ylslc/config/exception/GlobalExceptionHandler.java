@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response> handleApiNotFoundException(Exception exc){
         Response error = new Response(
                 HttpStatus.NOT_FOUND.value(),
-                "Api address not found!",
+                "Server Error!",
                 exc.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
