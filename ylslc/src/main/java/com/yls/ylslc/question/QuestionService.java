@@ -10,45 +10,17 @@ import java.util.stream.StreamSupport;
 
 // @Service and @Component is the same, but we want to specify that
 // this is a service component
-@Service
-public class QuestionService {
-    private final QuestionRepository questionRepository;
+public interface QuestionService {
 
-    public QuestionService(QuestionRepository theQuestionRepository){
-        this.questionRepository = theQuestionRepository;
-    }
-    public List<QuestionEntity> getQuestions(){
-        return new ArrayList<>(questionRepository.findAll());
-    }
+    List<QuestionEntity> getQuestions();
 
-    public QuestionEntity createQuestion(QuestionEntity questionEntity) {
-        return questionRepository.save(questionEntity);
-    }
+    QuestionEntity createQuestion(QuestionEntity questionEntity);
 
-    public Optional<QuestionEntity> findOne(Long id) {
-        return questionRepository.findById(id);
-    }
+    Optional<QuestionEntity> findOne(Long id);
 
-    public void delete(Long id) {
-        questionRepository.deleteById(id);
-    }
+    void delete(Long id);
 
-    public boolean isExist(Long id) {
-        return questionRepository.existsById(id);
-    }
+    boolean isExist(Long id);
 
-    public QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity) {
-        questionEntity.setId(id);
-        return questionRepository.findById(id).map(existingQuestion -> {
-            Optional.ofNullable(questionEntity.getNumber()).ifPresent(existingQuestion::setNumber);
-            Optional.ofNullable(questionEntity.getTitle()).ifPresent(existingQuestion::setTitle);
-            Optional.ofNullable(questionEntity.getDifficulty()).ifPresent(existingQuestion::setDifficulty);
-            Optional.ofNullable(questionEntity.getDateOfCompletion()).ifPresent(existingQuestion::setDateOfCompletion);
-            Optional.ofNullable(questionEntity.getSuccess()).ifPresent(existingQuestion::setSuccess);
-            Optional.ofNullable(questionEntity.getAttempts()).ifPresent(existingQuestion::setAttempts);
-            Optional.ofNullable(questionEntity.getTimeOfCompletion()).ifPresent(existingQuestion::setTimeOfCompletion);
-            Optional.ofNullable(questionEntity.getThinkingProcess()).ifPresent(existingQuestion::setThinkingProcess);
-            return questionRepository.save(existingQuestion);
-        }).orElseThrow(() -> new RuntimeException("Question update failed"));
-    }
+    public QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity);
 }

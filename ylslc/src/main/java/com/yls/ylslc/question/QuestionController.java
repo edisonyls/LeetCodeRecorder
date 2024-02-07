@@ -71,5 +71,4 @@ public class QuestionController {
         QuestionEntity updatedQuestion = questionService.partialUpdate(id, questionEntity);
         return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
     }
-
 }
