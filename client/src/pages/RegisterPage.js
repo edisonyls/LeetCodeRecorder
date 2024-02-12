@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +12,10 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { UseSelector, useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { register, reset } from "../auth/authSlice";
 
 function Copyright(props) {
   return (
@@ -36,13 +40,31 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
+    const formData = new FormData(event.currentTarget);
+    const dataArray = [...formData];
+    const data = Object.fromEntries(dataArray);
+    data.role = "USER";
+    dispatch(register(data));
   };
 
   return (
@@ -114,10 +136,10 @@ export default function RegisterPage() {
                   <TextField
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
                   />
                 </Grid>
                 <Grid item xs={12}>
