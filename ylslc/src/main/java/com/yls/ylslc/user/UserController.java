@@ -39,9 +39,12 @@ public class UserController {
     @DeleteMapping(path="/{id}")
     public Response deleteUser(
             @PathVariable("id") Long id,
-            @RequestBody String username) {
-        Optional<UserEntity> foundUser = userService.findOneByUsername(username);
+            @RequestBody UserDto userDto) {
+        Optional<UserEntity> foundUser = userService.findOneByUsername(userDto.getUsername());
         if (foundUser.isPresent()) {
+            if (foundUser.get().getId().equals(id)){
+                return Response.failed(HttpStatus.BAD_REQUEST ,"You can't delete yourself!");
+            }
             if (foundUser.get().getRole().equals(Role.ADMIN)){
                 userService.delete(id);
                 return Response.ok(null, "User with id <" + id + "> deleted successfully!");
