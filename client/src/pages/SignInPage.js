@@ -53,7 +53,7 @@ export default function SignInPage() {
     }
 
     if (isSuccess || user) {
-      navigate("/");
+      navigate("/dashboard");
     }
 
     dispatch(reset());
