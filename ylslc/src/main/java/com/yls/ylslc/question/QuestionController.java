@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequestMapping(path="api/question")
 public class QuestionController {
     private final QuestionService questionService;
-    private Mapper<QuestionEntity, QuestionDto> questionMapper;
+    private final Mapper<QuestionEntity, QuestionDto> questionMapper;
 
 
     @Autowired
@@ -28,6 +28,13 @@ public class QuestionController {
         List<QuestionEntity> questions = questionService.getQuestions();
         return questions.stream().map(questionMapper::mapTo).collect(Collectors.toList());
     }
+
+    @GetMapping(path = "/{username}/all")
+    public Response getQuestionsByUsername(@PathVariable String username){
+        List<QuestionEntity> questionEntities = questionService.getQuestionsByUsername(username);
+        return Response.ok(questionEntities, "Questions created by " + username + " retrieved successfully!");
+    }
+
 
     @PostMapping
     public QuestionDto createQuestion(@RequestBody QuestionDto question){

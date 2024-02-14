@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class QuestionServiceImpl implements QuestionService{
+public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     public QuestionServiceImpl(QuestionRepository theQuestionRepository){
@@ -53,5 +53,10 @@ public class QuestionServiceImpl implements QuestionService{
             Optional.ofNullable(questionEntity.getThinkingProcess()).ifPresent(existingQuestion::setThinkingProcess);
             return questionRepository.save(existingQuestion);
         }).orElseThrow(() -> new RuntimeException("Question update failed"));
+    }
+
+    @Override
+    public List<QuestionEntity> getQuestionsByUsername(String username) {
+        return questionRepository.findQuestionEntitiesByUsername(username);
     }
 }

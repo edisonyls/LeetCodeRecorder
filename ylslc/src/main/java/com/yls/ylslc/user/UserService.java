@@ -9,4 +9,5 @@ public interface UserService {
     Optional<UserEntity> findOneByUsername(String username);
 
     void delete(Long id);
+
 }

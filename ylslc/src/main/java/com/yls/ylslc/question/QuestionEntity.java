@@ -1,5 +1,6 @@
 package com.yls.ylslc.question;
 
+import com.yls.ylslc.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class QuestionEntity {
             generator = "question_sequence"
     )
     private Long id;
+    private String username;
     private Integer number;
     private String title;
     private String difficulty;
