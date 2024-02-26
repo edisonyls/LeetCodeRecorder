@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Builder
 public class QuestionDto {
     private Long id;
-    private String username;
     private Integer number;
     private String title;
     private String difficulty;

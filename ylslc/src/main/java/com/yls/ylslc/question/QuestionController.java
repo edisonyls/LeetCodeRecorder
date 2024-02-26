@@ -4,6 +4,7 @@ import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class QuestionController {
         return Response.ok(questionDtos, "Question retrieved successfully!");
     }
 
-    @GetMapping("my_questions")
+    @GetMapping("all")
     public Response getQuestionsPerUser(){
         List<QuestionEntity> questions = questionService.getQuestionsByUser();
         List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
@@ -54,7 +55,7 @@ public class QuestionController {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             return Response.ok(questionDto, "Question retrieved successfully!");
         }).orElse(
-                Response.failed(HttpStatus.NOT_FOUND, "Failed to retrieve questions. User " + username + " might not have saved any questions")
+                Response.failed(HttpStatus.NOT_FOUND, "Question doesn't exist")
         );
     }
 
