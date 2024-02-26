@@ -31,6 +31,7 @@ public class Response {
         this.message = message;
         this.data = data;
         this.timeStamp = df.format(new Date());
+        this.serverMessage = "SUCCESS";
     }
 
     public Response(Integer status, String message) {
@@ -39,6 +40,7 @@ public class Response {
         this.status = status;
         this.message = message;
         this.timeStamp = df.format(new Date());
+        this.serverMessage = "FAILED";
     }
 
     public Response(Integer status, String message, String serverMessage) {

@@ -54,7 +54,7 @@ public class QuestionController {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             return Response.ok(questionDto, "Question retrieved successfully!");
         }).orElse(
-                Response.failed(HttpStatus.NOT_FOUND, "Question not found!")
+                Response.failed(HttpStatus.NOT_FOUND, "Failed to retrieve questions. User " + username + " might not have saved any questions")
         );
     }
 
