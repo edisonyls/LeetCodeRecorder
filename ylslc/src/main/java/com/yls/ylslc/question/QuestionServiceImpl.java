@@ -1,17 +1,24 @@
 package com.yls.ylslc.question;
 
+import com.yls.ylslc.user.UserEntity;
+import com.yls.ylslc.user.UserRepository;
+import com.yls.ylslc.user.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
+    private final UserService userService;
 
-    public QuestionServiceImpl(QuestionRepository theQuestionRepository){
+    public QuestionServiceImpl(QuestionRepository theQuestionRepository, UserService theUserService){
         this.questionRepository = theQuestionRepository;
+        this.userService = theUserService;
     }
 
     @Override
@@ -20,13 +27,25 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<QuestionEntity> getQuestionsByUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<UserEntity> currentUser = userService.findOneByUsername(username);
+        return currentUser
+                .map(questionRepository::findByUser)
+                .orElse(Collections.emptyList());
+    }
+
+
+    @Override
     public QuestionEntity createQuestion(QuestionEntity questionEntity) {
+        UserEntity userEntity = userService.getCurrentUser();
+        questionEntity.setUser(userEntity);
         return questionRepository.save(questionEntity);
     }
 
     @Override
-    public Optional<QuestionEntity> findOne(Long id) {
-        return questionRepository.findById(id);
+    public Optional<QuestionEntity> findOne(Long id, String username) {
+        return questionRepository.findByIdAndUsername(id, username);
     }
 
     @Override
@@ -53,10 +72,5 @@ public class QuestionServiceImpl implements QuestionService {
             Optional.ofNullable(questionEntity.getThinkingProcess()).ifPresent(existingQuestion::setThinkingProcess);
             return questionRepository.save(existingQuestion);
         }).orElseThrow(() -> new RuntimeException("Question update failed"));
-    }
-
-    @Override
-    public List<QuestionEntity> getQuestionsByUsername(String username) {
-        return questionRepository.findQuestionEntitiesByUsername(username);
     }
 }

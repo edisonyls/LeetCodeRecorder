@@ -4,6 +4,7 @@ import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,15 +25,17 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<QuestionDto> getQuestions(){
+    public Response getQuestions(){
         List<QuestionEntity> questions = questionService.getQuestions();
-        return questions.stream().map(questionMapper::mapTo).collect(Collectors.toList());
+        List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
+        return Response.ok(questionDtos, "Question retrieved successfully!");
     }
 
-    @GetMapping(path = "/{username}/all")
-    public Response getQuestionsByUsername(@PathVariable String username){
-        List<QuestionEntity> questionEntities = questionService.getQuestionsByUsername(username);
-        return Response.ok(questionEntities, "Questions created by " + username + " retrieved successfully!");
+    @GetMapping("my_questions")
+    public Response getQuestionsPerUser(){
+        List<QuestionEntity> questions = questionService.getQuestionsByUser();
+        List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
+        return Response.ok(questionDtos, "Question retrieved successfully!");
     }
 
 
@@ -45,7 +48,8 @@ public class QuestionController {
 
     @GetMapping(path = "/{id}")
     public Response getQuestion(@PathVariable("id") Long id){
-        Optional<QuestionEntity> foundQuestion = questionService.findOne(id);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
         return foundQuestion.map(questionEntity -> {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             return Response.ok(questionDto, "Question retrieved successfully!");
@@ -56,7 +60,8 @@ public class QuestionController {
 
     @DeleteMapping(path="/{id}")
     public Response deleteQuestion(@PathVariable("id") Long id){
-        Optional<QuestionEntity> foundQuestion = questionService.findOne(id);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
         return foundQuestion.map(questionEntity -> {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             questionService.delete(id);

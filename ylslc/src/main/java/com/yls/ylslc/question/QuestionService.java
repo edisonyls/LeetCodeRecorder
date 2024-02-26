@@ -9,9 +9,11 @@ public interface QuestionService {
 
     List<QuestionEntity> getQuestions();
 
+    List<QuestionEntity> getQuestionsByUser();
+
     QuestionEntity createQuestion(QuestionEntity questionEntity);
 
-    Optional<QuestionEntity> findOne(Long id);
+    Optional<QuestionEntity> findOne(Long id, String username);
 
     void delete(Long id);
 
@@ -19,6 +21,5 @@ public interface QuestionService {
 
     QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity);
 
-    List<QuestionEntity> getQuestionsByUsername(String username);
 
 }

@@ -22,7 +22,11 @@ public class QuestionEntity {
             generator = "question_sequence"
     )
     private Long id;
-    private String username;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private UserEntity user;
+
     private Integer number;
     private String title;
     private String difficulty;
@@ -33,17 +37,6 @@ public class QuestionEntity {
     private String thinkingProcess;
 
     public QuestionEntity(){}
-
-    public QuestionEntity(Integer number, String title, String difficulty, LocalDate dateOfCompletion, Boolean success, Integer attempts, String timeOfCompletion, String thinkingProcess) {
-        this.number = number;
-        this.title = title;
-        this.difficulty = difficulty;
-        this.dateOfCompletion = dateOfCompletion;
-        this.success = success;
-        this.attempts = attempts;
-        this.timeOfCompletion = timeOfCompletion;
-        this.thinkingProcess = thinkingProcess;
-    }
 
     @Override
     public String toString() {
