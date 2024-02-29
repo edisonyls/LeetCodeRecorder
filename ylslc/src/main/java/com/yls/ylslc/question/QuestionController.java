@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path="api/question")
+@CrossOrigin(origins = "http://localhost:3000")
 public class QuestionController {
     private final QuestionService questionService;
     private final Mapper<QuestionEntity, QuestionDto> questionMapper;

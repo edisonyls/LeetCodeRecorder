@@ -13,17 +13,26 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path="api/user")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserService userService;
 
     private Mapper<UserEntity, UserDto> userMapper;
 
 
-    @GetMapping
+    @GetMapping("/all")
     public List<UserDto> getUsers(){
         List<UserEntity> users = userService.getUsers();
         return users.stream().map(userMapper::mapTo).collect(Collectors.toList());
     }
+
+    @GetMapping
+    public Response getCurrentUser(){
+        UserEntity userEntity = userService.getCurrentUser();
+        UserDto userDto = userMapper.mapTo(userEntity);
+        return Response.ok(userDto, "Current user retrieved successfully!");
+    }
+
 
     @GetMapping(path="/{username}")
     public Response getUserByUsername(@PathVariable("username") String username){
