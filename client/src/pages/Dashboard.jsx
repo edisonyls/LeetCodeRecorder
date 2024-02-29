@@ -1,25 +1,33 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../config/axiosConfig";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
     const fetchData = () => {
-      // Retrieve the token from localStorage
       const token = JSON.parse(localStorage.getItem("user"));
-
-      // Make sure token exists
       if (!token) {
         console.log("No token found in localStorage.");
         return;
       }
 
-      // Include the token in the Authorization header
       axiosInstance
         .get("question/all")
         .then((response) => {
-          setQuestions(response.data.data); // Assuming the response structure you provided earlier
+          setQuestions(response.data.data);
         })
         .catch((error) => {
           alert("User not authenticated!");
@@ -29,35 +37,59 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Question Dashboard</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Number</th>
-            <th>Title</th>
-            <th>Difficulty</th>
-            <th>Date of Completion</th>
-            <th>Time of Completion</th>
-            <th>Attempts</th>
-            <th>Success</th>
-          </tr>
-        </thead>
-        <tbody>
-          {questions.map((question) => (
-            <tr key={question.id}>
-              <td>{question.number}</td>
-              <td>{question.title}</td>
-              <td>{question.difficulty}</td>
-              <td>{question.dateOfCompletion}</td>
-              <td>{question.timeOfCompletion}</td>
-              <td>{question.attempts}</td>
-              <td>{question.success ? "Yes" : "No"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Container>
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead
+            sx={{
+              "& .MuiTableCell-head": {
+                backgroundColor: "black",
+                color: "white",
+              },
+            }}
+          >
+            <TableRow>
+              <TableCell align="center" sx={{ width: "20%" }}>
+                Date
+              </TableCell>
+              <TableCell align="center">Question</TableCell>
+              <TableCell align="center" sx={{ width: "10%" }}>
+                Success
+              </TableCell>
+              <TableCell align="center" sx={{ width: "10%" }}>
+                Attempts
+              </TableCell>
+              <TableCell align="center" sx={{ width: "10%" }}>
+                Time
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {questions.map((question) => (
+              <TableRow key={question.id}>
+                <TableCell align="center" component="th" scope="row">
+                  {question.dateOfCompletion}
+                </TableCell>
+                <TableCell align="center">
+                  {question.id}. {question.title}
+                </TableCell>
+                <TableCell align="center">
+                  {question.success ? (
+                    <CheckCircleOutlineIcon style={{ color: "green" }} />
+                  ) : (
+                    <HighlightOffIcon style={{ color: "red" }} />
+                  )}
+                </TableCell>
+                <TableCell align="center">{question.attempts}</TableCell>
+                <TableCell align="center">
+                  {question.timeOfCompletion}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 
