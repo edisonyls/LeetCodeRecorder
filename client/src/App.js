@@ -6,6 +6,8 @@ import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -14,9 +16,10 @@ function App() {
         <Router>
           <Navbar />
           <Routes>
-            <Route path="/" exact />
+            <Route path="/" Component={Home} exact />
             <Route path="/signin" Component={SignInPage} exact />
             <Route path="/register" Component={RegisterPage} exact />
+            <Route path="/dashboard" Component={Dashboard} exact />
           </Routes>
         </Router>
         <ToastContainer />
