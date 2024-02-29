@@ -11,7 +11,6 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -35,10 +34,6 @@ function Copyright(props) {
     </Typography>
   );
 }
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -69,7 +64,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <AccountNavbar />
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
@@ -184,6 +179,6 @@ export default function RegisterPage() {
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
+    </>
   );
 }

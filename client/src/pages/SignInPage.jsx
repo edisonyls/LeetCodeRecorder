@@ -38,8 +38,6 @@ function Copyright(props) {
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
-const defaultTheme = createTheme();
-
 export default function SignInPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -70,7 +68,7 @@ export default function SignInPage() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <AccountNavbar />
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
@@ -162,6 +160,6 @@ export default function SignInPage() {
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
+    </>
   );
 }
