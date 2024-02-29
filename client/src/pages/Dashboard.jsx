@@ -16,11 +16,17 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
+  const [sortOption, setSortOption] = useState("default");
+  const [originalQuestions, setOriginalQuestions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +34,7 @@ const Dashboard = () => {
         .get("question/all")
         .then((response) => {
           setQuestions(response.data.data);
+          setOriginalQuestions(response.data.data);
         })
         .catch((error) => {
           alert("User not authenticated!");
@@ -35,6 +42,40 @@ const Dashboard = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    let sortedQuestions = [...questions];
+    switch (sortOption) {
+      case "success":
+        sortedQuestions.sort((a, b) => b.success - a.success);
+        break;
+      case "failure":
+        sortedQuestions.sort((a, b) => a.success - b.success);
+        break;
+      case "lowest attempts":
+        sortedQuestions.sort((a, b) => a.attempts - b.attempts);
+        break;
+      case "highest attempts":
+        sortedQuestions.sort((a, b) => b.attempts - a.attempts);
+        break;
+      case "fastest":
+        sortedQuestions.sort((a, b) => {
+          return a.timeOfCompletion.localeCompare(b.timeOfCompletion);
+        });
+        break;
+      case "slowest":
+        sortedQuestions.sort((a, b) => {
+          return b.timeOfCompletion.localeCompare(a.timeOfCompletion);
+        });
+        break;
+      case "default":
+        setQuestions([...originalQuestions]); // Reset to original order
+        return;
+      default:
+        break;
+    }
+    setQuestions(sortedQuestions);
+  }, [sortOption, questions, originalQuestions]);
 
   return (
     <>
@@ -66,6 +107,28 @@ const Dashboard = () => {
           >
             + New
           </Button>
+
+          <FormControl sx={{ m: 1, minWidth: 240 }}>
+            <InputLabel id="sort-label" sx={{ fontSize: "1rem" }}>
+              Show table by
+            </InputLabel>
+            <Select
+              labelId="sort-label"
+              id="sort-select"
+              value={sortOption}
+              label="Show table by"
+              onChange={(e) => setSortOption(e.target.value)}
+              size="small"
+            >
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="success">Success</MenuItem>
+              <MenuItem value="failure">Failure</MenuItem>
+              <MenuItem value="lowest attempts">Lowest Attempts</MenuItem>
+              <MenuItem value="highest attempts">Highest Attempts</MenuItem>
+              <MenuItem value="fastest">Fastest</MenuItem>
+              <MenuItem value="slowest">Slowest</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             label="Search..."
             variant="outlined"
