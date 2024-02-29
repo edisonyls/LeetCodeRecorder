@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { login, reset } from "../auth/authSlice";
+import AccountNavbar from "../components/navbar/AccountNavbar";
 
 function Copyright(props) {
   return (
@@ -70,6 +71,7 @@ export default function SignInPage() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <AccountNavbar />
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid

@@ -1,4 +1,3 @@
-import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +13,6 @@ function App() {
     <>
       <Provider store={store}>
         <Router>
-          <Navbar />
           <Routes>
             <Route path="/" Component={Home} exact />
             <Route path="/signin" Component={SignInPage} exact />
