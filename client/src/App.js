@@ -8,6 +8,7 @@ import { store } from "./redux/store";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewQuestion from "./pages/NewQuestion";
+import QuestionDetails from "./pages/QuestionDetails";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/register" Component={RegisterPage} exact />
             <Route path="/dashboard" Component={Dashboard} exact />
             <Route path="/new" Component={NewQuestion} exact />
+            <Route path="/question/:id" Component={QuestionDetails} exact />
           </Routes>
         </Router>
         <ToastContainer />

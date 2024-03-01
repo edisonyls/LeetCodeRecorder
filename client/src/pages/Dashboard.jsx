@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../config/axiosConfig";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -21,6 +22,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  IconButton,
 } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { WhiteBackgroundButton } from "../components/GenericButton";
@@ -29,6 +31,24 @@ const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
   const [sortOption, setSortOption] = useState("default");
   const [originalQuestions, setOriginalQuestions] = useState([]);
+
+  const navigate = useNavigate();
+
+  const handleDelete = async (id, event) => {
+    event.stopPropagation(); // Prevent click event from reaching the TableRow
+
+    try {
+      await axiosInstance.delete(`question/${id}`);
+      // Remove the question from the list or refetch the list
+      const updatedQuestions = questions.filter(
+        (question) => question.id !== id
+      );
+      setQuestions(updatedQuestions);
+      setOriginalQuestions(updatedQuestions);
+    } catch (error) {
+      console.error("Error deleting question:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +73,22 @@ const Dashboard = () => {
         break;
       case "failure":
         sortedQuestions.sort((a, b) => a.success - b.success);
+        break;
+      case "easiest":
+        sortedQuestions.sort((a, b) => {
+          const difficultyValues = { Easy: 1, Medium: 2, Hard: 3 };
+          return (
+            difficultyValues[a.difficulty] - difficultyValues[b.difficulty]
+          );
+        });
+        break;
+      case "hardest":
+        sortedQuestions.sort((a, b) => {
+          const difficultyValues = { Easy: 1, Medium: 2, Hard: 3 };
+          return (
+            difficultyValues[b.difficulty] - difficultyValues[a.difficulty]
+          );
+        });
         break;
       case "lowest attempts":
         sortedQuestions.sort((a, b) => a.attempts - b.attempts);
@@ -100,17 +136,19 @@ const Dashboard = () => {
 
           <FormControl sx={{ m: 1, minWidth: 240 }}>
             <InputLabel id="sort-label" sx={{ fontSize: "1rem" }}>
-              Show table by
+              Show questions as
             </InputLabel>
             <Select
               labelId="sort-label"
               id="sort-select"
               value={sortOption}
-              label="Show table by"
+              label="Show questions as"
               onChange={(e) => setSortOption(e.target.value)}
               size="small"
             >
               <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="hardest">Hardest</MenuItem>
+              <MenuItem value="easiest">Easiest</MenuItem>
               <MenuItem value="success">Success</MenuItem>
               <MenuItem value="failure">Failure</MenuItem>
               <MenuItem value="lowest attempts">Lowest Attempts</MenuItem>
@@ -165,6 +203,9 @@ const Dashboard = () => {
                 </TableCell>
                 <TableCell align="center">Question</TableCell>
                 <TableCell align="center" sx={{ width: "10%" }}>
+                  Difficulty
+                </TableCell>
+                <TableCell align="center" sx={{ width: "10%" }}>
                   Success
                 </TableCell>
                 <TableCell align="center" sx={{ width: "10%" }}>
@@ -173,16 +214,40 @@ const Dashboard = () => {
                 <TableCell align="center" sx={{ width: "10%" }}>
                   Time
                 </TableCell>
+                <TableCell sx={{ width: "5%" }} />
               </TableRow>
             </TableHead>
             <TableBody>
               {questions.map((question) => (
-                <TableRow key={question.id}>
+                <TableRow
+                  key={question.id}
+                  hover
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    navigate(`/question/${question.id}`, {
+                      state: { id: question.id },
+                    })
+                  }
+                >
                   <TableCell align="center" component="th" scope="row">
                     {question.dateOfCompletion}
                   </TableCell>
                   <TableCell align="center">
-                    {question.id}. {question.title}
+                    {question.number}. {question.title}
+                  </TableCell>
+                  <TableCell align="center">
+                    <span
+                      style={{
+                        color:
+                          question.difficulty === "Easy"
+                            ? "#4CAF50"
+                            : question.difficulty === "Medium"
+                            ? "#FF9800"
+                            : "#F44336",
+                      }}
+                    >
+                      {question.difficulty}
+                    </span>
                   </TableCell>
                   <TableCell align="center">
                     {question.success ? (
@@ -194,6 +259,13 @@ const Dashboard = () => {
                   <TableCell align="center">{question.attempts}</TableCell>
                   <TableCell align="center">
                     {question.timeOfCompletion}
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={(event) => handleDelete(question.id, event)}
+                    >
+                      <DeleteForeverIcon style={{ color: "black" }} />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

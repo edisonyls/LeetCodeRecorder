@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, reset } from "../../auth/authSlice";
 import { useDispatch } from "react-redux";
-import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
 import { BlackBackgroundButton } from "../GenericButton";
