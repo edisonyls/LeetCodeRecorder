@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axiosInstance from "../config/axiosConfig";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Container,
   Table,
@@ -104,8 +106,10 @@ const Dashboard = () => {
                 color: "white",
               },
             }}
+            component={Link}
+            to="/new"
           >
-            + New
+            <AddIcon sx={{ marginRight: 0.5, fontSize: 18 }} /> New
           </Button>
 
           <FormControl sx={{ m: 1, minWidth: 240 }}>

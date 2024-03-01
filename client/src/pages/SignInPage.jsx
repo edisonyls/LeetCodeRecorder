@@ -47,6 +47,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (isError) {
+      console.log(message);
       toast.error(message);
     }
 
@@ -62,7 +63,6 @@ export default function SignInPage() {
     const formData = new FormData(event.currentTarget);
     const dataArray = [...formData];
     const data = Object.fromEntries(dataArray);
-    console.log(data);
     dispatch(login(data));
   };
 

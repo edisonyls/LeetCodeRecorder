@@ -2,14 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, reset } from "../../auth/authSlice";
 import { useDispatch } from "react-redux";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Box,
-  Button,
-} from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
 
@@ -50,20 +43,11 @@ const AuthenticatedNavbar = () => {
   return (
     <AppBar position="static" sx={{ background: "black", mb: 4 }}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-            <FlutterDashIcon />
-          </Link>
-        </IconButton>
-        <Typography variant="h8" sx={{ flexGrow: 1 }}>
+        <FlutterDashIcon />
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
           <Box
             component={Link}
-            to="/"
+            to="/dashboard"
             style={{ color: "inherit", textDecoration: "none" }}
           >
             YLSLC
