@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
+import { BlackBackgroundButton } from "../GenericButton";
 
 const AuthenticatedNavbar = () => {
   const [user, setUser] = useState({});
@@ -56,23 +57,7 @@ const AuthenticatedNavbar = () => {
         <Typography variant="h8">
           {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
         </Typography>
-        <Button
-          sx={{
-            color: "inherit",
-            borderColor: "white",
-            borderWidth: "1px",
-            borderStyle: "solid",
-            borderRadius: "20px",
-            marginLeft: 2,
-            "&:hover": {
-              backgroundColor: "white",
-              color: "black",
-            },
-          }}
-          onClick={handleLogout}
-        >
-          Log Out
-        </Button>
+        <BlackBackgroundButton buttonText="Log Out" onClick={handleLogout} />
       </Toolbar>
     </AppBar>
   );

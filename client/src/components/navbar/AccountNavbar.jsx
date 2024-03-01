@@ -14,7 +14,7 @@ const AccountNavbar = () => {
         <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
           <Box
             component={Link}
-            to="/dashboard"
+            to="/"
             style={{ color: "inherit", textDecoration: "none" }}
           >
             YLSLC

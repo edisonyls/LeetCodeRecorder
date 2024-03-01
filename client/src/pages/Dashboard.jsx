@@ -15,7 +15,6 @@ import {
   TableRow,
   Paper,
   Box,
-  Button,
   TextField,
   InputAdornment,
   Select,
@@ -24,6 +23,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
+import { WhiteBackgroundButton } from "../components/GenericButton";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -91,26 +91,12 @@ const Dashboard = () => {
             mb: 2,
           }}
         >
-          <Button
-            variant="outlined"
-            color="inherit"
-            sx={{
-              minWidth: "120px",
-              height: "40px",
-              borderRadius: "20px",
-              borderColor: "black",
-              color: "black",
-              "&:hover": {
-                borderColor: "black",
-                backgroundColor: "rgba(1, 1, 1, 1)",
-                color: "white",
-              },
-            }}
+          <WhiteBackgroundButton
             component={Link}
             to="/new"
-          >
-            <AddIcon sx={{ marginRight: 0.5, fontSize: 18 }} /> New
-          </Button>
+            icon={<AddIcon />}
+            buttonText="New"
+          />
 
           <FormControl sx={{ m: 1, minWidth: 240 }}>
             <InputLabel id="sort-label" sx={{ fontSize: "1rem" }}>

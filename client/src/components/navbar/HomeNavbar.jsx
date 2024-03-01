@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import { Box, Button } from "@mui/material";
+import { BlackBackgroundButton } from "../GenericButton";
 
 const HomeNavbar = () => {
   return (
@@ -20,32 +21,16 @@ const HomeNavbar = () => {
             YLSLC
           </Box>
         </Typography>
-        <Button
-          color="inherit"
+        <BlackBackgroundButton
           component={Link}
-          sx={{
-            backgroundColor: "white",
-            color: "black",
-            "&:hover": { backgroundColor: "grey" },
-            mr: 1,
-          }}
           to="/signin"
-        >
-          Sign In
-        </Button>
-        <Button
-          color="inherit"
+          buttonText="Sign In"
+        />
+        <BlackBackgroundButton
           component={Link}
-          sx={{
-            backgroundColor: "white",
-            color: "black",
-            "&:hover": { backgroundColor: "grey" },
-            mr: 1,
-          }}
           to="/register"
-        >
-          Register
-        </Button>
+          buttonText="Register"
+        />
       </Toolbar>
     </AppBar>
   );

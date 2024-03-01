@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../config/axiosConfig";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Container,
   TextField,
   MenuItem,
-  Button,
   FormControlLabel,
   Checkbox,
   Typography,
@@ -17,6 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { WhiteBackgroundButton } from "../components/GenericButton";
 
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
@@ -74,10 +74,24 @@ const NewQuestion = () => {
   return (
     <div>
       <AuthenticatedNavbar />
-      <Container maxWidth="sm">
-        <Typography variant="h6" gutterBottom>
-          Upload New Question
-        </Typography>
+
+      <Container maxWidth="md">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Upload New Question
+          </Typography>
+          <WhiteBackgroundButton
+            component={Link}
+            to="/dashboard"
+            buttonText="Back"
+          />
+        </Box>
         <form onSubmit={handleSubmit}>
           <TextField
             margin="normal"
@@ -175,44 +189,11 @@ const NewQuestion = () => {
               marginTop: 1,
             }}
           >
-            <Button
-              variant="outlined"
-              color="inherit"
-              sx={{
-                minWidth: "120px",
-                height: "40px",
-                borderRadius: "20px",
-                borderColor: "black",
-                color: "black",
-                "&:hover": {
-                  borderColor: "black",
-                  backgroundColor: "rgba(1, 1, 1, 1)",
-                  color: "white",
-                },
-              }}
-            >
-              <AddIcon sx={{ marginRight: 0.5, fontSize: 18 }} />
-              New Solution
-            </Button>
-            <Button
-              variant="outlined"
-              color="inherit"
-              sx={{
-                minWidth: "120px",
-                height: "40px",
-                borderRadius: "20px",
-                borderColor: "black",
-                color: "black",
-                "&:hover": {
-                  borderColor: "black",
-                  backgroundColor: "rgba(1, 1, 1, 1)",
-                  color: "white",
-                },
-              }}
-              type="submit"
-            >
-              Submit
-            </Button>
+            <WhiteBackgroundButton
+              buttonText="New Solution"
+              icon={<AddIcon />}
+            />
+            <WhiteBackgroundButton buttonText="Submit" type="submit" />
           </Box>
         </form>
       </Container>
