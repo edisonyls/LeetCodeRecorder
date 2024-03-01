@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
+import { Link, useNavigate } from "react-router-dom";
+import { logout, reset } from "../../auth/authSlice";
+import { useDispatch } from "react-redux";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+} from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
-import { Box } from "@mui/material";
 import axiosInstance from "../../config/axiosConfig";
 
 const AuthenticatedNavbar = () => {
   const [user, setUser] = useState({});
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,6 +31,13 @@ const AuthenticatedNavbar = () => {
 
     fetchUserData();
   }, []);
+
+  const handleLogout = () => {
+    console.log("Logging out...");
+    dispatch(logout());
+    dispatch(reset());
+    navigate("/");
+  };
 
   const getTimeOfDayGreeting = () => {
     const hour = new Date().getHours();
@@ -57,6 +72,23 @@ const AuthenticatedNavbar = () => {
         <Typography variant="h8">
           {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
         </Typography>
+        <Button
+          sx={{
+            color: "inherit",
+            borderColor: "white",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderRadius: "20px",
+            marginLeft: 2,
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black",
+            },
+          }}
+          onClick={handleLogout}
+        >
+          Log Out
+        </Button>
       </Toolbar>
     </AppBar>
   );

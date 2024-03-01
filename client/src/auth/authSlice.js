@@ -30,6 +30,7 @@ export const register = createAsyncThunk(
   }
 );
 
+// login
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
     return await authService.login(user);
@@ -43,6 +44,7 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   }
 });
 
+//logout
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
