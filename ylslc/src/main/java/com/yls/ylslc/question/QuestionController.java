@@ -42,10 +42,11 @@ public class QuestionController {
 
 
     @PostMapping
-    public QuestionDto createQuestion(@RequestBody QuestionDto question){
+    public Response createQuestion(@RequestBody QuestionDto question){
         QuestionEntity questionEntity = questionMapper.mapFrom(question);
         QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
-        return questionMapper.mapTo(savedQuestionEntity);
+        QuestionDto questionDto = questionMapper.mapTo(savedQuestionEntity);
+        return Response.ok(questionDto, "Question saved successfully!");
     }
 
     @GetMapping(path = "/{id}")
