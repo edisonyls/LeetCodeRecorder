@@ -10,5 +10,5 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class S3Buckets {
-    private String customer;
+    private String storageLocation;
 }

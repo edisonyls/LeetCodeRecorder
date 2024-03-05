@@ -24,9 +24,9 @@ public interface QuestionService {
     QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity);
 
 
-    void uploadQuestionImage(Long id, MultipartFile file);
+    void uploadQuestionImage(QuestionEntity questionEntity, MultipartFile file);
 
-    byte[] getQuestionImage(Long id);
+    byte[] getQuestionImage(QuestionEntity questionEntity);
 
     QuestionEntity getQuestionById(Long id);
 }

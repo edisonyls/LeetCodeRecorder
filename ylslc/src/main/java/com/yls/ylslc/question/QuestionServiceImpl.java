@@ -5,6 +5,7 @@ import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserRepository;
 import com.yls.ylslc.user.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,43 +82,55 @@ public class QuestionServiceImpl implements QuestionService {
         }).orElseThrow(() -> new RuntimeException("Question update failed"));
     }
 
+
     @Override
-    public void uploadQuestionImage(Long id, MultipartFile file) {
+    @Transactional
+    public void uploadQuestionImage(QuestionEntity questionEntity, MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         String fileExtension = "";
+
+        // get the suffix of the file
         if (originalFilename != null && originalFilename.contains(".")) {
             fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        String questionImageId = UUID.randomUUID().toString() + fileExtension;
+        String questionImageId = UUID.randomUUID() + fileExtension;
+
+        // Determines the content type (MIME type) of the file. If the content type is available, it uses that;
+        // otherwise, it defaults to "application/octet-stream", a generic binary stream.
         String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
 
+        String username = userService.getCurrentUser().getUsername();
+
+        // saving the image to s3
         try {
             s3Service.putObject(
-                    s3Buckets.getCustomer(),
-                    String.format("question-images/%s/%s", id, questionImageId),
+                    s3Buckets.getStorageLocation(),
+                    String.format("question-images/%s/%s/%s", username, questionEntity.getNumber(), questionImageId),
                     file.getBytes(),
                     contentType // Pass the content type here
             );
-            QuestionEntity questionEntity = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
-            questionEntity.setQuestionImageId(questionImageId);
-            questionRepository.save(questionEntity);
+
+            // find the uploaded question and attach the image to the question
+            QuestionEntity newQuestionEntity = questionRepository.findById(questionEntity.getId())
+                    .orElseThrow(() -> new RuntimeException("Question not found"));
+            newQuestionEntity.setQuestionImageId(questionImageId);
+            questionRepository.save(newQuestionEntity);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public byte[] getQuestionImage(Long id) {
-        // TODO: Check if questionImageId is empty or null
-        QuestionEntity questionEntity = questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question not found"));
+    public byte[] getQuestionImage(QuestionEntity questionEntity) {
         String questionImageId = questionEntity.getQuestionImageId();
+        String username = userService.getCurrentUser().getUsername();
+
         if (questionImageId == null || questionImageId.isEmpty()) {
             throw new RuntimeException("Image not found");
         }
-
         return s3Service.getObject(
-                s3Buckets.getCustomer(),
-                "question-images/%s/%s".formatted(id, questionImageId)
+                s3Buckets.getStorageLocation(),
+                "question-images/%s/%s/%s".formatted(username, questionEntity.getNumber(), questionImageId)
         );
     }
 

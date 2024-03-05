@@ -48,21 +48,28 @@ public class QuestionController {
     }
 
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response createQuestion(
             @RequestPart("question") String questionJson,
             @RequestPart("file") MultipartFile file
     ) throws JsonProcessingException {
+        // make the incoming String to a QuestionDto
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         QuestionDto question = objectMapper.readValue(questionJson, QuestionDto.class);
+
+
         QuestionEntity questionEntity = questionMapper.mapFrom(question);
         QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
-        questionService.uploadQuestionImage(savedQuestionEntity.getId(), file);
+
+        questionService.uploadQuestionImage(savedQuestionEntity, file);
+
+        // update the QuestionEntity with updated image id
         QuestionEntity updatedQuestionEntity = questionService.getQuestionById(savedQuestionEntity.getId());
         QuestionDto questionDto = questionMapper.mapTo(updatedQuestionEntity);
         return Response.ok(questionDto, "Question saved successfully!");
     }
+
 
     @GetMapping(path = "/{id}")
     public Response getQuestion(@PathVariable("id") Long id){
@@ -102,20 +109,10 @@ public class QuestionController {
         return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
     }
 
-    @PostMapping(
-            value = "{id}/image",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public void uploadCustomerProfileImage(
-            @PathVariable("id") Long id,
-            @RequestParam("file")MultipartFile file){
-        questionService.uploadQuestionImage(id, file);
-    }
-
     @GetMapping("{id}/image")
-    public ResponseEntity<byte[]> getCustomerProfileImage(@PathVariable("id") Long id) {
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable("id") Long id) {
         QuestionEntity questionEntity = questionService.getQuestionById(id);
-        byte[] imageData = questionService.getQuestionImage(id);
+        byte[] imageData = questionService.getQuestionImage(questionEntity);
 
         // Use the imageId which includes the file extension to determine the MIME type
         String imageId = questionEntity.getQuestionImageId();
