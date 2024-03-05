@@ -52,22 +52,22 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<QuestionEntity> findOne(Long id, String username) {
+    public Optional<QuestionEntity> findOne(UUID id, String username) {
         return questionRepository.findByIdAndUsername(id, username);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         questionRepository.deleteById(id);
     }
 
     @Override
-    public boolean isExist(Long id) {
+    public boolean isExist(UUID id) {
         return questionRepository.existsById(id);
     }
 
     @Override
-    public QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity) {
+    public QuestionEntity partialUpdate(UUID id, QuestionEntity questionEntity) {
         questionEntity.setId(id);
         return questionRepository.findById(id).map(existingQuestion -> {
             Optional.ofNullable(questionEntity.getNumber()).ifPresent(existingQuestion::setNumber);
@@ -135,7 +135,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionEntity getQuestionById(Long id) {
+    public QuestionEntity getQuestionById(UUID id) {
             // Fetch the question entity by ID
             return questionRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));

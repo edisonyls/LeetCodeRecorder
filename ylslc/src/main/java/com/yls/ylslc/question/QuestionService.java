@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 // @Service and @Component is the same, but we want to specify that
 // this is a service component
@@ -15,18 +16,18 @@ public interface QuestionService {
 
     QuestionEntity createQuestion(QuestionEntity questionEntity);
 
-    Optional<QuestionEntity> findOne(Long id, String username);
+    Optional<QuestionEntity> findOne(UUID id, String username);
 
-    void delete(Long id);
+    void delete(UUID id);
 
-    boolean isExist(Long id);
+    boolean isExist(UUID id);
 
-    QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity);
+    QuestionEntity partialUpdate(UUID id, QuestionEntity questionEntity);
 
 
     void uploadQuestionImage(QuestionEntity questionEntity, MultipartFile file);
 
     byte[] getQuestionImage(QuestionEntity questionEntity);
 
-    QuestionEntity getQuestionById(Long id);
+    QuestionEntity getQuestionById(UUID id);
 }

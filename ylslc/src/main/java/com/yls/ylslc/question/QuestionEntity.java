@@ -4,8 +4,10 @@ import com.yls.ylslc.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,15 +15,19 @@ import java.time.LocalDate;
 @Table(name="question")
 public class QuestionEntity {
     @Id
-    @SequenceGenerator(
-            name="question_sequence",
-            sequenceName = "question_sequence",
-            allocationSize = 1)
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "question_sequence"
-    )
-    private Long id;
+    @GeneratedValue
+    private UUID id;
+
+//    @Id
+//    @SequenceGenerator(
+//            name="question_sequence",
+//            sequenceName = "question_sequence",
+//            allocationSize = 1)
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE,
+//            generator = "question_sequence"
+//    )
+//    private Long id;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -38,5 +44,7 @@ public class QuestionEntity {
     private String timeOfCompletion;
     private String thinkingProcess;
 
-    public QuestionEntity(){}
+    public QuestionEntity(){
+        this.id = UUID.randomUUID();
+    }
 }

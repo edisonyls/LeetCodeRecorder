@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -72,7 +73,7 @@ public class QuestionController {
 
 
     @GetMapping(path = "/{id}")
-    public Response getQuestion(@PathVariable("id") Long id){
+    public Response getQuestion(@PathVariable("id") UUID id){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
         return foundQuestion.map(questionEntity -> {
@@ -84,7 +85,7 @@ public class QuestionController {
     }
 
     @DeleteMapping(path="/{id}")
-    public Response deleteQuestion(@PathVariable("id") Long id){
+    public Response deleteQuestion(@PathVariable("id") UUID id){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
         return foundQuestion.map(questionEntity -> {
@@ -98,7 +99,7 @@ public class QuestionController {
 
     @PutMapping(path="/{id}")
     public Response updateQuestion(
-            @PathVariable("id") Long id,
+            @PathVariable("id") UUID id,
             @RequestBody QuestionDto questionDto
     ){
         if (!questionService.isExist(id)){
@@ -110,7 +111,7 @@ public class QuestionController {
     }
 
     @GetMapping("{id}/image")
-    public ResponseEntity<byte[]> getQuestionImage(@PathVariable("id") Long id) {
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable("id") UUID id) {
         QuestionEntity questionEntity = questionService.getQuestionById(id);
         byte[] imageData = questionService.getQuestionImage(questionEntity);
 

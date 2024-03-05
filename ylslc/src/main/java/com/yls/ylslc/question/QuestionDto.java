@@ -7,13 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class QuestionDto {
-    private Long id;
+    private UUID id;
     private String questionImageId;
     private Integer number;
     private String title;
