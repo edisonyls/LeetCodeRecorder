@@ -1,5 +1,7 @@
 package com.yls.ylslc.question;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +24,9 @@ public interface QuestionService {
     QuestionEntity partialUpdate(Long id, QuestionEntity questionEntity);
 
 
+    void uploadQuestionImage(Long id, MultipartFile file);
+
+    byte[] getQuestionImage(Long id);
+
+    QuestionEntity getQuestionById(Long id);
 }

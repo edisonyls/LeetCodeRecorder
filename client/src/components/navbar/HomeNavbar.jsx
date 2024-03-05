@@ -13,13 +13,7 @@ const HomeNavbar = () => {
       <Toolbar>
         <FlutterDashIcon />
         <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
-          <Box
-            component={Link}
-            to="/dashboard"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            YLSLC
-          </Box>
+          <Box style={{ color: "inherit", textDecoration: "none" }}>YLSLC</Box>
         </Typography>
         <BlackBackgroundButton
           component={Link}

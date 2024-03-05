@@ -1,12 +1,19 @@
 package com.yls.ylslc.question;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,10 +49,18 @@ public class QuestionController {
 
 
     @PostMapping
-    public Response createQuestion(@RequestBody QuestionDto question){
+    public Response createQuestion(
+            @RequestPart("question") String questionJson,
+            @RequestPart("file") MultipartFile file
+    ) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        QuestionDto question = objectMapper.readValue(questionJson, QuestionDto.class);
         QuestionEntity questionEntity = questionMapper.mapFrom(question);
         QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
-        QuestionDto questionDto = questionMapper.mapTo(savedQuestionEntity);
+        questionService.uploadQuestionImage(savedQuestionEntity.getId(), file);
+        QuestionEntity updatedQuestionEntity = questionService.getQuestionById(savedQuestionEntity.getId());
+        QuestionDto questionDto = questionMapper.mapTo(updatedQuestionEntity);
         return Response.ok(questionDto, "Question saved successfully!");
     }
 
@@ -85,5 +100,40 @@ public class QuestionController {
         QuestionEntity questionEntity = questionMapper.mapFrom(questionDto);
         QuestionEntity updatedQuestion = questionService.partialUpdate(id, questionEntity);
         return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
+    }
+
+    @PostMapping(
+            value = "{id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public void uploadCustomerProfileImage(
+            @PathVariable("id") Long id,
+            @RequestParam("file")MultipartFile file){
+        questionService.uploadQuestionImage(id, file);
+    }
+
+    @GetMapping("{id}/image")
+    public ResponseEntity<byte[]> getCustomerProfileImage(@PathVariable("id") Long id) {
+        QuestionEntity questionEntity = questionService.getQuestionById(id);
+        byte[] imageData = questionService.getQuestionImage(id);
+
+        // Use the imageId which includes the file extension to determine the MIME type
+        String imageId = questionEntity.getQuestionImageId();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(getMediaTypeForImageId(imageId));
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    private MediaType getMediaTypeForImageId(String imageId) {
+        if (imageId.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
+            return MediaType.IMAGE_JPEG;
+        } else {
+            // Default or fallback content type
+            return MediaType.APPLICATION_OCTET_STREAM;
+        }
     }
 }

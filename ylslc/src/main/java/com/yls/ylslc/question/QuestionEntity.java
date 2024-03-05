@@ -27,6 +27,8 @@ public class QuestionEntity {
     @JoinColumn(name="user_id")
     private UserEntity user;
 
+    private String questionImageId;
+
     private Integer number;
     private String title;
     private String difficulty;
@@ -37,19 +39,4 @@ public class QuestionEntity {
     private String thinkingProcess;
 
     public QuestionEntity(){}
-
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", number=" + number +
-                ", title='" + title + '\'' +
-                ", difficulty='" + difficulty + '\'' +
-                ", dateOfCompletion=" + dateOfCompletion +
-                ", success=" + success +
-                ", attempts=" + attempts +
-                ", timeOfCompletion='" + timeOfCompletion + '\'' +
-                ", thinkingProcess='" + thinkingProcess + '\'' +
-                '}';
-    }
 }

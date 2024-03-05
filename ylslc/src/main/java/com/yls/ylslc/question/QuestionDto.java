@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class QuestionDto {
     private Long id;
+    private String questionImageId;
     private Integer number;
     private String title;
     private String difficulty;
