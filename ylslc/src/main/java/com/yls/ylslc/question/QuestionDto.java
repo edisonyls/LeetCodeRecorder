@@ -1,6 +1,7 @@
 package com.yls.ylslc.question;
 
 
+import com.yls.ylslc.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

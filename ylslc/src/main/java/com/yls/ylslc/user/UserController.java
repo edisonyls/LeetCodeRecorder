@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -47,7 +48,7 @@ public class UserController {
 
     @DeleteMapping(path="/{id}")
     public Response deleteUser(
-            @PathVariable("id") Long id,
+            @PathVariable("id") UUID id,
             @RequestBody UserDto userDto) {
         Optional<UserEntity> foundUser = userService.findOneByUsername(userDto.getUsername());
         if (foundUser.isPresent()) {

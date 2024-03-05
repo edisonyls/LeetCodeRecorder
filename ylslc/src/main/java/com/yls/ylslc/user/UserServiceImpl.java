@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(UUID id){
         userRepository.deleteById(id);
     }
 
