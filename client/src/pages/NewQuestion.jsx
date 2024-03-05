@@ -51,6 +51,7 @@ const NewQuestion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
     const formattedData = {
       ...question,
       dateOfCompletion: question.dateOfCompletion
@@ -60,9 +61,17 @@ const NewQuestion = () => {
         ? question.timeOfCompletion.format("mm:ss")
         : "",
     };
+
+    formData.append("question", JSON.stringify(formattedData));
+
+    console.log(formattedData);
     try {
       // Send the data to the backend
-      const response = await axiosInstance.post("question", formattedData);
+      const response = await axiosInstance.post("question", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.data.serverMessage === "SUCCESS") {
         navigate("/dashboard");
       }
