@@ -52,7 +52,7 @@ public class QuestionController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response createQuestion(
             @RequestPart("question") String questionJson,
-            @RequestPart("file") MultipartFile file
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {
         // make the incoming String to a QuestionDto
         ObjectMapper objectMapper = new ObjectMapper();
@@ -63,11 +63,17 @@ public class QuestionController {
         QuestionEntity questionEntity = questionMapper.mapFrom(question);
         QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
 
-        questionService.uploadQuestionImage(savedQuestionEntity, file);
+        Object questionDto;
+        // Only upload image if file is present
+        if (file != null && !file.isEmpty()) {
+            questionService.uploadQuestionImage(savedQuestionEntity, file);
+            // update the QuestionEntity with updated image id
+            QuestionEntity updatedQuestionEntity = questionService.getQuestionById(savedQuestionEntity.getId());
+            questionDto = questionMapper.mapTo(updatedQuestionEntity);
+        } else {
+            questionDto = questionMapper.mapTo(savedQuestionEntity);
+        }
 
-        // update the QuestionEntity with updated image id
-        QuestionEntity updatedQuestionEntity = questionService.getQuestionById(savedQuestionEntity.getId());
-        QuestionDto questionDto = questionMapper.mapTo(updatedQuestionEntity);
         return Response.ok(questionDto, "Question saved successfully!");
     }
 
