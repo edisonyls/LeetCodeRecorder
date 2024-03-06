@@ -18,16 +18,14 @@ import {
   Box,
   TextField,
   InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   IconButton,
 } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { WhiteBackgroundButton } from "../components/GenericButton";
 import GenericSpinner from "../components/GenericSpinner";
 import Footer from "../components/Footer";
+import GenericFormControl from "../components/GenericFormControl";
+import GenericSearchBox from "../components/GenericSearchBox";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -158,57 +156,25 @@ const Dashboard = () => {
                 buttonText="New"
               />
 
-              <FormControl sx={{ m: 1, minWidth: 240 }}>
-                <InputLabel id="sort-label" sx={{ fontSize: "1rem" }}>
-                  Show questions as
-                </InputLabel>
-                <Select
-                  labelId="sort-label"
-                  id="sort-select"
-                  value={sortOption}
-                  label="Show questions as"
-                  onChange={(e) => setSortOption(e.target.value)}
-                  size="small"
-                >
-                  <MenuItem value="default">Default</MenuItem>
-                  <MenuItem value="hardest">Hardest</MenuItem>
-                  <MenuItem value="easiest">Easiest</MenuItem>
-                  <MenuItem value="success">Success</MenuItem>
-                  <MenuItem value="failure">Failure</MenuItem>
-                  <MenuItem value="lowest attempts">Lowest Attempts</MenuItem>
-                  <MenuItem value="highest attempts">Highest Attempts</MenuItem>
-                  <MenuItem value="fastest">Fastest</MenuItem>
-                  <MenuItem value="slowest">Slowest</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
+              <GenericFormControl
+                label="Show questions as"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                options={[
+                  { value: "default", label: "Default" },
+                  { value: "hardest", label: "Hardest" },
+                  { value: "easiest", label: "Easiest" },
+                  { value: "success", label: "Success" },
+                  { value: "failure", label: "Failure" },
+                  { value: "lowest attempts", label: "Lowest Attempts" },
+                  { value: "highest attempts", label: "Highest Attempts" },
+                  { value: "fastest", label: "Fastest" },
+                  { value: "slowest", label: "Slowest" },
+                ]}
+              />
+              <GenericSearchBox
                 label="Search..."
-                variant="outlined"
-                size="small"
-                sx={{
-                  width: "240px",
-                  "& .MuiOutlinedInput-root": {
-                    // set border color black
-                    "& fieldset": {
-                      borderColor: "black",
-                    },
-                    // set border color black when hover
-                    "&:hover fieldset": {
-                      borderColor: "black",
-                    },
-                    // Set the border color when the input is focused
-                    "&.Mui-focused fieldset": {
-                      borderColor: "black",
-                    },
-                  },
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
+                onChange={(e) => console.log(e.target.value)}
               />
             </Box>
             <TableContainer component={Paper}>
