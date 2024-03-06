@@ -11,6 +11,7 @@ import {
   Checkbox,
   Typography,
   Box,
+  Button,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -32,6 +33,10 @@ const NewQuestion = () => {
     thinkingProcess: "",
   });
 
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [inputKey, setInputKey] = useState(Date.now());
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -49,6 +54,20 @@ const NewQuestion = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreviewUrl(imageUrl);
+      setSelectedFile(file); // Store the file object for later use
+    }
+  };
+
+  const handleDeleteImage = () => {
+    setImagePreviewUrl(""); // Clear the image preview URL
+    setInputKey(Date.now()); // Change the key to force re-render the input
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -64,6 +83,9 @@ const NewQuestion = () => {
 
     formData.append("question", JSON.stringify(formattedData));
 
+    if (selectedFile) {
+      formData.append("file", selectedFile); // Append the file to the FormData object if available
+    }
     console.log(formattedData);
     try {
       // Send the data to the backend
@@ -190,6 +212,44 @@ const NewQuestion = () => {
             value={question.thinkingProcess}
             onChange={handleChange}
           />
+          <Box marginY={2}>
+            {/* Conditionally render the upload button based on whether an imagePreviewUrl is set */}
+            {!imagePreviewUrl && (
+              <Button variant="contained" component="label">
+                Upload Image
+                <input
+                  type="file"
+                  id="fileInput"
+                  key={inputKey} // Use the key state here
+                  hidden
+                  onChange={handleFileChange}
+                />
+              </Button>
+            )}
+
+            {imagePreviewUrl && (
+              <Box mt={2}>
+                <Typography variant="body2">Image Preview:</Typography>
+                <img
+                  src={imagePreviewUrl}
+                  alt="Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "contain",
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleDeleteImage}
+                  sx={{ mt: 2 }}
+                >
+                  Delete Image
+                </Button>
+              </Box>
+            )}
+          </Box>
           <Box
             sx={{
               display: "flex",

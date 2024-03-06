@@ -22,34 +22,58 @@ import {
   ArrowBack,
 } from "@mui/icons-material";
 import { WhiteBackgroundButton } from "../components/GenericButton";
+import GenericSpinner from "../components/GenericSpinner";
 
 const QuestionDetails = () => {
   const [question, setQuestion] = useState();
+  const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageSrc, setImageSrc] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       await axiosInstance
         .get("question/" + id)
         .then((response) => {
           setQuestion(response.data.data);
+          if (response.data.data.questionImageId) {
+            fetchImage(response.data.data.id);
+          }
         })
         .catch((error) => {
           console.log("Failed to fetch data");
         });
+      setLoading(false);
     };
+
+    const fetchImage = async (imageId) => {
+      setImageLoading(true);
+      try {
+        const response = await axiosInstance.get(`question/${imageId}/image`, {
+          responseType: "blob",
+        });
+        const imageBlob = response.data;
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setImageSrc(imageObjectURL);
+      } catch (error) {
+        console.error("Failed to fetch image");
+      } finally {
+        setImageLoading(false);
+      }
+    };
+
     fetchData();
   }, [id]);
 
-  if (!question) {
+  if (!question || loading) {
     return (
       <>
         <AuthenticatedNavbar />
-        <Container>
-          <Typography variant="h6">Loading question...</Typography>
-        </Container>
+        <GenericSpinner />
       </>
     );
   }
@@ -128,6 +152,18 @@ const QuestionDetails = () => {
               </Grid>
             </Grid>
           </CardContent>
+          {!imageLoading && imageSrc && (
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Question Image:
+              </Typography>
+              <img
+                src={imageSrc}
+                alt="Question"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </CardContent>
+          )}
         </Card>
       </Container>
     </>
