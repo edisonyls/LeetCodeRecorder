@@ -21,8 +21,8 @@ import {
   QueryStats,
   ArrowBack,
 } from "@mui/icons-material";
-import { WhiteBackgroundButton } from "../components/GenericButton";
-import GenericSpinner from "../components/GenericSpinner";
+import { WhiteBackgroundButton } from "../components/generic/GenericButton";
+import GenericSpinner from "../components/generic/GenericSpinner";
 
 const QuestionDetails = () => {
   const [question, setQuestion] = useState();

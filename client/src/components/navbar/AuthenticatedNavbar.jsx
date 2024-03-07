@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
-import { BlackBackgroundButton } from "../GenericButton";
+import { BlackBackgroundButton } from "../generic/GenericButton";
 
 const AuthenticatedNavbar = () => {
   const [user, setUser] = useState({});

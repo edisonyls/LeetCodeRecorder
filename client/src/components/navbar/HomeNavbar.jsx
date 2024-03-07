@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import { Box } from "@mui/material";
-import { BlackBackgroundButton } from "../GenericButton";
+import { BlackBackgroundButton } from "../generic/GenericButton";
 
 const HomeNavbar = () => {
   return (

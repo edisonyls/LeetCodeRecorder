@@ -17,7 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { WhiteBackgroundButton } from "../components/GenericButton";
+import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
