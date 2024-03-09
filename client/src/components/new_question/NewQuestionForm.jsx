@@ -36,6 +36,7 @@ const NewQuestionForm = () => {
         showCodeInput: false,
         imagePreviewUrl: "",
         file: null,
+        imageId: "",
       },
     ],
   });
@@ -75,8 +76,9 @@ const NewQuestionForm = () => {
     const newSolution = {
       thinkingProcess: "",
       codeSnippet: "",
+      showCodeInput: false,
       imagePreviewUrl: "",
-      inputKey: Date.now(), // Ensure unique key for re-rendering
+      file: null,
     };
     setQuestion((prevQuestions) => ({
       ...prevQuestions,
@@ -137,31 +139,71 @@ const NewQuestionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
+
+    const uploadPromises = question.solutions.map(async (solution, index) => {
+      const fileData = new FormData();
+      fileData.append("image", solution.file);
+      fileData.append("questionNumber", question.number);
+      try {
+        const response = await axiosInstance.post(
+          "question/upload-image",
+          fileData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.data.serverMessage === "SUCCESS") {
+          return { ...solution, imageId: response.data.data };
+        } else {
+          console.log("Image upload failed for solution", index);
+          return solution;
+        }
+      } catch (error) {
+        console.error(
+          "An error occurred during submission for solution",
+          index,
+          error
+        );
+        return solution;
+      }
+    });
+
+    try {
+      // Wait for all the image upload promises to complete
+      const updatedSolutions = await Promise.all(uploadPromises);
+      question.solutions = updatedSolutions;
+      console.log(updatedSolutions);
+      submitRestData(); // Now submit the rest of the data
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("An error occurred during image uploads", error);
+    }
+  };
+
+  const submitRestData = async (e) => {
     const formattedData = {
       ...question,
       dateOfCompletion: question.dateOfCompletion
         ? question.dateOfCompletion.format("YYYY-MM-DD")
         : "",
       timeOfCompletion: question.timeOfCompletion
-        ? question.timeOfCompletion.format("mm:ss")
+        ? question.timeOfCompletion.format("HH:mm")
         : "",
+      solutions: question.solutions.map((solution) => ({
+        thinkingProcess: solution.thinkingProcess,
+        codeSnippet: solution.codeSnippet,
+        imageId: solution.imageId, // Ensure this is the ID obtained after image upload
+      })),
     };
-
-    formData.append("question", JSON.stringify(formattedData));
-
     try {
-      // Send the data to the backend
-      const response = await axiosInstance.post("question", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosInstance.post("question", formattedData);
       if (response.data.serverMessage === "SUCCESS") {
-        navigate("/dashboard");
+        console.log("Form submission successful", response.data.data);
       }
     } catch (error) {
-      console.error("An error occurred during submission", error);
+      console.error("An error occurred during form submission", error);
     }
   };
 

@@ -48,6 +48,7 @@ const Solution = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          marginTop: 2,
         }}
       >
         <Typography variant="h6">Solution {solutionId}</Typography>
@@ -56,11 +57,11 @@ const Solution = ({
         </IconButton>
       </Box>
       <TextField
-        margin="normal"
         fullWidth
         label="Thinking Process"
         name="thinkingProcess"
         multiline
+        sx={{ marginBottom: 2 }}
         rows={calculateRows(thinkingProcess, 2)}
         value={thinkingProcess}
         onChange={handleChange}

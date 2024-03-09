@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
+import com.yls.ylslc.question.solution.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,12 +27,14 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000")
 public class QuestionController {
     private final QuestionService questionService;
+    private final SolutionService solutionService;
     private final Mapper<QuestionEntity, QuestionDto> questionMapper;
 
 
     @Autowired
-    public QuestionController(QuestionService theQuestionService, Mapper<QuestionEntity, QuestionDto> questionMapper){
+    public QuestionController(QuestionService theQuestionService, SolutionService theSolutionService, Mapper<QuestionEntity, QuestionDto> questionMapper){
         this.questionService = theQuestionService;
+        this.solutionService = theSolutionService;
         this.questionMapper = questionMapper;
     }
 
@@ -49,34 +53,20 @@ public class QuestionController {
     }
 
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Response createQuestion(
-            @RequestPart("question") String questionJson,
-            @RequestPart(value = "file", required = false) MultipartFile file
-    ) throws JsonProcessingException {
-        // make the incoming String to a QuestionDto
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        QuestionDto question = objectMapper.readValue(questionJson, QuestionDto.class);
-
-
-        QuestionEntity questionEntity = questionMapper.mapFrom(question);
-        QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
-
-        Object questionDto;
-        // Only upload image if file is present
-        if (file != null && !file.isEmpty()) {
-            questionService.uploadQuestionImage(savedQuestionEntity, file);
-            // update the QuestionEntity with updated image id
-            QuestionEntity updatedQuestionEntity = questionService.getQuestionById(savedQuestionEntity.getId());
-            questionDto = questionMapper.mapTo(updatedQuestionEntity);
-        } else {
-            questionDto = questionMapper.mapTo(savedQuestionEntity);
-        }
-
-        return Response.ok(questionDto, "Question saved successfully!");
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
+    public Response uploadImages(@RequestPart("image") MultipartFile image,
+                                 @RequestPart("questionNumber") String questionNumber){
+        String imageId = solutionService.uploadImages(image, questionNumber);
+        return Response.ok(imageId, "Image saved successfully!");
     }
 
+    @PostMapping
+    public Response createQuestion(@RequestBody QuestionDto questionDto) {
+        QuestionEntity questionEntity = questionMapper.mapFrom(questionDto);
+        QuestionEntity savedQuestionEntity = questionService.createQuestion(questionEntity);
+        QuestionDto savedQuestionDto = questionMapper.mapTo(savedQuestionEntity);
+        return Response.ok(savedQuestionDto, "Question saved successfully!");
+    }
 
     @GetMapping(path = "/{id}")
     public Response getQuestion(@PathVariable("id") UUID id){
@@ -116,13 +106,10 @@ public class QuestionController {
         return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
     }
 
-    @GetMapping("{id}/image")
-    public ResponseEntity<byte[]> getQuestionImage(@PathVariable("id") UUID id) {
-        QuestionEntity questionEntity = questionService.getQuestionById(id);
-        byte[] imageData = questionService.getQuestionImage(questionEntity);
-
-        // Use the imageId which includes the file extension to determine the MIME type
-        String imageId = questionEntity.getQuestionImageId();
+    @GetMapping("image/{questionId}/{imageId}")
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
+        byte[] imageData = questionService.getImage(questionEntity.getNumber(), imageId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(getMediaTypeForImageId(imageId));

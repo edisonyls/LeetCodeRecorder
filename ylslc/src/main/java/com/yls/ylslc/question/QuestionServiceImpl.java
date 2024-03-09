@@ -45,6 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
+    @Transactional
     public QuestionEntity createQuestion(QuestionEntity questionEntity) {
         UserEntity userEntity = userService.getCurrentUser();
         questionEntity.setUser(userEntity);
@@ -77,62 +78,32 @@ public class QuestionServiceImpl implements QuestionService {
             Optional.ofNullable(questionEntity.getSuccess()).ifPresent(existingQuestion::setSuccess);
             Optional.ofNullable(questionEntity.getAttempts()).ifPresent(existingQuestion::setAttempts);
             Optional.ofNullable(questionEntity.getTimeOfCompletion()).ifPresent(existingQuestion::setTimeOfCompletion);
-            Optional.ofNullable(questionEntity.getThinkingProcess()).ifPresent(existingQuestion::setThinkingProcess);
             return questionRepository.save(existingQuestion);
         }).orElseThrow(() -> new RuntimeException("Question update failed"));
     }
 
-
     @Override
-    @Transactional
-    public void uploadQuestionImage(QuestionEntity questionEntity, MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        String fileExtension = "";
-
-        // get the suffix of the file
-        if (originalFilename != null && originalFilename.contains(".")) {
-            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-        String questionImageId = UUID.randomUUID() + fileExtension;
-
-        // Determines the content type (MIME type) of the file. If the content type is available, it uses that;
-        // otherwise, it defaults to "application/octet-stream", a generic binary stream.
-        String contentType = file.getContentType() != null ? file.getContentType() : "application/octet-stream";
-
+    public byte[] getImage(Integer questionNumber, String imageId) {
         String username = userService.getCurrentUser().getUsername();
-
-        // saving the image to s3
-        try {
-            s3Service.putObject(
-                    s3Buckets.getStorageLocation(),
-                    String.format("question-images/%s/%s/%s", username, questionEntity.getNumber(), questionImageId),
-                    file.getBytes(),
-                    contentType // Pass the content type here
-            );
-
-            // find the uploaded question and attach the image to the question
-            QuestionEntity newQuestionEntity = questionRepository.findById(questionEntity.getId())
-                    .orElseThrow(() -> new RuntimeException("Question not found"));
-            newQuestionEntity.setQuestionImageId(questionImageId);
-            questionRepository.save(newQuestionEntity);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public byte[] getQuestionImage(QuestionEntity questionEntity) {
-        String questionImageId = questionEntity.getQuestionImageId();
-        String username = userService.getCurrentUser().getUsername();
-
-        if (questionImageId == null || questionImageId.isEmpty()) {
-            throw new RuntimeException("Image not found");
-        }
         return s3Service.getObject(
                 s3Buckets.getStorageLocation(),
-                "question-images/%s/%s/%s".formatted(username, questionEntity.getNumber(), questionImageId)
+                "question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
         );
     }
+
+//    @Override
+//    public byte[] getQuestionImage(QuestionEntity questionEntity) {
+//        String questionImageId = questionEntity.getQuestionImageId();
+//        String username = userService.getCurrentUser().getUsername();
+//
+//        if (questionImageId == null || questionImageId.isEmpty()) {
+//            throw new RuntimeException("Image not found");
+//        }
+//        return s3Service.getObject(
+//                s3Buckets.getStorageLocation(),
+//                "question-images/%s/%s/%s".formatted(username, questionEntity.getNumber(), questionImageId)
+//        );
+//    }
 
     @Override
     public QuestionEntity getQuestionById(UUID id) {

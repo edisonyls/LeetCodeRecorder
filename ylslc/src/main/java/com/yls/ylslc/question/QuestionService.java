@@ -24,10 +24,7 @@ public interface QuestionService {
 
     QuestionEntity partialUpdate(UUID id, QuestionEntity questionEntity);
 
-
-    void uploadQuestionImage(QuestionEntity questionEntity, MultipartFile file);
-
-    byte[] getQuestionImage(QuestionEntity questionEntity);
+    byte[] getImage(Integer questionNumber, String imageId);
 
     QuestionEntity getQuestionById(UUID id);
 }

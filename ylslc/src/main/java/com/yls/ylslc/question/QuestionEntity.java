@@ -1,12 +1,14 @@
 package com.yls.ylslc.question;
 
+import com.yls.ylslc.question.solution.SolutionEntity;
 import com.yls.ylslc.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -18,22 +20,12 @@ public class QuestionEntity {
     @GeneratedValue
     private UUID id;
 
-//    @Id
-//    @SequenceGenerator(
-//            name="question_sequence",
-//            sequenceName = "question_sequence",
-//            allocationSize = 1)
-//    @GeneratedValue(
-//            strategy = GenerationType.SEQUENCE,
-//            generator = "question_sequence"
-//    )
-//    private Long id;
-
     @ManyToOne
     @JoinColumn(name="user_id")
     private UserEntity user;
 
-    private String questionImageId;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<SolutionEntity> solutions = new ArrayList<>();
 
     private Integer number;
     private String title;
@@ -42,7 +34,17 @@ public class QuestionEntity {
     private Boolean success;
     private Integer attempts;
     private String timeOfCompletion;
-    private String thinkingProcess;
+
+    // Add helper methods to manage bi-directional relationship
+    public void addSolution(SolutionEntity solution) {
+        solutions.add(solution);
+        solution.setQuestion(this);
+    }
+
+    public void removeSolution(SolutionEntity solution) {
+        solutions.remove(solution);
+        solution.setQuestion(null);
+    }
 
     public QuestionEntity(){
         this.id = UUID.randomUUID();
