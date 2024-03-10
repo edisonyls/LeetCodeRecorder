@@ -26,6 +26,7 @@ import {
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
 import Footer from "../components/Footer";
+import RandomQuote from "../components/RandomQuote";
 
 const QuestionDetails = () => {
   const [question, setQuestion] = useState();
@@ -193,6 +194,7 @@ const QuestionDetails = () => {
               )}
             </Box>
           ))}
+          <RandomQuote />
         </Card>
       </Container>
       <Footer />
