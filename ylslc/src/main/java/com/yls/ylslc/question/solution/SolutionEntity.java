@@ -20,7 +20,9 @@ public class SolutionEntity {
     @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
+    @Column(columnDefinition = "TEXT")
     private String thinkingProcess;
+    @Column(columnDefinition = "TEXT")
     private String codeSnippet;
     private String imageId;
 

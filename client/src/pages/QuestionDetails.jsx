@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../config/axiosConfig";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
+import CodeSnippet from "../components/CodeSnippet";
 import {
   Container,
   Card,
@@ -12,6 +13,7 @@ import {
   CardHeader,
   Avatar,
   Box,
+  Paper,
 } from "@mui/material";
 import {
   Assignment,
@@ -23,12 +25,12 @@ import {
 } from "@mui/icons-material";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
+import Footer from "../components/Footer";
 
 const QuestionDetails = () => {
   const [question, setQuestion] = useState();
   const [loading, setLoading] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [imageSrc, setImageSrc] = useState(null);
+  const [images, setImages] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
@@ -40,8 +42,8 @@ const QuestionDetails = () => {
         .get("question/" + id)
         .then((response) => {
           setQuestion(response.data.data);
-          if (response.data.data.questionImageId) {
-            fetchImage(response.data.data.id);
+          if (response.data.data.solutions !== null) {
+            fetchImage(response.data.data);
           }
         })
         .catch((error) => {
@@ -50,20 +52,24 @@ const QuestionDetails = () => {
       setLoading(false);
     };
 
-    const fetchImage = async (imageId) => {
-      setImageLoading(true);
-      try {
-        const response = await axiosInstance.get(`question/${imageId}/image`, {
-          responseType: "blob",
-        });
-        const imageBlob = response.data;
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setImageSrc(imageObjectURL);
-      } catch (error) {
-        console.error("Failed to fetch image");
-      } finally {
-        setImageLoading(false);
+    const fetchImage = async (question) => {
+      const newImages = {};
+      for (const solution of question.solutions) {
+        try {
+          const response = await axiosInstance.get(
+            `question/image/${question.id}/${solution.imageId}`,
+            {
+              responseType: "blob",
+            }
+          );
+          const imageBlob = response.data;
+          const imageObjectURL = URL.createObjectURL(imageBlob);
+          newImages[solution.imageId] = imageObjectURL;
+        } catch (error) {
+          console.error("Failed to fetch image", error);
+        }
       }
+      setImages(newImages);
     };
 
     fetchData();
@@ -81,7 +87,7 @@ const QuestionDetails = () => {
   return (
     <>
       <AuthenticatedNavbar />
-      <Container maxWidth="md" sx={{ mt: 2 }}>
+      <Container maxWidth="md" sx={{ padding: 2 }}>
         <WhiteBackgroundButton
           icon={<ArrowBack />}
           onClick={() => {
@@ -89,7 +95,10 @@ const QuestionDetails = () => {
           }}
           buttonText="Back"
         />
-        <Card elevation={3} sx={{ mt: 2 }}>
+        <Card
+          elevation={3}
+          sx={{ mt: 2, overflow: "visible", paddingBottom: 4 }}
+        >
           <CardHeader
             avatar={
               <Avatar>
@@ -102,7 +111,7 @@ const QuestionDetails = () => {
             subheader={question.dateOfCompletion}
             action={
               <Chip
-                label={question.success ? "Yes" : "No"}
+                label={question.success ? "Solved" : "Not Quite"}
                 color={question.success ? "success" : "error"}
                 icon={question.success ? <CheckCircle /> : <Error />}
                 variant="outlined"
@@ -144,28 +153,49 @@ const QuestionDetails = () => {
                   </Box>
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">Thinking Process:</Typography>
-                <Typography variant="body1">
-                  {question.thinkingProcess}
-                </Typography>
-              </Grid>
             </Grid>
           </CardContent>
-          {!imageLoading && imageSrc && (
-            <CardContent>
-              <Typography variant="h6" component="div">
-                Question Image:
+          {question.solutions.map((solution, index) => (
+            <Box sx={{ mb: 2, ml: 2, mr: 2 }} key={index}>
+              <Typography variant="h6">Solution {index + 1}</Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Thinking Process:{"  "}
+                {solution.thinkingProcess}
               </Typography>
-              <img
-                src={imageSrc}
-                alt="Question"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </CardContent>
-          )}
+              <Box sx={{ my: 2 }}>
+                <CodeSnippet code={solution.codeSnippet} />
+              </Box>
+              {solution.imageId && (
+                <Paper
+                  elevation={3}
+                  sx={{
+                    mt: 2,
+                    width: "96%",
+                    padding: 2,
+                    minHeight: "300px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="body2">Image Preview:</Typography>
+                  <img
+                    src={images[solution.imageId]}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      maxHeight: "300px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </Paper>
+              )}
+            </Box>
+          ))}
         </Card>
       </Container>
+      <Footer />
     </>
   );
 };

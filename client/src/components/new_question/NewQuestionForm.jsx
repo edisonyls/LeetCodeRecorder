@@ -28,7 +28,6 @@ const NewQuestionForm = () => {
     success: false,
     attempts: "",
     timeOfCompletion: null,
-    thinkingProcess: "",
     solutions: [
       {
         thinkingProcess: "",
@@ -174,7 +173,6 @@ const NewQuestionForm = () => {
       // Wait for all the image upload promises to complete
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
-      console.log(updatedSolutions);
       submitRestData(); // Now submit the rest of the data
       navigate("/dashboard");
     } catch (error) {
@@ -194,10 +192,11 @@ const NewQuestionForm = () => {
       solutions: question.solutions.map((solution) => ({
         thinkingProcess: solution.thinkingProcess,
         codeSnippet: solution.codeSnippet,
-        imageId: solution.imageId, // Ensure this is the ID obtained after image upload
+        imageId: solution.imageId,
       })),
     };
     try {
+      console.log(formattedData);
       const response = await axiosInstance.post("question", formattedData);
       if (response.data.serverMessage === "SUCCESS") {
         console.log("Form submission successful", response.data.data);
