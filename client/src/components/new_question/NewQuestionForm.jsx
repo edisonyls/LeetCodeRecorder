@@ -1,27 +1,18 @@
-import React, { useState } from "react";
-import {
-  Container,
-  TextField,
-  MenuItem,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  Box,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Container, TextField, MenuItem, Typography, Box } from "@mui/material";
 import SuccessToggle from "./SuccessToggle";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { WhiteBackgroundButton } from "../generic/GenericButton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/axiosConfig";
 
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
 
-const NewQuestionForm = () => {
+const NewQuestionForm = ({ timerValue }) => {
   const [question, setQuestion] = useState({
     number: "",
     title: "",
@@ -158,7 +149,7 @@ const NewQuestionForm = () => {
       const updatedSolutions = [...prevQuestion.solutions];
       updatedSolutions[index] = {
         ...updatedSolutions[index],
-        codeSnippet: "", // Clear the codeSnippet for the solution at the specified index
+        codeSnippet: "",
       };
       return { ...prevQuestion, solutions: updatedSolutions };
     });
@@ -253,25 +244,18 @@ const NewQuestionForm = () => {
     }
   };
 
+  useEffect(() => {
+    if (timerValue) {
+      const [minutes, seconds] = timerValue.split(":").map(Number);
+      const newValue = dayjs().hour(0).minute(minutes).second(seconds);
+      setQuestion((prevState) => ({
+        ...prevState,
+        timeOfCompletion: newValue,
+      }));
+    }
+  }, [timerValue]);
   return (
-    <Container maxWidth="md" sx={{ marginBottom: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 1,
-        }}
-      >
-        <Typography sx={{ mt: 1 }} variant="h6" gutterBottom>
-          Upload New Question
-        </Typography>
-        <WhiteBackgroundButton
-          component={Link}
-          to="/dashboard"
-          buttonText="Back"
-        />
-      </Box>
+    <Container maxWidth="md" sx={{ marginBottom: 4 }}>
       <form onSubmit={handleSubmit}>
         <TextField
           margin="normal"
@@ -337,6 +321,7 @@ const NewQuestionForm = () => {
               onChange={(newValue) =>
                 handleDateChange("timeOfCompletion", newValue)
               }
+              // renderInput={(params) => <TextField {...params} />}
               sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
             />
             <TextField

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../config/axiosConfig";
 import AddIcon from "@mui/icons-material/Add";
 import { Container, Box } from "@mui/material";
@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 import GenericFormControl from "../components/generic/GenericFormControl";
 import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
+import GenericDialog from "../components/generic/GenericDialog";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -17,6 +18,8 @@ const Dashboard = () => {
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleDelete = async (id, event) => {
     event.stopPropagation(); // Prevent click event from reaching the TableRow
@@ -32,6 +35,21 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error deleting question:", error);
     }
+  };
+
+  const handleOpenDialog = (e) => {
+    e.preventDefault();
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    navigate("/new", { state: { withTimer: false } });
+  };
+
+  const handleConfirmDialog = () => {
+    setOpenDialog(false);
+    navigate("/new", { state: { withTimer: true } });
   };
 
   useEffect(() => {
@@ -133,12 +151,17 @@ const Dashboard = () => {
               }}
             >
               <WhiteBackgroundButton
-                onClick={() => setOpenDialog(true)}
-                to="/new"
+                onClick={handleOpenDialog}
                 icon={<AddIcon />}
                 buttonText="New"
               />
-
+              <GenericDialog
+                isOpen={openDialog}
+                onClose={handleCloseDialog}
+                onConfirm={handleConfirmDialog}
+                title="Create New Question"
+                content="Do you want to create a new question with a timer setup?"
+              />
               <GenericFormControl
                 label="Show questions as"
                 value={sortOption}

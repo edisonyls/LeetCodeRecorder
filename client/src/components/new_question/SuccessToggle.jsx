@@ -13,7 +13,6 @@ const SuccessAnimationToggle = ({ onChange }) => {
     reset: showMessage,
     reverse: showMessage,
     onRest: () => {
-      // Wait for 2 seconds before fading out
       if (showMessage) setTimeout(() => setShowMessage(false), 2000);
     },
   });
