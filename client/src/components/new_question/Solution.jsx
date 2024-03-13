@@ -24,6 +24,7 @@ const Solution = ({
   imagePreviewUrl,
   handleFileChange,
   handleDeleteImage,
+  showDeleteButton,
 }) => {
   const [showCodeInput, setShowCodeInput] = useState(false);
 
@@ -42,7 +43,7 @@ const Solution = ({
   };
 
   return (
-    <>
+    <Paper elevation={3} sx={{ p: 3, mb: 2 }}>
       <Box
         sx={{
           display: "flex",
@@ -52,9 +53,11 @@ const Solution = ({
         }}
       >
         <Typography variant="h6">Solution {solutionId}</Typography>
-        <IconButton onClick={deleteSolution}>
-          <DeleteForeverIcon style={{ color: "black" }} />
-        </IconButton>
+        {showDeleteButton && (
+          <IconButton onClick={deleteSolution}>
+            <DeleteForeverIcon style={{ color: "black" }} />
+          </IconButton>
+        )}
       </Box>
       <TextField
         fullWidth
@@ -107,7 +110,7 @@ const Solution = ({
         )}
 
         {imagePreviewUrl ? (
-          <Paper elevation={3} sx={{ mt: 2, width: "96%", padding: 2 }}>
+          <Paper elevation={0} sx={{ mt: 2, width: "96%", padding: 2 }}>
             <Typography variant="body2">Image Preview:</Typography>
             <img
               src={imagePreviewUrl}
@@ -132,7 +135,7 @@ const Solution = ({
           />
         )}
       </Box>
-    </>
+    </Paper>
   );
 };
 

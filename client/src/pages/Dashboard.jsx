@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [sortOption, setSortOption] = useState("default");
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleDelete = async (id, event) => {
     event.stopPropagation(); // Prevent click event from reaching the TableRow
@@ -132,7 +133,7 @@ const Dashboard = () => {
               }}
             >
               <WhiteBackgroundButton
-                component={Link}
+                onClick={() => setOpenDialog(true)}
                 to="/new"
                 icon={<AddIcon />}
                 buttonText="New"

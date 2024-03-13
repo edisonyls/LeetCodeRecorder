@@ -88,7 +88,7 @@ const QuestionDetails = () => {
   return (
     <>
       <AuthenticatedNavbar />
-      <Container maxWidth="md" sx={{ padding: 2 }}>
+      <Container maxWidth="md" sx={{ padding: 2, minHeight: "81vh" }}>
         <WhiteBackgroundButton
           icon={<ArrowBack />}
           onClick={() => {

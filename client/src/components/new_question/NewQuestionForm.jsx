@@ -8,7 +8,9 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import SuccessToggle from "./SuccessToggle";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -45,10 +47,27 @@ const NewQuestionForm = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
+    if (name === "number" || name === "attempts") {
+      const intValue = parseInt(value, 10);
+      if (!isNaN(intValue) && value.match(/^\d*$/)) {
+        setQuestion((prevState) => ({
+          ...prevState,
+          [name]: intValue,
+        }));
+      } else if (value === "") {
+        // Allow clearing the field
+        setQuestion((prevState) => ({
+          ...prevState,
+          [name]: "",
+        }));
+      }
+      return;
+    }
+
     setQuestion((prevState) => ({
       ...prevState,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -72,6 +91,15 @@ const NewQuestionForm = () => {
   };
 
   const addSolution = () => {
+    const lastSolution = question.solutions[question.solutions.length - 1];
+    if (
+      !lastSolution.thinkingProcess.trim() &&
+      !lastSolution.codeSnippet.trim() &&
+      !lastSolution.imagePreviewUrl
+    ) {
+      alert("Please fill in the current solution before adding a new one.");
+      return;
+    }
     const newSolution = {
       thinkingProcess: "",
       codeSnippet: "",
@@ -136,9 +164,29 @@ const NewQuestionForm = () => {
     });
   };
 
+  const validateData = () => {
+    if (question.dateOfCompletion === null) {
+      alert("Date of Completion is required.");
+      return false;
+    } else if (dayjs(question.dateOfCompletion).isAfter(dayjs())) {
+      alert("Date of Completion cannot be in the future.");
+      return false;
+    } else if (question.timeOfCompletion === null) {
+      alert("Time of Completion is required.");
+      return false;
+    } else if (!dayjs(question.timeOfCompletion).isValid()) {
+      alert("Time of Completion is invalid.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const isValidData = validateData();
+    if (!isValidData) {
+      return;
+    }
     const uploadPromises = question.solutions.map(async (solution, index) => {
       const fileData = new FormData();
       fileData.append("image", solution.file);
@@ -196,7 +244,6 @@ const NewQuestionForm = () => {
       })),
     };
     try {
-      console.log(formattedData);
       const response = await axiosInstance.post("question", formattedData);
       if (response.data.serverMessage === "SUCCESS") {
         console.log("Form submission successful", response.data.data);
@@ -233,6 +280,7 @@ const NewQuestionForm = () => {
           name="number"
           value={question.number}
           onChange={handleChange}
+          required
         />
         <TextField
           margin="normal"
@@ -241,6 +289,7 @@ const NewQuestionForm = () => {
           name="title"
           value={question.title}
           onChange={handleChange}
+          required
         />
         <TextField
           margin="normal"
@@ -250,6 +299,7 @@ const NewQuestionForm = () => {
           name="difficulty"
           value={question.difficulty}
           onChange={handleChange}
+          required
         >
           {difficultyOptions.map((option) => (
             <MenuItem key={option} value={option}>
@@ -273,10 +323,11 @@ const NewQuestionForm = () => {
               label="Date of Completion"
               format="DD-MM-YYYY"
               value={question.dateOfCompletion}
+              maxDate={dayjs()}
               onChange={(newValue) =>
                 handleDateChange("dateOfCompletion", newValue)
               }
-              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }} // Adjust sizing and spacing
+              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
             />
             <TimePicker
               label="Time of Completion"
@@ -286,7 +337,7 @@ const NewQuestionForm = () => {
               onChange={(newValue) =>
                 handleDateChange("timeOfCompletion", newValue)
               }
-              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }} // Adjust sizing and spacing
+              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
             />
             <TextField
               margin="normal"
@@ -295,38 +346,40 @@ const NewQuestionForm = () => {
               name="attempts"
               value={question.attempts}
               onChange={handleChange}
-              sx={{ minWidth: "auto", margin: "auto", flexGrow: 1 }} // Adjust sizing and spacing
+              sx={{ minWidth: "auto", margin: "auto", flexGrow: 1 }}
+              required
             />
           </Box>
         </LocalizationProvider>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={question.success}
-              onChange={handleChange}
-              name="success"
-            />
+        <SuccessToggle
+          onChange={(success) =>
+            setQuestion((prevState) => ({
+              ...prevState,
+              success: success,
+            }))
           }
-          label="Did you make it?"
         />
 
         <Typography variant="h6" sx={{ marginTop: 2 }}>
           Solutions
         </Typography>
-        {question.solutions.map((solution, index) => (
-          <Solution
-            key={index}
-            solutionId={index + 1}
-            deleteSolution={() => handleDeleteSolution(index)}
-            thinkingProcess={solution.thinkingProcess}
-            codeSnippet={solution.codeSnippet}
-            handleChange={(e) => handleSolutionChange(e, index)}
-            deleteCodeSnippet={() => deleteCodeSnippet(index)}
-            imagePreviewUrl={solution.imagePreviewUrl}
-            handleFileChange={(e) => handleFileChange(e, index)}
-            handleDeleteImage={() => handleDeleteImage(index)}
-          />
-        ))}
+        <Box sx={{ mt: 2 }}>
+          {question.solutions.map((solution, index) => (
+            <Solution
+              key={index}
+              solutionId={index + 1}
+              deleteSolution={() => handleDeleteSolution(index)}
+              thinkingProcess={solution.thinkingProcess}
+              codeSnippet={solution.codeSnippet}
+              handleChange={(e) => handleSolutionChange(e, index)}
+              deleteCodeSnippet={() => deleteCodeSnippet(index)}
+              imagePreviewUrl={solution.imagePreviewUrl}
+              handleFileChange={(e) => handleFileChange(e, index)}
+              handleDeleteImage={() => handleDeleteImage(index)}
+              showDeleteButton={question.solutions.length > 1}
+            />
+          ))}
+        </Box>
 
         <NewQuestionFooter onClick={addSolution} />
       </form>
