@@ -2,7 +2,12 @@ import React, { useRef } from "react";
 import Button from "@mui/material/Button";
 
 // GenericButton component
-export const WhiteBackgroundButton = ({ buttonText, icon, ...props }) => {
+export const WhiteBackgroundButton = ({
+  buttonText,
+  icon,
+  selected,
+  ...props
+}) => {
   return (
     <Button
       variant="outlined"
@@ -11,8 +16,9 @@ export const WhiteBackgroundButton = ({ buttonText, icon, ...props }) => {
         minWidth: "120px",
         height: "40px",
         borderRadius: "20px",
-        borderColor: "black",
-        color: "black",
+        borderColor: selected ? "white" : "black",
+        backgroundColor: selected ? "rgba(1, 1, 1, 1)" : "transparent",
+        color: selected ? "white" : "black",
         "&:hover": {
           borderColor: "black",
           backgroundColor: "rgba(1, 1, 1, 1)",
@@ -28,7 +34,12 @@ export const WhiteBackgroundButton = ({ buttonText, icon, ...props }) => {
   );
 };
 
-export const BlackBackgroundButton = ({ buttonText, icon, ...props }) => {
+export const BlackBackgroundButton = ({
+  buttonText,
+  icon,
+  selected,
+  ...props
+}) => {
   return (
     <Button
       sx={{
@@ -50,7 +61,7 @@ export const BlackBackgroundButton = ({ buttonText, icon, ...props }) => {
   );
 };
 
-export const WarningButton = ({ buttonText, icon, ...props }) => {
+export const WarningButton = ({ buttonText, icon, selected, ...props }) => {
   return (
     <Button
       sx={{

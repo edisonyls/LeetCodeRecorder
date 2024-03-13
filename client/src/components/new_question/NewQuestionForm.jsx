@@ -321,7 +321,6 @@ const NewQuestionForm = ({ timerValue }) => {
               onChange={(newValue) =>
                 handleDateChange("timeOfCompletion", newValue)
               }
-              // renderInput={(params) => <TextField {...params} />}
               sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
             />
             <TextField
@@ -336,14 +335,27 @@ const NewQuestionForm = ({ timerValue }) => {
             />
           </Box>
         </LocalizationProvider>
-        <SuccessToggle
-          onChange={(success) =>
-            setQuestion((prevState) => ({
-              ...prevState,
-              success: success,
-            }))
-          }
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 2,
+          }}
+        >
+          <Typography sx={{ marginBottom: 1 }}>
+            Did you finish this LeetCode problem?
+          </Typography>
+          <SuccessToggle
+            onChange={(success) =>
+              setQuestion((prevState) => ({
+                ...prevState,
+                success: success,
+              }))
+            }
+          />
+        </Box>
 
         <Typography variant="h6" sx={{ marginTop: 2 }}>
           Solutions

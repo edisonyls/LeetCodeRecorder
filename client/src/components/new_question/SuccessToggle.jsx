@@ -1,45 +1,61 @@
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { useSpring, animated } from "react-spring";
+import { WhiteBackgroundButton } from "../generic/GenericButton";
 
 const SuccessAnimationToggle = ({ onChange }) => {
-  const [showMessage, setShowMessage] = useState(false);
+  const [visibility, setVisibility] = useState("hidden"); // 'hidden', 'fadeIn', or 'fadeOut'
+  const [selected, setSelected] = useState(null);
 
-  // Animation for the sad message
   const messageAnimation = useSpring({
-    to: { opacity: 1 },
-    from: { opacity: 0 },
-    config: { duration: 2000 },
-    reset: showMessage,
-    reverse: showMessage,
+    opacity: visibility === "fadeIn" ? 1 : 0,
+    config: { duration: 1000 },
     onRest: () => {
-      if (showMessage) setTimeout(() => setShowMessage(false), 2000);
+      if (visibility === "fadeIn") {
+        setTimeout(() => setVisibility("fadeOut"), 1000);
+      }
+      if (visibility === "fadeOut") {
+        setVisibility("hidden");
+      }
     },
   });
 
-  // Function to trigger the celebration effect
-  const makeCelebration = () => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-  };
-
   const handleSuccessChange = (newSuccess) => {
     onChange(newSuccess);
+    setSelected(newSuccess ? "yes" : "no");
     if (newSuccess) {
       makeCelebration();
+      setVisibility("hidden");
     } else {
-      setShowMessage(true);
+      setVisibility("fadeIn");
     }
   };
 
+  const makeCelebration = () => {
+    confetti({
+      particleCount: 100,
+      spread: 100,
+      origin: { y: 0.8 },
+    });
+  };
+
   return (
-    <div>
-      <button onClick={() => handleSuccessChange(true)}>Yes</button>
-      <button onClick={() => handleSuccessChange(false)}>No</button>
-      {showMessage && (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ display: "inline-block", margin: "0 10px" }}>
+        <WhiteBackgroundButton
+          onClick={() => handleSuccessChange(true)}
+          buttonText="Yes"
+          selected={selected === "yes"}
+        />
+      </div>
+      <div style={{ display: "inline-block", margin: "0 10px" }}>
+        <WhiteBackgroundButton
+          onClick={() => handleSuccessChange(false)}
+          buttonText="No"
+          selected={selected === "no"}
+        />
+      </div>
+      {visibility !== "hidden" && (
         <animated.div
           style={{
             ...messageAnimation,
@@ -52,10 +68,16 @@ const SuccessAnimationToggle = ({ onChange }) => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 1000,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            padding: "20px",
+            width: "100px",
+            height: "100px",
+            borderRadius: "10px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
           }}
         >
           <div style={{ fontSize: "4rem" }}>😢</div>
-          <div>It's okay, try again!</div>
+          <div style={{ color: "white" }}>Try Better !</div>
         </animated.div>
       )}
     </div>
