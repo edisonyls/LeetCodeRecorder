@@ -25,12 +25,12 @@ const NewQuestion = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 1,
+          marginBottom: 2,
           paddingLeft: 2,
           paddingRight: 2,
         }}
       >
-        <Box sx={{ position: "absolute", left: "10%" }}>
+        <Box sx={{ position: "absolute", left: "8%" }}>
           <WhiteBackgroundButton
             component={Link}
             to="/dashboard"
@@ -47,7 +47,7 @@ const NewQuestion = () => {
         </Typography>
 
         {withTimer && (
-          <Box sx={{ position: "absolute", right: "10%" }}>
+          <Box sx={{ position: "absolute", right: "8%" }}>
             <Stopwatch onTimeSubmit={handleTimeSubmit} />
           </Box>
         )}

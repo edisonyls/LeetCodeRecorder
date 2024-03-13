@@ -3,12 +3,14 @@ import { IconButton, Box, Typography } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import GenericDialog from "./generic/GenericDialog";
-import { WhiteBackgroundButton } from "./generic/GenericButton";
+import ReplayIcon from "@mui/icons-material/Replay";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 const Stopwatch = ({ onTimeSubmit }) => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openFinishDialog, setOpenFinishDialog] = useState(false);
+  const [openResetDialog, setOpenResetDialog] = useState(false);
 
   useEffect(() => {
     let interval = null;
@@ -36,12 +38,17 @@ const Stopwatch = ({ onTimeSubmit }) => {
 
   const handleFinish = () => {
     setIsRunning(false);
-    setOpenDialog(true);
+    setOpenFinishDialog(true);
   };
 
   const handleConfirmTime = () => {
     onTimeSubmit(formatTime());
-    setOpenDialog(false);
+    setOpenFinishDialog(false);
+  };
+
+  const handleReset = () => {
+    setTime(0);
+    setOpenResetDialog(false);
   };
 
   return (
@@ -70,15 +77,30 @@ const Stopwatch = ({ onTimeSubmit }) => {
           <IconButton sx={{ color: "black" }} onClick={handlePauseResume}>
             {isRunning ? <PauseIcon /> : <PlayArrowIcon />}
           </IconButton>
+          <IconButton
+            sx={{ color: "black" }}
+            onClick={() => setOpenResetDialog(true)}
+          >
+            <ReplayIcon />
+          </IconButton>
+          <IconButton sx={{ color: "black" }} onClick={handleFinish}>
+            <CheckCircleOutlineIcon />
+          </IconButton>
         </Box>
-        <WhiteBackgroundButton buttonText="Finish" onClick={handleFinish} />
       </Box>
       <GenericDialog
-        isOpen={openDialog}
-        onClose={() => setOpenDialog(false)}
+        isOpen={openFinishDialog}
+        onClose={() => setOpenFinishDialog(false)}
         onConfirm={handleConfirmTime}
         title="Time of Completion"
         content="Do you want to pass this time to the Time of Completion field?"
+      />
+      <GenericDialog
+        isOpen={openResetDialog}
+        onClose={() => setOpenResetDialog(false)}
+        onConfirm={handleReset}
+        title="Reset Recording"
+        content="Do you want to reset time recording?"
       />
     </>
   );
