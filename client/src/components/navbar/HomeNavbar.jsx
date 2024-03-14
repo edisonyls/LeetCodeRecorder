@@ -12,7 +12,7 @@ const HomeNavbar = () => {
     <AppBar position="static" sx={{ background: "black", mb: 4 }}>
       <Toolbar>
         <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1, fontWeight: 700 }}>
           <Box style={{ color: "inherit", textDecoration: "none" }}>YLSLC</Box>
         </Typography>
         <BlackBackgroundButton

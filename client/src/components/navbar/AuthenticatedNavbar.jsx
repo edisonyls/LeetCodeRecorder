@@ -45,7 +45,7 @@ const AuthenticatedNavbar = () => {
     <AppBar position="static" sx={{ background: "black", mb: 4 }}>
       <Toolbar>
         <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1, fontWeight: 700 }}>
           <Box
             component={Link}
             to="/dashboard"
@@ -54,7 +54,7 @@ const AuthenticatedNavbar = () => {
             YLSLC
           </Box>
         </Typography>
-        <Typography variant="h8">
+        <Typography variant="h8" sx={{ fontWeight: 700 }}>
           {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
         </Typography>
         <BlackBackgroundButton buttonText="Log Out" onClick={handleLogout} />

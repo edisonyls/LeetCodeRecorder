@@ -11,7 +11,7 @@ const AccountNavbar = () => {
     <AppBar position="static" sx={{ background: "black" }}>
       <Toolbar>
         <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1, fontWeight: 700 }}>
           <Box
             component={Link}
             to="/"

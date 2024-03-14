@@ -3,14 +3,16 @@ import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import NewQuestionForm from "../components/new_question/NewQuestionForm";
 import { Box, Typography } from "@mui/material";
 import Footer from "../components/Footer";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import Stopwatch from "../components/Stopwatch";
 
 const NewQuestion = () => {
+  const [timeOfCompletion, setTimeOfCompletion] = useState("");
+
   const location = useLocation();
   const withTimer = location.state?.withTimer || false;
-  const [timeOfCompletion, setTimeOfCompletion] = useState("");
+  const navigate = useNavigate();
 
   const handleTimeSubmit = (time) => {
     setTimeOfCompletion(time);
@@ -32,8 +34,7 @@ const NewQuestion = () => {
       >
         <Box sx={{ position: "absolute", left: "8%" }}>
           <WhiteBackgroundButton
-            component={Link}
-            to="/dashboard"
+            onClick={() => navigate(-1)}
             buttonText="Back"
           />
         </Box>

@@ -71,7 +71,7 @@ const Stopwatch = ({ onTimeSubmit }) => {
             width: "100%",
           }}
         >
-          <Typography variant="h6" sx={{ marginRight: "8px", flexGrow: 1 }}>
+          <Typography variant="h7" sx={{ marginRight: "8px", flexGrow: 1 }}>
             Timer: {formatTime()}
           </Typography>
           <IconButton sx={{ color: "black" }} onClick={handlePauseResume}>

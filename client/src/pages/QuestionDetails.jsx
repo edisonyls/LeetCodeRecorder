@@ -159,11 +159,19 @@ const QuestionDetails = () => {
           {question.solutions.map((solution, index) => (
             <Box sx={{ mb: 2, ml: 2, mr: 2 }} key={index}>
               <Typography variant="h6">Solution {index + 1}</Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                Thinking Process:{"  "}
+              <Typography variant="body1" sx={{ color: "#B9BBB6" }}>
+                Thinking Process:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ mb: 1, whiteSpace: "pre-wrap" }}
+              >
                 {solution.thinkingProcess}
               </Typography>
-              <Box sx={{ my: 2 }}>
+              <Box>
+                <Typography variant="body1" sx={{ mb: -1, color: "#B9BBB6" }}>
+                  Code Snippet
+                </Typography>
                 <CodeSnippet code={solution.codeSnippet} />
               </Box>
               {solution.imageId && (
@@ -180,7 +188,9 @@ const QuestionDetails = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Typography variant="body2">Image Preview:</Typography>
+                  <Typography variant="body2" sx={{ color: "#B9BBB6" }}>
+                    Image Preview:
+                  </Typography>
                   <img
                     src={images[solution.imageId]}
                     alt="Preview"

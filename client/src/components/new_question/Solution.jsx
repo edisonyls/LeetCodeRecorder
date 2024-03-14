@@ -6,6 +6,7 @@ import {
   InputAdornment,
   IconButton,
   Paper,
+  TextareaAutosize,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
@@ -33,15 +34,6 @@ const Solution = ({
     setShowCodeInput(false);
   };
 
-  const calculateRows = (text, row) => {
-    const lines = text.split("\n");
-    if (lines.length === 1) {
-      return row;
-    } else {
-      return lines.length;
-    }
-  };
-
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 2 }}>
       <Box
@@ -60,14 +52,20 @@ const Solution = ({
         )}
       </Box>
       <TextField
+        margin="normal"
         fullWidth
         label="Thinking Process"
         name="thinkingProcess"
         multiline
-        sx={{ marginBottom: 2 }}
-        rows={calculateRows(thinkingProcess, 2)}
         value={thinkingProcess}
         onChange={handleChange}
+        sx={{ marginBottom: 2 }}
+        inputProps={{
+          inputComponent: TextareaAutosize,
+          inputProps: {
+            minRows: 2,
+          },
+        }}
       />
       <Typography variant="h8">Code Snippet</Typography>
       <Box
@@ -86,7 +84,6 @@ const Solution = ({
             fullWidth
             label="Paste your code snippet here"
             name="codeSnippet"
-            rows={calculateRows(codeSnippet, 6)}
             multiline
             value={codeSnippet}
             onChange={handleChange}
@@ -98,6 +95,10 @@ const Solution = ({
                   </IconButton>
                 </InputAdornment>
               ),
+              inputComponent: TextareaAutosize,
+              inputProps: {
+                minRows: 6,
+              },
             }}
           />
         ) : (

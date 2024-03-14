@@ -207,7 +207,6 @@ const NewQuestionForm = ({ timerValue }) => {
         return solution;
       }
     });
-
     try {
       // Wait for all the image upload promises to complete
       const updatedSolutions = await Promise.all(uploadPromises);
@@ -226,7 +225,7 @@ const NewQuestionForm = ({ timerValue }) => {
         ? question.dateOfCompletion.format("YYYY-MM-DD")
         : "",
       timeOfCompletion: question.timeOfCompletion
-        ? question.timeOfCompletion.format("HH:mm")
+        ? question.timeOfCompletion.format("mm:ss")
         : "",
       solutions: question.solutions.map((solution) => ({
         thinkingProcess: solution.thinkingProcess,
@@ -345,7 +344,7 @@ const NewQuestionForm = ({ timerValue }) => {
           }}
         >
           <Typography sx={{ marginBottom: 1 }}>
-            Did you finish this LeetCode problem?
+            Did you tackle this LeetCode problem?
           </Typography>
           <SuccessToggle
             onChange={(success) =>
