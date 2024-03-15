@@ -1,8 +1,7 @@
 name: Deploy Frontend to S3 and Invalidate CloudFront
 
 on:
-  push:
-    branches: [main] # Or any branches you want to deploy from
+  pull_request:
 
 jobs:
   deploy:
