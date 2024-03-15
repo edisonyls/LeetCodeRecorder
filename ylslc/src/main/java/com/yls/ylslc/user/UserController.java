@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path="api/user")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://d1b4xc56m020pt.cloudfront.net"})
 public class UserController {
     private final UserService userService;
 
