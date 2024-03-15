@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --acl public-read --follow-symlinks --delete
+          args: --acl public-read --follow-symlinks --delete --source-dir 'client/build'
         env:
           AWS_S3_BUCKET: ylslc.org
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
