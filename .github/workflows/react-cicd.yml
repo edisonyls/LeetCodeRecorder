@@ -15,18 +15,23 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Change to client directory
+        run: cd client
+
       - name: Install dependencies
         run: npm install
+        working-directory: ./client
 
       - name: Build React application
         run: npm run build
+        working-directory: ./client
 
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --delete
           bucket: ylslc.org
-          source_dir: "build" # Your build directory
+          source_dir: "client/build"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
