@@ -30,7 +30,7 @@ jobs:
         with:
           folder: client/build
           bucket: ylslc.org
-          bucket-region: ap-southeast-
+          bucket-region: ap-southeast-2
           delete-removed: true
           no-cache: true
           private: true
