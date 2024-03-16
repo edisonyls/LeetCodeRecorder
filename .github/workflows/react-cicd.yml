@@ -29,21 +29,14 @@ jobs:
         uses: Reggionick/s3-deploy@v4.0.0
         with:
           folder: client/build
-          bucket: ylslc.org
-          bucket-region: ap-southeast-2
+          bucket: ${{ secrets.S3_BUCKET_NAME }}
+          bucket-region: ${{ secrets.AWS_REGION }}
           delete-removed: true
           no-cache: true
           private: true
           files-to-include: "{.*/**,**}"
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} # The CloudFront Distribution ID to invalidate
+          invalidation: "/*"
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Invalidate CloudFront Distribution
-        uses: chetan/invalidate-cloudfront-action@v1
-        env:
-          DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} # Your CloudFront distribution ID
-          PATHS: "/*"
-          AWS_REGION: "ap-southeast-2" # Your AWS region (Sydney)
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
