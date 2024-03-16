@@ -1,4 +1,4 @@
-name: Deploy Frontend to S3 and Invalidate CloudFront
+name: Deploy Frontend to S3
 
 on:
   pull_request:
