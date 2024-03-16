@@ -23,7 +23,6 @@ public class AuthenticationController {
 
     @PostMapping(path = "/authenticate")
     public Response login(@RequestBody UserEntity request){
-        System.out.println("Hello");
         return authServiceImpl.authenticate(request);
     }
 }
