@@ -24,7 +24,7 @@ jobs:
           context: .
           file: ./ylslc/Dockerfile
           push: true
-          tags: edisonyls/ylslc-spring:${{github.ref_name}}
+          tags: edisonyls/ylslc-spring:latest
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo docker pull edisonyls/ylslc-spring:${{github.ref_name}}
+            sudo docker pull edisonyls/ylslc-spring:latest
             sudo docker stop spring_app || true
             sudo docker rm spring_app || true
-            sudo docker run -d --name spring_app -p 80:8080 edisonyls/ylslc-spring:${{ github.sha }}
+            sudo docker run -d --name spring_app -p 80:8080 edisonyls/ylslc-spring:latest
