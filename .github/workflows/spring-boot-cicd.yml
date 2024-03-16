@@ -27,9 +27,13 @@ jobs:
           tags: edisonyls/ylslc-spring:latest
 
       - name: Deploy to EC2
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/key_pair.pem
-          chmod 600 ~/.ssh/key_pair.pem
-          ssh-keyscan -H 54.253.11.131 >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/key_pair.pem ec2-user@54.253.11.131 "sudo docker pull edisonyls/ylslc-spring:latest && sudo docker stop spring_app || true && sudo docker rm spring_app || true && sudo docker run -d --name spring_app -p 80:8080 edisonyls/ylslc-spring:latest"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo docker pull edisonyls/ylslc-spring:latest
+            sudo docker stop spring_app || true
+            sudo docker rm spring_app || true
+            sudo docker run -d --name spring_app -p 80:8080 edisonyls/ylslc-spring:latest
