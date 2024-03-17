@@ -4,7 +4,7 @@ import axios from "axios";
 const token = JSON.parse(localStorage.getItem("user"));
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "https://api.ylslc.org/api/",
   headers: {
     Authorization: `Bearer ${token}`,
   },

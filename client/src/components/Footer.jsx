@@ -15,7 +15,7 @@ const Footer = () => {
         <Typography variant="body1" align="center" sx={{ my: 0.5 }}>
           YLSLC © {new Date().getFullYear()}
         </Typography>
-        <Typography variant="body2" align="center" sx={{ my: 0.5 }}>
+        {/* <Typography variant="body2" align="center" sx={{ my: 0.5 }}>
           <Link
             href="/privacy"
             color="inherit"
@@ -31,7 +31,7 @@ const Footer = () => {
           >
             Terms of Use
           </Link>
-        </Typography>
+        </Typography> */}
       </Container>
     </Box>
   );
