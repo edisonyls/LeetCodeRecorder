@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_API_URL + "/auth";
+const API_URL = "https://api.ylslc.org/api/auth";
 
 const register = async (userData) => {
   console.log(userData);
@@ -13,6 +13,7 @@ const register = async (userData) => {
 };
 
 const login = async (userData) => {
+  console.log(process.env);
   const response = await axios.post(API_URL + "/authenticate", userData);
 
   if (response.data) {
