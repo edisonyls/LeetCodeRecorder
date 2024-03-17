@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -16,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
+import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 
 function Copyright(props) {
   return (
@@ -56,9 +56,7 @@ export default function RegisterPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const dataArray = [...formData];
-    const data = Object.fromEntries(dataArray);
+    const data = Object.fromEntries(new FormData(event.currentTarget));
     data.role = "USER";
     dispatch(register(data));
   };
@@ -104,7 +102,7 @@ export default function RegisterPage() {
                 alignItems: "center",
               }}
             >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <Avatar sx={{ m: 1, bgcolor: "black" }}>
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
@@ -143,7 +141,7 @@ export default function RegisterPage() {
                       required
                       fullWidth
                       id="username"
-                      label="Username"
+                      label="Email Address"
                       name="username"
                       autoComplete="username"
                     />
@@ -159,7 +157,7 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} sx={{ marginBottom: 2 }}>
                     <FormControlLabel
                       control={
                         <Checkbox value="allowExtraEmails" color="primary" />
@@ -168,15 +166,12 @@ export default function RegisterPage() {
                     />
                   </Grid>
                 </Grid>
-                <Button
+                <WhiteBackgroundButton
+                  buttonText="Sign Up"
                   type="submit"
                   fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign Up
-                </Button>
-                <Grid container justifyContent="flex-end">
+                />
+                <Grid container justifyContent="flex-end" sx={{ marginTop: 2 }}>
                   <Grid item>
                     <Link href="/signin" variant="body2">
                       Already have an account? Sign in
