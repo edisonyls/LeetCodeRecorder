@@ -56,6 +56,9 @@ const QuestionDetails = () => {
     const fetchImage = async (question) => {
       const newImages = {};
       for (const solution of question.solutions) {
+        if (solution.imageId === null || solution.imageId === "") {
+          continue;
+        }
         try {
           const response = await axiosInstance.get(
             `question/image/${question.id}/${solution.imageId}`,
@@ -158,49 +161,77 @@ const QuestionDetails = () => {
           </CardContent>
           {question.solutions.map((solution, index) => (
             <Box sx={{ mb: 2, ml: 2, mr: 2 }} key={index}>
-              <Typography variant="h6">Solution {index + 1}</Typography>
-              <Typography variant="body1" sx={{ color: "#B9BBB6" }}>
-                Thinking Process:
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ mb: 1, whiteSpace: "pre-wrap" }}
-              >
-                {solution.thinkingProcess}
+              <Typography variant="h4" sx={{ fontSize: "28px" }}>
+                Solution {index + 1}
               </Typography>
               <Box>
-                <Typography variant="body1" sx={{ mb: -1, color: "#B9BBB6" }}>
-                  Code Snippet
-                </Typography>
-                <CodeSnippet code={solution.codeSnippet} />
-              </Box>
-              {solution.imageId && (
-                <Paper
-                  elevation={3}
+                <Typography
                   sx={{
-                    mt: 2,
-                    width: "96%",
-                    padding: 2,
-                    minHeight: "300px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    color: "#B9BBB6",
+                    fontSize: "20px",
+                    marginBottom: 1,
+                    marginTop: 1,
                   }}
                 >
-                  <Typography variant="body2" sx={{ color: "#B9BBB6" }}>
-                    Image Preview:
+                  Thinking Process:
+                </Typography>
+
+                <Box
+                  sx={{
+                    borderLeft: 2,
+                    borderColor: "primary.main",
+                    paddingLeft: 2,
+                    marginLeft: 1,
+                  }}
+                >
+                  <Typography
+                    sx={{ mb: 1, whiteSpace: "pre-wrap", fontSize: "15px" }}
+                  >
+                    {solution.thinkingProcess}
                   </Typography>
-                  <img
-                    src={images[solution.imageId]}
-                    alt="Preview"
-                    style={{
-                      width: "100%",
-                      maxHeight: "300px",
-                      objectFit: "contain",
+                </Box>
+              </Box>
+              {solution.codeSnippet && (
+                <Box>
+                  <Typography
+                    sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
+                  >
+                    Code Snippet
+                  </Typography>
+                  <CodeSnippet code={solution.codeSnippet} />
+                </Box>
+              )}
+              {solution.imageId && (
+                <Box>
+                  <Typography
+                    sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
+                  >
+                    Uploaded Image
+                  </Typography>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      mt: 2,
+                      width: "96%",
+                      padding: 2,
+                      minHeight: "300px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
-                  />
-                </Paper>
+                  >
+                    <img
+                      src={images[solution.imageId]}
+                      alt="Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: "300px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </Paper>
+                </Box>
               )}
             </Box>
           ))}

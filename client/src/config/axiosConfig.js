@@ -2,9 +2,10 @@
 import axios from "axios";
 
 const token = JSON.parse(localStorage.getItem("user"));
+const API_ENDPOINT = "http://localhost:8080/api/";
 
 const axiosInstance = axios.create({
-  baseURL: "https://api.ylslc.org/api/",
+  baseURL: API_ENDPOINT,
   headers: {
     Authorization: `Bearer ${token}`,
   },

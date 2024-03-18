@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_URL = "https://api.ylslc.org/api/auth";
+const API_ENDPOINT = "http://localhost:8080/api/auth/";
 
 const register = async (userData) => {
   console.log(userData);
-  const res = await axios.post(API_URL + "/register", userData);
+  const res = await axios.post(API_ENDPOINT + "register", userData);
   if (res.data) {
     localStorage.setItem("user", JSON.stringify(res.data.data));
   }
@@ -13,8 +13,7 @@ const register = async (userData) => {
 };
 
 const login = async (userData) => {
-  console.log(process.env);
-  const response = await axios.post(API_URL + "/authenticate", userData);
+  const response = await axios.post(API_ENDPOINT + "authenticate", userData);
 
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data.data));
