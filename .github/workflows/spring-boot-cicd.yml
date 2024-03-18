@@ -41,4 +41,4 @@ jobs:
             sudo docker pull edisonyls/ylslc-spring:latest
             sudo docker stop spring_app || true
             sudo docker rm spring_app || true
-            sudo docker run -d --name spring_app -p 80:8080 edisonyls/ylslc-spring:latest
+            sudo docker run -d --name spring_app -p 8081:8080 edisonyls/ylslc-spring:latest
