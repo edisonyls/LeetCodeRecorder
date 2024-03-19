@@ -21,12 +21,7 @@ import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" color="#B9BBB6" align="center" {...props}>
       {"Copyright © "}
       <Link color="inherit" href="/">
         LeetCodeRecorder
@@ -46,7 +41,6 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (isError) {
-      console.log(message);
       toast.error(message);
     }
 

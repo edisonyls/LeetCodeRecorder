@@ -16,10 +16,16 @@ import Group from "@mui/icons-material/Group";
 import AccountTree from "@mui/icons-material/AccountTree";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
 import { BlackBackgroundButton } from "./generic/GenericButton";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout }) => {
   const navigate = useNavigate();
   const drawerOptions = [
+    {
+      text: "Dashboard",
+      icon: <DashboardIcon />,
+      onClick: () => navigate("/dashboard"),
+    },
     {
       text: "Profile",
       icon: <AccountCircleIcon />,
@@ -55,6 +61,7 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout }) => {
           display: "flex",
           justifyContent: "center",
           p: 2,
+          mt: 2,
         }}
       >
         <Avatar sx={{ backgroundColor: "white", color: "black" }}>
