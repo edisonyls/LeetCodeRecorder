@@ -18,14 +18,7 @@ export const register = createAsyncThunk(
     try {
       return await authService.register(user);
     } catch (error) {
-      //   const message =
-      //     (error.response &&
-      //       error.response.data &&
-      //       error.response.data.message) ||
-      //     error.message ||
-      //     error.toString();
-      console.log(error);
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -34,12 +27,7 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
     return await authService.login(user);
   } catch (error) {
-    // const message =
-    //   (error.response && error.response.data && error.response.data.message) ||
-    //   error.message ||
-    //   error.toString();
-    console.log(error);
-    return thunkAPI.rejectWithValue(error);
+    return thunkAPI.rejectWithValue(error.message);
   }
 });
 
@@ -71,8 +59,6 @@ export const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        // thunkAPI.rejectWithValue(error) pass the value as the payload which
-        // comes to here
         state.message = action.payload;
         state.user = null;
       })

@@ -1,26 +1,42 @@
 import axios from "axios";
 
-const API_URL = "https://api.ylslc.org/api/auth";
+const API_ENDPOINT = "http://localhost:8080/api/auth/";
 
 const register = async (userData) => {
-  console.log(userData);
-  const res = await axios.post(API_URL + "/register", userData);
-  if (res.data) {
-    localStorage.setItem("user", JSON.stringify(res.data.data));
+  try {
+    const response = await axios.post(API_ENDPOINT + "register", userData);
+    if (response.data.status === 200) {
+      localStorage.setItem("user", JSON.stringify(response.data.data));
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || "Register failed");
+    }
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      throw new Error(error.message || "An error occurred");
+    }
   }
-
-  return res.data.data;
 };
 
 const login = async (userData) => {
-  console.log(process.env);
-  const response = await axios.post(API_URL + "/authenticate", userData);
-
-  if (response.data) {
-    localStorage.setItem("user", JSON.stringify(response.data.data));
+  try {
+    const response = await axios.post(API_ENDPOINT + "authenticate", userData);
+    if (response.data.status === 200) {
+      localStorage.setItem("user", JSON.stringify(response.data.data));
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || "Login failed");
+    }
+  } catch (error) {
+    if (error.response) {
+      // You can customize what you throw here to ensure it's serializable
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      throw new Error(error.message || "An error occurred");
+    }
   }
-
-  return response.data.data;
 };
 
 const logout = () => {

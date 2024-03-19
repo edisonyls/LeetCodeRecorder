@@ -9,6 +9,9 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewQuestion from "./pages/NewQuestion";
 import QuestionDetails from "./pages/QuestionDetails";
+import Profile from "./pages/Profile";
+import AlgorithmBank from "./pages/AlgorithmBank";
+import FriendPage from "./pages/FriendPage";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
             <Route path="/dashboard" Component={Dashboard} exact />
             <Route path="/new" Component={NewQuestion} exact />
             <Route path="/question/:id" Component={QuestionDetails} exact />
+            <Route path="profile" Component={Profile} exact />
+            <Route path="algorithm" Component={AlgorithmBank} exact />
+            <Route path="friends" Component={FriendPage} exact />
           </Routes>
         </Router>
         <ToastContainer />

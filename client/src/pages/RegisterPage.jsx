@@ -1,30 +1,29 @@
-import { useEffect } from "react";
-import Avatar from "@mui/material/Avatar";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import { useEffect, useState } from "react";
+import {
+  Avatar,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+} from "@mui/material";
+
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
+import PasswordValidator from "../components/PasswordValidator";
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" color="#B9BBB6" align="center" {...props}>
       {"Copyright © "}
       <Link color="inherit" href="/">
         LeetCodeRecorder
@@ -35,13 +34,28 @@ function Copyright(props) {
   );
 }
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const { user, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+
+  useEffect(() => {
+    if (password.length > 0 && confirmPassword.length > 0) {
+      if (password !== confirmPassword) {
+        setPasswordsMatch(false);
+      } else {
+        setPasswordsMatch(true);
+      }
+    } else {
+      setPasswordsMatch(true);
+    }
+  }, [password, confirmPassword]);
 
   useEffect(() => {
     if (isError) {
@@ -54,11 +68,58 @@ export default function RegisterPage() {
     dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
+  const checkData = (data) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!data.firstName) {
+      toast.error("Please fill in your first name!");
+      return false;
+    } else if (!data.lastName) {
+      toast.error("Please fill in your last name!");
+      return false;
+    } else if (!data.username) {
+      toast.error("Please fill in your email address!");
+      return false;
+    } else if (!emailRegex.test(data.username)) {
+      toast.error("Please enter a valid email address.");
+      return false;
+    } else if (!data.password) {
+      toast.error("Please fill in your password!");
+      return false;
+    } else if (!confirmPassword) {
+      toast.error("Please re-enter your password!");
+      return false;
+    }
+    if (!passwordRegex.test(data.password)) {
+      toast.error(
+        "Password must contain letters and numbers, and be 8-16 characters long."
+      );
+      return false;
+    }
+
+    // Check if passwords match
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return false;
+    }
+  };
+
+  const formatName = ({ name }) => {
+    name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return name;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
-    data.role = "USER";
-    dispatch(register(data));
+    if (checkData(data) === false) {
+      return;
+    } else {
+      data.firstName = formatName({ name: data.firstName });
+      data.lastName = formatName({ name: data.lastName });
+      data.role = "USER";
+      dispatch(register(data));
+    }
   };
 
   return (
@@ -117,7 +178,6 @@ export default function RegisterPage() {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      autoComplete="given-name"
                       name="firstName"
                       required
                       fullWidth
@@ -133,7 +193,6 @@ export default function RegisterPage() {
                       id="lastName"
                       label="Last Name"
                       name="lastName"
-                      autoComplete="family-name"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -143,7 +202,6 @@ export default function RegisterPage() {
                       id="username"
                       label="Email Address"
                       name="username"
-                      autoComplete="username"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -154,7 +212,23 @@ export default function RegisterPage() {
                       label="Password"
                       type="password"
                       id="password"
-                      autoComplete="new-password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {password && <PasswordValidator password={password} />}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      name="confirmPassword"
+                      label="Confirm Password"
+                      type="password"
+                      id="confirmPassword"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      error={!passwordsMatch}
+                      helperText={
+                        !passwordsMatch ? "Passwords do not match." : ""
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sx={{ marginBottom: 2 }}>
@@ -186,4 +260,6 @@ export default function RegisterPage() {
       </Box>
     </Box>
   );
-}
+};
+
+export default RegisterPage;

@@ -6,9 +6,12 @@ import com.yls.ylslc.user.UserRepository;
 import com.yls.ylslc.user.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.naming.AuthenticationException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -43,14 +46,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Response authenticate(UserEntity request){
-        authenticationManager.authenticate(
+        try {
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
-        );
+            );
 
-        UserEntity user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        return Response.ok(jwtService.generateToken(user), "User authenticated successfully!");
+            UserEntity user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+            return Response.ok(jwtService.generateToken(user), "User authenticated successfully!");
+        }catch (
+                BadCredentialsException e) {
+            // Handle the case where the password does not match
+            return Response.failed(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid username or password!");
+        } catch (Exception e) {
+            // Handle other authentication related exceptions
+            return Response.failed(HttpStatus.INTERNAL_SERVER_ERROR,"Authentication failed!");
+        }
     }
 }

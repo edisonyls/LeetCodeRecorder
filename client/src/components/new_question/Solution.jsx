@@ -6,7 +6,6 @@ import {
   InputAdornment,
   IconButton,
   Paper,
-  TextareaAutosize,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
@@ -60,12 +59,6 @@ const Solution = ({
         value={thinkingProcess}
         onChange={handleChange}
         sx={{ marginBottom: 2 }}
-        inputProps={{
-          inputComponent: TextareaAutosize,
-          inputProps: {
-            minRows: 2,
-          },
-        }}
       />
       <Typography variant="h8">Code Snippet</Typography>
       <Box
@@ -95,10 +88,6 @@ const Solution = ({
                   </IconButton>
                 </InputAdornment>
               ),
-              inputComponent: TextareaAutosize,
-              inputProps: {
-                minRows: 6,
-              },
             }}
           />
         ) : (

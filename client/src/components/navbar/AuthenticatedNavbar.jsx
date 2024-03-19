@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, reset } from "../../auth/authSlice";
 import { useDispatch } from "react-redux";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
-import { BlackBackgroundButton } from "../generic/GenericButton";
+import ListIcon from "@mui/icons-material/List";
+import OptionDrawer from "../OptionDrawer";
 
 const AuthenticatedNavbar = () => {
   const [user, setUser] = useState({});
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,11 +43,21 @@ const AuthenticatedNavbar = () => {
     return "Good Evening, ";
   };
 
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setIsDrawerOpen(open);
+  };
+
   return (
     <AppBar position="static" sx={{ background: "black", mb: 4 }}>
       <Toolbar>
         <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1, fontWeight: 700 }}>
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
           <Box
             component={Link}
             to="/dashboard"
@@ -54,10 +66,25 @@ const AuthenticatedNavbar = () => {
             YLSLC
           </Box>
         </Typography>
-        <Typography variant="h8" sx={{ fontWeight: 700 }}>
+        <Typography variant="h8" sx={{ marginRight: 2 }}>
           {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
         </Typography>
-        <BlackBackgroundButton buttonText="Log Out" onClick={handleLogout} />
+        <IconButton
+          color="inherit"
+          onClick={toggleDrawer(true)}
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+            },
+          }}
+        >
+          <ListIcon />
+        </IconButton>
+        <OptionDrawer
+          isOpen={isDrawerOpen}
+          toggleDrawer={toggleDrawer}
+          handleLogout={handleLogout}
+        />
       </Toolbar>
     </AppBar>
   );
