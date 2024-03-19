@@ -38,6 +38,9 @@ public class AuthServiceImpl implements AuthService {
             user.setUsername(request.getUsername());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(request.getRole());
+            user.setSex(request.getSex());
+            user.setMobileNumber(request.getMobileNumber());
+            user.setPersonalInfo(request.getPersonalInfo());
             user = userRepository.save(user);
 
             return Response.ok(jwtService.generateToken(user), "User registered successfully!");
