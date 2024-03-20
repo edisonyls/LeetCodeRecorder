@@ -12,4 +12,6 @@ public interface UserService {
     void delete(UUID id);
 
     UserEntity getCurrentUser();
+
+    UserEntity updateUser(UUID id, UserEntity userEntity);
 }
