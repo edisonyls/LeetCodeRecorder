@@ -45,4 +45,17 @@ public class UserServiceImpl implements UserService{
         }
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
+    @Override
+    public UserEntity updateUser(UUID id, UserEntity updatedUser) {
+        return userRepository.findById(id)
+                .map(userEntity -> {
+                    userEntity.setFirstName(updatedUser.getFirstName());
+                    userEntity.setLastName(updatedUser.getLastName());
+                    userEntity.setSex(updatedUser.getSex());
+                    userEntity.setMobileNumber(updatedUser.getMobileNumber());
+                    userEntity.setPersonalInfo(updatedUser.getPersonalInfo());
+                    return userRepository.save(userEntity);
+                }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
 }

@@ -66,6 +66,16 @@ public class UserController {
         }
     }
 
+    @PutMapping(path="/{id}")
+    public Response updateUser(
+            @PathVariable("id") UUID id,
+            @RequestBody UserDto userDto
+    ){
+        UserEntity userEntity = userMapper.mapFrom(userDto);
+        UserEntity updatedUser = userService.updateUser(id, userEntity);
+        return Response.ok(userMapper.mapTo(updatedUser), "User " + updatedUser.getUsername() + " updated successfully!");
+    }
+
     public UserController(UserService userService, Mapper<UserEntity, UserDto> userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
