@@ -24,6 +24,12 @@ public class UserEntity implements UserDetails {
     private String lastName;
     private String username;
     private String password;
+    private String sex;
+    private String mobileNumber;
+    @Lob
+    private String personalInfo;
+
+
     @Enumerated(value = EnumType.STRING)
     private Role role;
 

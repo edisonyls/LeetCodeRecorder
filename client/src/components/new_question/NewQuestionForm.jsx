@@ -211,7 +211,7 @@ const NewQuestionForm = ({ timerValue }) => {
       // Wait for all the image upload promises to complete
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
-      submitRestData(); // Now submit the rest of the data
+      submitRestData();
       navigate("/dashboard");
     } catch (error) {
       console.error("An error occurred during image uploads", error);
