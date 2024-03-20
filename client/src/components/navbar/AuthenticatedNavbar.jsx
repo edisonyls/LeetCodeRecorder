@@ -7,9 +7,11 @@ import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import axiosInstance from "../../config/axiosConfig";
 import ListIcon from "@mui/icons-material/List";
 import OptionDrawer from "../OptionDrawer";
+import { useUser } from "../../context/userContext";
 
 const AuthenticatedNavbar = () => {
-  const [user, setUser] = useState({});
+  const { user, setUser } = useUser();
+  // const [user, setUser] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const AuthenticatedNavbar = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     console.log("Logging out...");
