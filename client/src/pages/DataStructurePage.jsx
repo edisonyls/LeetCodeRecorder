@@ -11,19 +11,12 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
+import { GreyBackgroundButton } from "../components/generic/GenericButton";
+import AddStructureDialog from "../components/AddStructureDialog";
 
 // Mock data for the example
 const dataStructures = {
   Array: ["Dynamic Array", "Static Array"],
-  Queue: ["Priority Queue", "Circular Queue"],
-  Stack: ["LIFO Stack"],
-  LinkedList: [
-    "Singly Linked List",
-    "Doubly Linked List",
-    "Circular Linked List",
-  ],
-  Graph: ["Directed Graph", "Undirected Graph", "Weighted Graph"],
-  Tree: ["Binary Tree", "Binary Search Tree", "AVL Tree", "Red-Black Tree"],
 };
 
 // Mock content for sub-structures
@@ -56,25 +49,24 @@ const DataStructurePage = () => {
     setSelectedSubStructure(subStructure);
   };
 
-  const handleAddMainStructure = () => {
-    const newStructureName = prompt(
-      "Enter the name of the new main structure:"
-    );
+  const openMainStructureDialog = () => setIsMainStructureDialogOpen(true);
+  const closeMainStructureDialog = () => setIsMainStructureDialogOpen(false);
+  const openSubStructureDialog = () => setIsSubStructureDialogOpen(true);
+  const closeSubStructureDialog = () => setIsSubStructureDialogOpen(false);
+
+  const handleAddMainStructure = (newStructureName) => {
     if (newStructureName && !dataStructuresState[newStructureName]) {
       setDataStructuresState((prevState) => ({
         ...prevState,
         [newStructureName]: [],
       }));
     }
+    closeMainStructureDialog(); // Close the dialog after adding
   };
 
-  const handleAddSubStructure = () => {
-    if (!selectedStructure) return; // Ensure a main structure is selected
-
-    const newSubStructureName = prompt(
-      "Enter the name of the new sub-structure:"
-    );
+  const handleAddSubStructure = (newSubStructureName) => {
     if (
+      selectedStructure &&
       newSubStructureName &&
       !dataStructuresState[selectedStructure].includes(newSubStructureName)
     ) {
@@ -86,6 +78,7 @@ const DataStructurePage = () => {
         ],
       }));
     }
+    closeSubStructureDialog(); // Close the dialog after adding
   };
 
   return (
@@ -98,12 +91,7 @@ const DataStructurePage = () => {
     >
       <AuthenticatedNavbar />
       <Container component="main" maxWidth="lg" sx={{ pt: 8, pb: 6 }}>
-        <Typography
-          variant="h4"
-          gutterBottom
-          align="center"
-          sx={{ color: grey[50] }}
-        >
+        <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
           Data Structures
         </Typography>
         <Grid container spacing={4}>
@@ -126,9 +114,6 @@ const DataStructurePage = () => {
                   overflowY: "auto",
                 }}
               >
-                <Typography variant="h6" sx={{ color: grey[400], mb: 2 }}>
-                  Main Structures
-                </Typography>
                 <List>
                   {Object.keys(dataStructures).map((structure) => (
                     <ListItem key={structure} disablePadding>
@@ -142,20 +127,13 @@ const DataStructurePage = () => {
                       </ListItemButton>
                     </ListItem>
                   ))}
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={handleAddMainStructure}>
-                      <ListItemText
-                        primary="+ Add New Main Structure"
-                        primaryTypographyProps={{ sx: { color: grey[50] } }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
+                  <GreyBackgroundButton
+                    buttonText="Add"
+                    onClick={openMainStructureDialog}
+                  />
                 </List>
               </Box>
               <Box sx={{ width: "50%", overflowY: "auto" }}>
-                <Typography variant="h6" sx={{ color: grey[400], mb: 2 }}>
-                  Sub-Structures
-                </Typography>
                 <List>
                   {selectedStructure &&
                     dataStructures[selectedStructure].map((subStructure) => (
@@ -170,11 +148,31 @@ const DataStructurePage = () => {
                         </ListItemButton>
                       </ListItem>
                     ))}
-                  {selectedStructure && <p></p>}
+                  {selectedStructure && (
+                    <GreyBackgroundButton
+                      buttonText="Add"
+                      onClick={openSubStructureDialog}
+                    />
+                  )}
                 </List>
               </Box>
             </Box>
           </Grid>
+          <AddStructureDialog
+            open={isMainStructureDialogOpen}
+            onClose={closeMainStructureDialog}
+            onSubmit={handleAddMainStructure}
+            title="Add New Data Structure"
+          />
+
+          {selectedStructure && (
+            <AddStructureDialog
+              open={isSubStructureDialogOpen}
+              onClose={closeSubStructureDialog}
+              onSubmit={handleAddSubStructure}
+              title="Add New Sub-Structure"
+            />
+          )}
           <Grid item xs={12} md={8}>
             <Box
               sx={{

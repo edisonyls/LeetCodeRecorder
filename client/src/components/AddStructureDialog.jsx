@@ -27,6 +27,8 @@ const AddStructureDialog = ({ open, onClose, onSubmit, title }) => {
     <Dialog
       open={open}
       onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
       sx={{ "& .MuiDialog-paper": { bgcolor: grey[800], color: grey[50] } }}
     >
       <DialogTitle sx={{ color: grey[50] }}>{title}</DialogTitle>
@@ -62,3 +64,5 @@ const AddStructureDialog = ({ open, onClose, onSubmit, title }) => {
     </Dialog>
   );
 };
+
+export default AddStructureDialog;
