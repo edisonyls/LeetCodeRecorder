@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import Button from "@mui/material/Button";
+import { grey } from "@mui/material/colors";
 
 // GenericButton component
 export const WhiteBackgroundButton = ({
@@ -133,6 +134,37 @@ export const WhiteBackgroundButtonWithInput = ({
         onChange={inputOnChange}
         ref={inputRef}
       />
+    </Button>
+  );
+};
+
+export const GreyBackgroundButton = ({
+  buttonText,
+  icon,
+
+  ...props
+}) => {
+  return (
+    <Button
+      variant="outlined"
+      color="inherit"
+      sx={{
+        minWidth: "120px",
+        height: "40px",
+        borderRadius: "20px",
+        borderColor: grey[50],
+        ml: 1,
+        mr: 1,
+        "&:hover": {
+          backgroundColor: grey[50],
+          color: "black",
+        },
+        ...props.sx,
+      }}
+      {...props}
+    >
+      {icon && <span style={{ marginTop: 5, marginRight: 5 }}>{icon}</span>}
+      {buttonText}
     </Button>
   );
 };
