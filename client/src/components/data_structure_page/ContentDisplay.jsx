@@ -9,19 +9,17 @@ import ContentComponent from "./ContentComponent";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
-  // State to manage if the Add Content button has been clicked
   const [addClicked, setAddClicked] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newContentValue, setNewContentValue] = useState("");
-
   const hasContents = contents && contents.length > 0;
 
   useEffect(() => {
     setAddClicked(false);
     setNewContentValue("");
-    // If you need to reset contents to an empty array or a default state
+
     setContents([]);
     const fetchContents = () => {
       setLoading(true);
@@ -32,7 +30,7 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
           setLoading(false);
         })
         .catch((err) => {
-          console.log("Failed to fetch contentss: ", err);
+          console.log("Failed to fetch contents: ", err);
           setLoading(false);
         });
     };
@@ -84,17 +82,14 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setContents((prevContents) => {
-        // Clone the previous contents array
         const updatedContents = [...prevContents];
-
-        // Update the specific item at index
         updatedContents[index] = {
           ...updatedContents[index],
-          imageUrl: imageUrl, // Assign the created URL for image preview
-          file: file, // Store the file object for later upload
+          imageUrl: imageUrl,
+          file: file,
         };
 
-        return updatedContents; // Return the correctly updated array
+        return updatedContents;
       });
     }
   };
@@ -109,8 +104,26 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
     setContents(reorderedContents);
   };
 
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post(
+        `content/multiple-content/${selectedSubStructure.id}`,
+        contents
+      );
+      console.log(response.data.data);
+    } catch (error) {
+      console.error("Failed to save contents", error);
+    } finally {
+      setAddClicked(false);
+      setNewContentValue("");
+      setLoading(false);
+    }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
+      {console.log(contents)}
       <Box
         sx={{
           display: "flex",
@@ -138,6 +151,8 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
                 flexGrow: 1,
                 justifyContent: hasContents ? "flex-start" : "center",
                 alignItems: "center",
+                width: "100%",
+                overflow: "auto",
               }}
             >
               {loading ? (
@@ -158,29 +173,61 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
               ) : (
                 <>
                   <Droppable droppableId="contents">
-                    {(provided) => (
-                      <Box {...provided.droppableProps} ref={provided.innerRef}>
+                    {(provided, snapshot) => (
+                      <Box
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        sx={{
+                          width: "100%",
+                          minHeight: "100%",
+                        }}
+                      >
                         {hasContents &&
-                          contents.map((content, index) => (
-                            <Draggable
-                              key={index}
-                              draggableId={String(index)}
-                              index={index}
-                            >
-                              {(provided) => (
+                          contents.map((content, index) => {
+                            if (addClicked) {
+                              return (
+                                <Draggable
+                                  key={index}
+                                  draggableId={`item-${index}`}
+                                  index={index}
+                                >
+                                  {(provided, snapshot) => (
+                                    <Box
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      sx={{ marginBottom: 2, width: "100%" }}
+                                    >
+                                      <ContentComponent
+                                        content={content}
+                                        onContentChange={(e) =>
+                                          handleContentChange(e, index)
+                                        }
+                                        text={content.text}
+                                        contentType={content.type}
+                                        contentValue={newContentValue}
+                                        addClicked={addClicked}
+                                        imageUrl={content.imageUrl}
+                                        handleImageChange={(e) =>
+                                          handleImageChange(e, index)
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+                                </Draggable>
+                              );
+                            } else {
+                              // Render without Draggable functionality when addClicked is false
+                              return (
                                 <Box
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  sx={{ marginBottom: 2, width: "100%" }} // Apply any necessary styling
+                                  key={index}
+                                  sx={{ marginBottom: 2, width: "100%" }}
                                 >
                                   <ContentComponent
-                                    key={index}
                                     content={content}
                                     onContentChange={(e) =>
                                       handleContentChange(e, index)
                                     }
-                                    // onSave={handleSaveNewContent}
                                     text={content.text}
                                     contentType={content.type}
                                     contentValue={newContentValue}
@@ -191,9 +238,10 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
                                     }
                                   />
                                 </Box>
-                              )}
-                            </Draggable>
-                          ))}
+                              );
+                            }
+                          })}
+                        {provided.placeholder}
                         {!hasContents && !addClicked && (
                           <Box
                             sx={{
@@ -257,7 +305,10 @@ const ContentDisplay = ({ selectedSubStructure, selectedStructure }) => {
                           buttonText="Cancel"
                           onClick={() => setDialogOpen(true)}
                         />
-                        <GreyBackgroundButton buttonText="Save" />
+                        <GreyBackgroundButton
+                          buttonText="Save"
+                          onClick={handleSave}
+                        />
                       </Box>
                     </Box>
                   )}
