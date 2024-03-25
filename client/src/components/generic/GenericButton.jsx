@@ -168,3 +168,55 @@ export const GreyBackgroundButton = ({
     </Button>
   );
 };
+
+export const GreyBackgroundButtonWithInput = ({
+  buttonText,
+  icon,
+  inputType,
+  inputId,
+  inputKey,
+  inputOnChange,
+  ...props
+}) => {
+  const inputRef = useRef(null);
+
+  // Function to trigger input click on button click
+  const handleButtonClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  return (
+    <Button
+      variant="outlined"
+      color="inherit"
+      sx={{
+        minWidth: "120px",
+        height: "40px",
+        borderRadius: "20px",
+        borderColor: grey[50],
+        ml: 1,
+        mr: 1,
+        "&:hover": {
+          backgroundColor: grey[50],
+          color: "black",
+        },
+        ...props.sx,
+      }}
+      onClick={handleButtonClick}
+      {...props}
+    >
+      {icon && <span style={{ marginTop: 5, marginRight: 5 }}>{icon}</span>}
+      {buttonText}
+      <input
+        type={inputType}
+        id={inputId}
+        key={inputKey}
+        hidden
+        onChange={inputOnChange}
+        ref={inputRef}
+      />
+    </Button>
+  );
+};

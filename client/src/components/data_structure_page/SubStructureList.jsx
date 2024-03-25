@@ -1,5 +1,4 @@
-// SubStructureList.js
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   List,
@@ -9,23 +8,40 @@ import {
 } from "@mui/material";
 import { GreyBackgroundButton } from "../generic/GenericButton";
 import { grey } from "@mui/material/colors";
+import AddStructureDialog from "../AddStructureDialog";
+import axiosInstance from "../../config/axiosConfig";
 
 const SubStructureList = ({
   selectedStructure,
   dataStructure,
   handleSubStructureClick,
-  openSubStructureDialog,
+  fetchDataStructures,
 }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleAddSubStructure = (name) => {
+    if (!selectedStructure) return;
+    axiosInstance
+      .post(`sub-structure/${selectedStructure.id}`, { name })
+      .then(() => {
+        fetchDataStructures();
+        setDialogOpen(false);
+      })
+      .catch((error) => {
+        console.error("Failed to add new sub-structure:", error);
+      });
+  };
+
   return (
     <Box sx={{ width: "50%", overflowY: "auto" }}>
       <List>
         {selectedStructure &&
           dataStructure
-            .find((structure) => structure.name === selectedStructure)
+            .find((structure) => structure.id === selectedStructure.id) // Use id for comparison
             ?.subStructures.map((subStructure) => (
               <ListItem key={subStructure.id} disablePadding>
                 <ListItemButton
-                  onClick={() => handleSubStructureClick(subStructure.name)}
+                  onClick={() => handleSubStructureClick(subStructure)}
                 >
                   <ListItemText
                     primary={subStructure.name}
@@ -34,10 +50,19 @@ const SubStructureList = ({
                 </ListItemButton>
               </ListItem>
             ))}
+
         {selectedStructure && (
           <GreyBackgroundButton
             buttonText="Add"
-            onClick={openSubStructureDialog}
+            onClick={() => setDialogOpen(true)}
+          />
+        )}
+        {selectedStructure && (
+          <AddStructureDialog
+            open={dialogOpen}
+            onClose={() => setDialogOpen(false)}
+            onSubmit={(name) => handleAddSubStructure(name)}
+            title="Add New Sub-Structure"
           />
         )}
       </List>
