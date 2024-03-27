@@ -20,6 +20,7 @@ import {
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axiosInstance from "../../config/axiosConfig";
+import ActionDialog from "./ActionDialog";
 
 const DataStructureList = ({
   dataStructure,
@@ -80,15 +81,28 @@ const DataStructureList = ({
   };
 
   const handleRenameDataStructure = (id, newName) => {
-    // API call to rename data structure by id
-    console.log("Renaming data structure", id, "to", newName);
-    // Refresh your data structures list here
+    axiosInstance
+      .patch(`data-structure/${id}`, { name: newName }) // Assuming the backend expects a JSON object
+      .then(() => {
+        fetchDataStructures(); // Refresh the list to show the updated name
+        setDialogOpen(false);
+      })
+      .catch((error) => {
+        console.error("Failed to rename data structure:", error);
+      });
   };
 
   const handleDeleteDataStructure = (id) => {
-    // API call to delete data structure by id
-    console.log("Deleting data structure with id", id);
-    // Refresh your data structures list here
+    axiosInstance
+      .delete(`data-structure/${id}`)
+      .then(() => {
+        handleMainStructureClick(null);
+        setDialogOpen(false);
+        fetchDataStructures();
+      })
+      .catch((error) => {
+        console.error("Failed to delete data structure:", error);
+      });
   };
 
   const handleMenuItemClick = (type) => {
@@ -100,6 +114,15 @@ const DataStructureList = ({
     handleMainStructureClick(structure);
     setSelectedId(structure.id);
   };
+
+  const dialogActions = [
+    { label: "Cancel", onClick: handleDialogClose },
+    {
+      label: actionType === "Delete" ? "Delete" : "Save",
+      onClick: handleSubmit,
+      color: "primary",
+    },
+  ];
 
   return (
     <Box
@@ -167,35 +190,15 @@ const DataStructureList = ({
           </ListItem>
         ))}
       </List>
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>{actionType} Data Structure</DialogTitle>
-        <DialogContent>
-          {(actionType === "Add" || actionType === "Rename") && (
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Data Structure Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-          )}
-          {actionType === "Delete" && (
-            <Typography>
-              Are you sure you want to delete this data structure?
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>
-            {actionType === "Delete" ? "Delete" : "Save"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ActionDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        actionType={actionType}
+        structureName="Data Structure"
+        newName={newName}
+        setNewName={setNewName}
+        onSubmit={handleSubmit}
+      />
     </Box>
   );
 };

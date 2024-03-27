@@ -2,9 +2,13 @@ package com.yls.ylslc.data_structure;
 
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "api/data-structure")
@@ -26,6 +30,25 @@ public class DataStructureController {
         DataStructureEntity savedDataStructureEntity = dataStructureService.createDataStructure(dataStructureEntity);
         DataStructureDto savedDataStructureDto = dataStructureMapper.mapTo(savedDataStructureEntity);
         return Response.ok(savedDataStructureDto, "Data structure saved successfully!");
+    }
+
+    @PatchMapping(path = "/{id}")
+    public Response updateDataStructureByName(@PathVariable("id") UUID id, @RequestBody Map<String, String> updateRequest){
+        String name = updateRequest.get("name");
+        if (!dataStructureService.isExist(id)){
+            return Response.failed(HttpStatus.NOT_FOUND, "Data structure not found!");
+        }
+        DataStructureEntity updatedDataStructure = dataStructureService.updateName(id, name);
+        DataStructureDto updatedDataStructureDto = dataStructureMapper.mapTo(updatedDataStructure);
+        return Response.ok(updatedDataStructureDto, "Data structure updated successfully!");
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public Response deleteDataStructure(@PathVariable("id") UUID id){
+
+        DataStructureEntity dataStructureEntity = dataStructureService.delete(id);
+        DataStructureDto deletedDataStructure = dataStructureMapper.mapTo(dataStructureEntity);
+        return Response.ok(deletedDataStructure, deletedDataStructure.getName() + " deleted!");
     }
 
     public DataStructureController(DataStructureService dataStructureService, Mapper<DataStructureEntity, DataStructureDto> dataStructureMapper) {

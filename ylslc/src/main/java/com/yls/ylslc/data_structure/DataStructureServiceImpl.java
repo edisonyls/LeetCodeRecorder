@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class DataStructureServiceImpl implements DataStructureService{
@@ -30,6 +31,27 @@ public class DataStructureServiceImpl implements DataStructureService{
         return currentUser
                 .map(dataStructureRepository::findByUser)
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public boolean isExist(UUID id) {
+        return dataStructureRepository.existsById(id);
+    }
+
+    @Override
+    public DataStructureEntity updateName(UUID id, String name) {
+        DataStructureEntity dataStructureEntity = dataStructureRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Data structure not found!"));
+        dataStructureEntity.setName(name);
+        return dataStructureRepository.save(dataStructureEntity);
+    }
+
+    @Override
+    public DataStructureEntity delete(UUID id) {
+        DataStructureEntity dataStructureEntity = dataStructureRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Data structure not found!"));
+        dataStructureRepository.deleteById(id);
+        return dataStructureEntity;
     }
 
     public DataStructureServiceImpl(DataStructureRepository dataStructureRepository, UserService userService) {
