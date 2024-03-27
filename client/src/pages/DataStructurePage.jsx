@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Typography, Container } from "@mui/material";
+import { Grid, Box, Container, Typography, Divider } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import axiosInstance from "../config/axiosConfig";
@@ -45,10 +45,11 @@ const DataStructurePage = () => {
       }}
     >
       <AuthenticatedNavbar />
-      <Container component="main" maxWidth="lg" sx={{ pt: 8, pb: 6 }}>
+      <Container component="main" maxWidth="xl" sx={{ pt: 8, pb: 6 }}>
         <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
           Data Structures
         </Typography>
+
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Box

@@ -1,12 +1,8 @@
 import React from "react";
-import { Typography, Button, TextField, Box, Paper } from "@mui/material";
+import { Typography, TextField, Box, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import CodeSnippet from "../CodeSnippet";
-import {
-  GreyBackgroundButton,
-  GreyBackgroundButtonWithInput,
-  WarningButton,
-} from "../generic/GenericButton";
+import { GreyBackgroundButtonWithInput } from "../generic/GenericButton";
 
 const ContentComponent = ({
   contentId,
@@ -21,7 +17,6 @@ const ContentComponent = ({
 }) => {
   return (
     <Box sx={{ width: "100%" }}>
-      {console.log(addClicked)}
       {!addClicked ? (
         <>
           {content.type === "TEXT" && (

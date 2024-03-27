@@ -5,11 +5,17 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material";
 import { GreyBackgroundButton } from "../generic/GenericButton";
 import { grey } from "@mui/material/colors";
-import AddStructureDialog from "../AddStructureDialog";
+import AddStructureDialog from "./AddStructureDialog";
 import axiosInstance from "../../config/axiosConfig";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const SubStructureList = ({
   selectedStructure,
@@ -18,6 +24,8 @@ const SubStructureList = ({
   fetchDataStructures,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null); // For the menu
+  const open = Boolean(anchorEl); // To check if menu is open
 
   const handleAddSubStructure = (name) => {
     if (!selectedStructure) return;
@@ -32,9 +40,47 @@ const SubStructureList = ({
       });
   };
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Box sx={{ width: "50%", overflowY: "auto" }}>
       <List>
+        {selectedStructure && (
+          <>
+            <ListItem>
+              <Typography>Sub-structure</Typography>
+              <IconButton
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+                sx={{ marginLeft: "auto", color: grey[50] }}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                sx={{ padding: 0 }}
+              >
+                <MenuItem onClick={handleClose} sx={{ padding: "4px 16px" }}>
+                  Edit
+                </MenuItem>
+              </Menu>
+            </ListItem>
+            <Divider sx={{ ml: 2, background: grey[50] }} />
+          </>
+        )}
+
         {selectedStructure &&
           dataStructure
             .find((structure) => structure.id === selectedStructure.id) // Use id for comparison
