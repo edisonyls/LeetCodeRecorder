@@ -6,13 +6,9 @@ import {
   TextField,
   Typography,
   DialogActions,
-  Button,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import {
-  LightGreyBackgroundButton,
-  WhiteBackgroundButton,
-} from "../generic/GenericButton";
+import { LightGreyBackgroundButton } from "../generic/GenericButton";
 
 const ActionDialog = ({
   open,

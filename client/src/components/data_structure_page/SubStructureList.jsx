@@ -11,11 +11,10 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
-import { GreyBackgroundButton } from "../generic/GenericButton";
 import { grey } from "@mui/material/colors";
-import AddStructureDialog from "./AddStructureDialog";
 import axiosInstance from "../../config/axiosConfig";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ActionDialog from "./ActionDialog";
 
 const SubStructureList = ({
   selectedStructure,
@@ -24,13 +23,54 @@ const SubStructureList = ({
   fetchDataStructures,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [actionType, setActionType] = useState(""); // Add, rename and delete
+  const [selectedId, setSelectedId] = useState(null); // storing the selected sub-structure id
   const [anchorEl, setAnchorEl] = useState(null); // For the menu
+  const [newName, setNewName] = useState(""); // name of the renamed sub-structure
+  const [selectedSubStructure, setSelectedSubStructure] = useState(null);
+
   const open = Boolean(anchorEl); // To check if menu is open
 
-  const handleAddSubStructure = (name) => {
+  const handleDialogOpen = (type) => {
+    setActionType(type);
+    setDialogOpen(true);
+    if (type === "Rename") {
+      const structure = dataStructure.find(
+        (structure) => structure.id === selectedStructure.id
+      );
+      const selectedSubStructure = structure?.subStructures.find(
+        (subStructure) => subStructure.id === selectedId
+      );
+      setNewName(selectedSubStructure ? selectedSubStructure.name : "");
+    }
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setNewName("");
+  };
+
+  const handleSubmit = () => {
+    switch (actionType) {
+      case "Add":
+        handleAddSubStructure(newName);
+        break;
+      case "Rename":
+        handleRenameSubStructure(selectedId, newName);
+        break;
+      case "Delete":
+        handleDeleteSubStructure(selectedId);
+        break;
+      default:
+        break;
+    }
+    handleDialogClose();
+  };
+
+  const handleAddSubStructure = async (name) => {
     if (!selectedStructure) return;
-    axiosInstance
-      .post(`sub-structure/${selectedStructure.id}`, { name })
+    await axiosInstance
+      .post(`sub-structure/${selectedStructure.id}`, { name, contents: [] })
       .then(() => {
         fetchDataStructures();
         setDialogOpen(false);
@@ -40,12 +80,40 @@ const SubStructureList = ({
       });
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleRenameSubStructure = async (id, newName) => {
+    await axiosInstance
+      .patch(`sub-structure/${id}`, { name: newName })
+      .then(() => {
+        fetchDataStructures();
+        setDialogOpen(false);
+      })
+      .catch((error) => {
+        console.error("Failed to rename sub-structure:", error);
+      });
   };
 
-  const handleClose = () => {
+  const handleDeleteSubStructure = async (id) => {
+    await axiosInstance
+      .delete(`sub-structure/${id}`)
+      .then(() => {
+        handleSubStructureClick(null);
+        setDialogOpen(false);
+        setSelectedId(null);
+        fetchDataStructures();
+      })
+      .catch((error) => {
+        console.error("Failed to delete sub-structure:", error);
+      });
+  };
+  const handleMenuItemClick = (type) => {
     setAnchorEl(null);
+    handleDialogOpen(type);
+  };
+
+  const handleListItemClick = (subStructure) => {
+    handleSubStructureClick(subStructure);
+    setSelectedSubStructure(subStructure);
+    setSelectedId(subStructure.id);
   };
 
   return (
@@ -54,12 +122,12 @@ const SubStructureList = ({
         {selectedStructure && (
           <>
             <ListItem>
-              <Typography>Sub-structure</Typography>
+              <Typography>Sub Structures</Typography>
               <IconButton
                 aria-label="more"
                 aria-controls="long-menu"
                 aria-haspopup="true"
-                onClick={handleClick}
+                onClick={(event) => setAnchorEl(event.currentTarget)}
                 sx={{ marginLeft: "auto", color: grey[50] }}
               >
                 <MoreVertIcon />
@@ -69,11 +137,35 @@ const SubStructureList = ({
                 anchorEl={anchorEl}
                 keepMounted
                 open={open}
-                onClose={handleClose}
-                sx={{ padding: 0 }}
+                onClose={() => setAnchorEl(null)}
+                sx={{
+                  padding: 0,
+                  "& .MuiDialog-paper": { bgcolor: grey[800], color: grey[50] },
+                }}
               >
-                <MenuItem onClick={handleClose} sx={{ padding: "4px 16px" }}>
-                  Edit
+                <MenuItem
+                  onClick={() => handleMenuItemClick("Add")}
+                  sx={{ color: grey[800] }}
+                >
+                  Add
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleMenuItemClick("Rename")}
+                  sx={{ color: grey[800] }}
+                  disabled={!selectedId}
+                >
+                  {selectedSubStructure
+                    ? `Rename ${selectedSubStructure.name}`
+                    : "Rename"}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleMenuItemClick("Delete")}
+                  sx={{ color: grey[800] }}
+                  disabled={!selectedId}
+                >
+                  {selectedSubStructure
+                    ? `Delete ${selectedSubStructure.name}`
+                    : "Delete"}
                 </MenuItem>
               </Menu>
             </ListItem>
@@ -82,36 +174,56 @@ const SubStructureList = ({
         )}
 
         {selectedStructure &&
-          dataStructure
-            .find((structure) => structure.id === selectedStructure.id) // Use id for comparison
-            ?.subStructures.map((subStructure) => (
-              <ListItem key={subStructure.id} disablePadding>
-                <ListItemButton
-                  onClick={() => handleSubStructureClick(subStructure)}
+          (selectedStructure.subStructures.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                minHeight: 200,
+              }}
+            >
+              <Typography>No data</Typography>
+            </Box>
+          ) : (
+            dataStructure
+              .find((structure) => structure.id === selectedStructure.id)
+              ?.subStructures.map((subStructure) => (
+                <ListItem
+                  key={subStructure.id}
+                  disablePadding
+                  sx={{
+                    backgroundColor:
+                      selectedId === subStructure.id
+                        ? grey[700]
+                        : "transparent",
+                    "&:hover": {
+                      backgroundColor: grey[700],
+                    },
+                  }}
                 >
-                  <ListItemText
-                    primary={subStructure.name}
-                    primaryTypographyProps={{ sx: { color: grey[50] } }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-
-        {selectedStructure && (
-          <GreyBackgroundButton
-            buttonText="Add"
-            onClick={() => setDialogOpen(true)}
-          />
-        )}
-        {selectedStructure && (
-          <AddStructureDialog
-            open={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            onSubmit={(name) => handleAddSubStructure(name)}
-            title="Add New Sub-Structure"
-          />
-        )}
+                  <ListItemButton
+                    onClick={() => handleListItemClick(subStructure)}
+                  >
+                    <ListItemText
+                      primary={subStructure.name}
+                      primaryTypographyProps={{ sx: { color: grey[50] } }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))
+          ))}
       </List>
+      <ActionDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        actionType={actionType}
+        structureName="Sub-structure"
+        newName={newName}
+        setNewName={setNewName}
+        onSubmit={handleSubmit}
+      />
     </Box>
   );
 };

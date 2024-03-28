@@ -31,7 +31,7 @@ const AddStructureDialog = ({ open, onClose, onSubmit, title }) => {
       fullWidth
       sx={{ "& .MuiDialog-paper": { bgcolor: grey[800], color: grey[50] } }}
     >
-      <DialogTitle sx={{ color: grey[50] }}>{title}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -43,14 +43,6 @@ const AddStructureDialog = ({ open, onClose, onSubmit, title }) => {
           variant="outlined"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          InputProps={{
-            style: {
-              color: grey[50],
-            },
-          }}
-          InputLabelProps={{
-            style: { color: grey[400] },
-          }}
         />
       </DialogContent>
       <DialogActions>

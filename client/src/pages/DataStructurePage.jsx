@@ -30,6 +30,14 @@ const DataStructurePage = () => {
       .get("data-structure")
       .then((response) => {
         const fetchedData = response.data.data;
+        // Update selectedStructure with the latest info
+        if (selectedStructure) {
+          const updatedSelectedStructure = fetchedData.find(
+            (structure) => structure.id === selectedStructure.id
+          );
+          setSelectedStructure(updatedSelectedStructure);
+          console.log(selectedStructure);
+        }
         setDataStructure(fetchedData);
         setLoading(false);
       })
@@ -64,7 +72,7 @@ const DataStructurePage = () => {
 
       <>
         <AuthenticatedNavbar />
-        <Container component="main" maxWidth="xl" sx={{ pt: 8, pb: 6 }}>
+        <Container component="main" maxWidth="lg" sx={{ pt: 8, pb: 6 }}>
           <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
             Data Structures
           </Typography>
