@@ -40,12 +40,11 @@ public class DataStructureController {
         }
         DataStructureEntity updatedDataStructure = dataStructureService.updateName(id, name);
         DataStructureDto updatedDataStructureDto = dataStructureMapper.mapTo(updatedDataStructure);
-        return Response.ok(updatedDataStructureDto, "Data structure updated successfully!");
+        return Response.ok(updatedDataStructureDto, "Name for the data structure is updated successfully!");
     }
 
     @DeleteMapping(path = "/{id}")
     public Response deleteDataStructure(@PathVariable("id") UUID id){
-
         DataStructureEntity dataStructureEntity = dataStructureService.delete(id);
         DataStructureDto deletedDataStructure = dataStructureMapper.mapTo(dataStructureEntity);
         return Response.ok(deletedDataStructure, deletedDataStructure.getName() + " deleted!");

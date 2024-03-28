@@ -25,10 +25,6 @@ public class SubStructureEntity {
 
     private String name;
 
-    public SubStructureEntity() {
-        this.id = UUID.randomUUID();
-    }
-
     @OneToMany(mappedBy = "subStructure", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ContentEntity> contents = new ArrayList<>();
 
@@ -36,6 +32,7 @@ public class SubStructureEntity {
         contents.add(contentEntity);
         contentEntity.setSubStructure(this);
     }
+
 }
 
 

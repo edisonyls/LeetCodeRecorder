@@ -35,12 +35,13 @@ public class SubStructureMapperImpl implements Mapper<SubStructureEntity, SubStr
     @Override
     public SubStructureEntity mapFrom(SubStructureDto subStructureDto) {
         SubStructureEntity subStructureEntity = modelMapper.map(subStructureDto, SubStructureEntity.class);
-        if (subStructureDto.getContents() != null && !subStructureDto.getContents().isEmpty()) {
-            List<ContentEntity> contentEntities = subStructureDto.getContents().stream()
-                    .map(contentDto -> modelMapper.map(contentDto, ContentEntity.class))
-                    .collect(Collectors.toList());
-            contentEntities.forEach(content -> content.setSubStructure(subStructureEntity)); // Set the parent
-            subStructureEntity.setContents(contentEntities);
+        subStructureEntity.getContents().clear();
+        if (subStructureDto.getContents() != null) {
+            for (ContentDto contentDto: subStructureDto.getContents()){
+                ContentEntity content = modelMapper.map(contentDto, ContentEntity.class);
+                content.setId(null);
+                subStructureEntity.addContent(content);
+            }
         }
         return subStructureEntity;
     }

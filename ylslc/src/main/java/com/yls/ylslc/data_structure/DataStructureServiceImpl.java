@@ -2,6 +2,7 @@ package com.yls.ylslc.data_structure;
 
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,7 @@ public class DataStructureServiceImpl implements DataStructureService{
     }
 
     @Override
+    @Transactional
     public DataStructureEntity delete(UUID id) {
         DataStructureEntity dataStructureEntity = dataStructureRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Data structure not found!"));
