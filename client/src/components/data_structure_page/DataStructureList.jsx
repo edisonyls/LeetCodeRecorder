@@ -14,14 +14,16 @@ import {
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axiosInstance from "../../config/axiosConfig";
-import ActionDialog from "./ActionDialog";
+import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
 
 const DataStructureList = ({
   dataStructure,
   handleMainStructureClick,
   fetchDataStructures,
+  addClicked,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [warningDialogOpen, setWaringDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(""); // Add, rename and delete
   const [anchorEl, setAnchorEl] = useState(null); // For the menu
   const [selectedId, setSelectedId] = useState(null); // storing the selected structure id
@@ -107,6 +109,10 @@ const DataStructureList = ({
   };
 
   const handleListItemClick = (structure) => {
+    if (addClicked) {
+      setWaringDialogOpen(true);
+      return;
+    }
     handleMainStructureClick(structure);
     setSelectedStructure(structure);
     setSelectedId(structure.id);
@@ -139,18 +145,18 @@ const DataStructureList = ({
             onClose={() => setAnchorEl(null)}
             sx={{
               padding: 0,
-              "& .MuiDialog-paper": { bgcolor: grey[800], color: grey[50] },
+              "& .MuiDialog-paper": { bgcolor: grey[900], color: grey[50] },
             }}
           >
             <MenuItem
               onClick={() => handleMenuItemClick("Add")}
-              sx={{ color: grey[800] }}
+              sx={{ color: grey[900] }}
             >
               Add
             </MenuItem>
             <MenuItem
               onClick={() => handleMenuItemClick("Rename")}
-              sx={{ color: grey[800] }}
+              sx={{ color: grey[900] }}
               disabled={!selectedId}
             >
               {selectedStructure
@@ -159,7 +165,7 @@ const DataStructureList = ({
             </MenuItem>
             <MenuItem
               onClick={() => handleMenuItemClick("Delete")}
-              sx={{ color: grey[800] }}
+              sx={{ color: grey[900] }}
               disabled={!selectedId}
             >
               {selectedStructure
@@ -176,32 +182,39 @@ const DataStructureList = ({
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
-              minHeight: 200,
+              minHeight: 300,
             }}
           >
             <Typography>No data</Typography>
           </Box>
         ) : (
-          dataStructure.map((structure) => (
-            <ListItem
-              key={structure.id}
-              disablePadding
-              sx={{
-                backgroundColor:
-                  selectedId === structure.id ? grey[700] : "transparent",
-                "&:hover": {
-                  backgroundColor: grey[700],
-                },
-              }}
-            >
-              <ListItemButton onClick={() => handleListItemClick(structure)}>
-                <ListItemText
-                  primary={structure.name}
-                  primaryTypographyProps={{ sx: { color: grey[50] } }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))
+          <Box
+            sx={{
+              height: "100%",
+              minHeight: 300,
+            }}
+          >
+            {dataStructure.map((structure) => (
+              <ListItem
+                key={structure.id}
+                disablePadding
+                sx={{
+                  backgroundColor:
+                    selectedId === structure.id ? grey[700] : "transparent",
+                  "&:hover": {
+                    backgroundColor: grey[700],
+                  },
+                }}
+              >
+                <ListItemButton onClick={() => handleListItemClick(structure)}>
+                  <ListItemText
+                    primary={structure.name}
+                    primaryTypographyProps={{ sx: { color: grey[50] } }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </Box>
         )}
       </List>
       <ActionDialog
@@ -212,6 +225,12 @@ const DataStructureList = ({
         newName={newName}
         setNewName={setNewName}
         onSubmit={handleSubmit}
+      />
+      <WarningDialog
+        dialogOpen={warningDialogOpen}
+        onClose={() => {
+          setWaringDialogOpen(false);
+        }}
       />
     </Box>
   );

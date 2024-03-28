@@ -14,15 +14,17 @@ import {
 import { grey } from "@mui/material/colors";
 import axiosInstance from "../../config/axiosConfig";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ActionDialog from "./ActionDialog";
+import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
 
 const SubStructureList = ({
   selectedStructure,
   dataStructure,
   handleSubStructureClick,
   fetchDataStructures,
+  addClicked,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [warningDialogOpen, setWaringDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(""); // Add, rename and delete
   const [selectedId, setSelectedId] = useState(null); // storing the selected sub-structure id
   const [anchorEl, setAnchorEl] = useState(null); // For the menu
@@ -111,6 +113,10 @@ const SubStructureList = ({
   };
 
   const handleListItemClick = (subStructure) => {
+    if (addClicked) {
+      setWaringDialogOpen(true);
+      return;
+    }
     handleSubStructureClick(subStructure);
     setSelectedSubStructure(subStructure);
     setSelectedId(subStructure.id);
@@ -140,18 +146,18 @@ const SubStructureList = ({
                 onClose={() => setAnchorEl(null)}
                 sx={{
                   padding: 0,
-                  "& .MuiDialog-paper": { bgcolor: grey[800], color: grey[50] },
+                  "& .MuiDialog-paper": { bgcolor: grey[900], color: grey[50] },
                 }}
               >
                 <MenuItem
                   onClick={() => handleMenuItemClick("Add")}
-                  sx={{ color: grey[800] }}
+                  sx={{ color: grey[900] }}
                 >
                   Add
                 </MenuItem>
                 <MenuItem
                   onClick={() => handleMenuItemClick("Rename")}
-                  sx={{ color: grey[800] }}
+                  sx={{ color: grey[900] }}
                   disabled={!selectedId}
                 >
                   {selectedSubStructure
@@ -160,7 +166,7 @@ const SubStructureList = ({
                 </MenuItem>
                 <MenuItem
                   onClick={() => handleMenuItemClick("Delete")}
-                  sx={{ color: grey[800] }}
+                  sx={{ color: grey[900] }}
                   disabled={!selectedId}
                 >
                   {selectedSubStructure
@@ -181,38 +187,45 @@ const SubStructureList = ({
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
-                minHeight: 200,
+                minHeight: 300,
               }}
             >
               <Typography>No data</Typography>
             </Box>
           ) : (
-            dataStructure
-              .find((structure) => structure.id === selectedStructure.id)
-              ?.subStructures.map((subStructure) => (
-                <ListItem
-                  key={subStructure.id}
-                  disablePadding
-                  sx={{
-                    backgroundColor:
-                      selectedId === subStructure.id
-                        ? grey[700]
-                        : "transparent",
-                    "&:hover": {
-                      backgroundColor: grey[700],
-                    },
-                  }}
-                >
-                  <ListItemButton
-                    onClick={() => handleListItemClick(subStructure)}
+            <Box
+              sx={{
+                height: "100%",
+                minHeight: 300,
+              }}
+            >
+              {dataStructure
+                .find((structure) => structure.id === selectedStructure.id)
+                ?.subStructures.map((subStructure) => (
+                  <ListItem
+                    key={subStructure.id}
+                    disablePadding
+                    sx={{
+                      backgroundColor:
+                        selectedId === subStructure.id
+                          ? grey[700]
+                          : "transparent",
+                      "&:hover": {
+                        backgroundColor: grey[700],
+                      },
+                    }}
                   >
-                    <ListItemText
-                      primary={subStructure.name}
-                      primaryTypographyProps={{ sx: { color: grey[50] } }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))
+                    <ListItemButton
+                      onClick={() => handleListItemClick(subStructure)}
+                    >
+                      <ListItemText
+                        primary={subStructure.name}
+                        primaryTypographyProps={{ sx: { color: grey[50] } }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+            </Box>
           ))}
       </List>
       <ActionDialog
@@ -223,6 +236,12 @@ const SubStructureList = ({
         newName={newName}
         setNewName={setNewName}
         onSubmit={handleSubmit}
+      />
+      <WarningDialog
+        dialogOpen={warningDialogOpen}
+        onClose={() => {
+          setWaringDialogOpen(false);
+        }}
       />
     </Box>
   );

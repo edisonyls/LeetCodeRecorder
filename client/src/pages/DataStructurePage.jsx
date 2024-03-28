@@ -19,14 +19,15 @@ const DataStructurePage = () => {
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [selectedSubStructure, setSelectedSubStructure] = useState("");
   const [loading, setLoading] = useState(false);
+  const [addClicked, setAddClicked] = useState(false);
 
   useEffect(() => {
     fetchDataStructures();
   }, []);
 
-  const fetchDataStructures = () => {
+  const fetchDataStructures = async () => {
     setLoading(true);
-    axiosInstance
+    await axiosInstance
       .get("data-structure")
       .then((response) => {
         const fetchedData = response.data.data;
@@ -72,7 +73,7 @@ const DataStructurePage = () => {
 
       <>
         <AuthenticatedNavbar />
-        <Container component="main" maxWidth="lg" sx={{ pt: 8, pb: 6 }}>
+        <Container component="main" maxWidth="lg" sx={{ pt: 2, pb: 6 }}>
           <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
             Data Structures
           </Typography>
@@ -94,22 +95,36 @@ const DataStructurePage = () => {
                   dataStructure={dataStructure}
                   handleMainStructureClick={handleMainStructureClick}
                   fetchDataStructures={fetchDataStructures}
+                  addClicked={addClicked}
                 />
                 <SubStructureList
                   selectedStructure={selectedStructure}
                   dataStructure={dataStructure}
                   handleSubStructureClick={handleSubStructureClick}
                   fetchDataStructures={fetchDataStructures}
+                  addClicked={addClicked}
                 />
               </Box>
             </Grid>
 
             <Grid item xs={12} md={8}>
-              <ContentDisplay
-                selectedSubStructure={selectedSubStructure}
-                selectedStructure={selectedStructure}
-                fetchDataStructures={fetchDataStructures}
-              />
+              <Box
+                sx={{
+                  bgcolor: grey[800],
+                  color: grey[50],
+                  p: 2,
+                  borderRadius: 1,
+                  minHeight: 300,
+                  overflow: "auto",
+                }}
+              >
+                <ContentDisplay
+                  selectedStructure={selectedStructure}
+                  selectedSubStructure={selectedSubStructure}
+                  addClicked={addClicked}
+                  setAddClicked={setAddClicked}
+                />
+              </Box>
             </Grid>
           </Grid>
         </Container>

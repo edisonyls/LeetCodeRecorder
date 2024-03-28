@@ -6,11 +6,12 @@ import {
   TextField,
   Typography,
   DialogActions,
+  DialogContentText,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { LightGreyBackgroundButton } from "../generic/GenericButton";
 
-const ActionDialog = ({
+export const ActionDialog = ({
   open,
   onClose,
   actionType,
@@ -26,12 +27,12 @@ const ActionDialog = ({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="xs" // Choose a value that fits your needs
+      maxWidth="xs"
       fullWidth={true}
       sx={{
         "& .MuiPaper-root": { backgroundColor: grey[50] },
         "& .MuiTypography-root, & .MuiInputBase-input, & .MuiButton-root": {
-          color: grey[800],
+          color: grey[900],
         },
       }}
     >
@@ -49,10 +50,10 @@ const ActionDialog = ({
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             InputLabelProps={{
-              style: { color: grey[800] },
+              style: { color: grey[900] },
             }}
             inputProps={{
-              style: { color: grey[800] },
+              style: { color: grey[900] },
             }}
           />
         )}
@@ -71,4 +72,59 @@ const ActionDialog = ({
   );
 };
 
-export default ActionDialog;
+export const ContentDialog = ({
+  isOpen,
+  onClose,
+  title,
+  content,
+  onConfirm,
+}) => {
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      sx={{
+        "& .MuiPaper-root": { backgroundColor: grey[50] },
+        "& .MuiTypography-root, & .MuiInputBase-input, & .MuiButton-root": {
+          color: grey[900],
+        },
+      }}
+    >
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{content}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <LightGreyBackgroundButton onClick={onClose} buttonText="No" />
+        <LightGreyBackgroundButton onClick={onConfirm} buttonText="Yes" />
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const WarningDialog = ({ dialogOpen, onClose }) => {
+  return (
+    <Dialog
+      open={dialogOpen}
+      onClose={onClose}
+      maxWidth="xs"
+      fullWidth={true}
+      sx={{
+        "& .MuiPaper-root": { backgroundColor: grey[50] },
+        "& .MuiTypography-root, & .MuiInputBase-input, & .MuiButton-root": {
+          color: grey[900],
+        },
+      }}
+    >
+      <DialogTitle>You are editing.</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Save or amend your changes before selecting the others.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <LightGreyBackgroundButton onClick={onClose} buttonText="OK" />
+      </DialogActions>
+    </Dialog>
+  );
+};
