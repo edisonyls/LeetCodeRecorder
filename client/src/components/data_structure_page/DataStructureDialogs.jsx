@@ -102,11 +102,18 @@ export const ContentDialog = ({
   );
 };
 
-export const WarningDialog = ({ dialogOpen, onClose }) => {
+export const WarningDialog = ({
+  dialogOpen,
+  onClose,
+  onCancel,
+  optionNumber,
+  title,
+  text,
+}) => {
   return (
     <Dialog
       open={dialogOpen}
-      onClose={onClose}
+      onClose={onCancel}
       maxWidth="xs"
       fullWidth={true}
       sx={{
@@ -116,15 +123,20 @@ export const WarningDialog = ({ dialogOpen, onClose }) => {
         },
       }}
     >
-      <DialogTitle>You are editing.</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Save or amend your changes before selecting the others.
-        </DialogContentText>
+        <DialogContentText>{text}</DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <LightGreyBackgroundButton onClick={onClose} buttonText="OK" />
-      </DialogActions>
+      {optionNumber === 2 ? (
+        <DialogActions>
+          <LightGreyBackgroundButton onClick={onCancel} buttonText="Cancel" />
+          <LightGreyBackgroundButton onClick={onClose} buttonText="Confirm" />
+        </DialogActions>
+      ) : (
+        <DialogActions>
+          <LightGreyBackgroundButton onClick={onClose} buttonText="OK" />
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

@@ -68,6 +68,7 @@ const QuestionDetails = () => {
           );
           const imageBlob = response.data;
           const imageObjectURL = URL.createObjectURL(imageBlob);
+
           newImages[solution.imageId] = imageObjectURL;
         } catch (error) {
           console.error("Failed to fetch image", error);

@@ -20,6 +20,7 @@ const DataStructurePage = () => {
   const [selectedSubStructure, setSelectedSubStructure] = useState("");
   const [loading, setLoading] = useState(false);
   const [addClicked, setAddClicked] = useState(false);
+  const [content, setContent] = useState(null);
 
   useEffect(() => {
     fetchDataStructures();
@@ -37,7 +38,6 @@ const DataStructurePage = () => {
             (structure) => structure.id === selectedStructure.id
           );
           setSelectedStructure(updatedSelectedStructure);
-          console.log(selectedStructure);
         }
         setDataStructure(fetchedData);
         setLoading(false);
@@ -54,6 +54,9 @@ const DataStructurePage = () => {
 
   const handleSubStructureClick = (subStructure) => {
     setSelectedSubStructure(subStructure);
+    if (!subStructure === null && subStructure.contents.length !== 0) {
+      setContent(subStructure.contents[0].content);
+    }
   };
 
   return (
@@ -114,7 +117,7 @@ const DataStructurePage = () => {
                   color: grey[50],
                   p: 2,
                   borderRadius: 1,
-                  minHeight: 300,
+                  minHeight: 380,
                   overflow: "auto",
                 }}
               >
@@ -123,6 +126,7 @@ const DataStructurePage = () => {
                   selectedSubStructure={selectedSubStructure}
                   addClicked={addClicked}
                   setAddClicked={setAddClicked}
+                  content={content}
                 />
               </Box>
             </Grid>

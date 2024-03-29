@@ -227,6 +227,9 @@ const DataStructureList = ({
         onSubmit={handleSubmit}
       />
       <WarningDialog
+        title="You are editing."
+        text="Save or amend your changes before selecting the others."
+        optionNumber={1}
         dialogOpen={warningDialogOpen}
         onClose={() => {
           setWaringDialogOpen(false);
