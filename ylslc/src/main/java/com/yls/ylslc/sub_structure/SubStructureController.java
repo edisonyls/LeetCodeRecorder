@@ -2,8 +2,12 @@ package com.yls.ylslc.sub_structure;
 
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,11 +27,6 @@ public class SubStructureController {
         return Response.ok(savedSubstructureDto, "Sub structure created successfully!");
     }
 
-    public SubStructureController(SubStructureService subStructureService, Mapper<SubStructureEntity, SubStructureDto> subStructureMapper) {
-        this.subStructureService = subStructureService;
-        this.subStructureMapper = subStructureMapper;
-    }
-
     @PatchMapping(path = "/{id}")
     public Response updateSubStructureByName(@PathVariable("id") UUID id, @RequestBody Map<String, String> updateRequest){
         String name = updateRequest.get("name");
@@ -39,10 +38,55 @@ public class SubStructureController {
         return Response.ok(updatedSubStructure, "Name for the sub-structure is updated successfully");
     }
 
+    @PatchMapping(path = "content/{id}")
+    public Response updateSubStructureByContent(@PathVariable("id") UUID id, @RequestBody Map<String, String> updateRequest){
+        String content = updateRequest.get("content");
+        if (!subStructureService.isExist(id)){
+            return Response.failed(HttpStatus.NOT_FOUND, "Sub-structure not found!");
+        }
+        SubStructureEntity subStructureEntity = subStructureService.updateContent(id, content);
+        SubStructureDto updatedSubStructure = subStructureMapper.mapTo(subStructureEntity);
+        return Response.ok(updatedSubStructure, "Content for sub-structure is updated successfully!");
+    }
+
+
     @DeleteMapping(path = "/{id}")
     public Response deleteSubStructure(@PathVariable("id") UUID id){
         SubStructureEntity subStructureEntity = subStructureService.delete(id);
         SubStructureDto deletedSubStructure = subStructureMapper.mapTo(subStructureEntity);
         return Response.ok(deletedSubStructure, deletedSubStructure.getName() + (" deleted successfully!"));
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
+    public Response uploadContentImages(@RequestPart("image") MultipartFile image,
+                                 @RequestPart("subStructureName") String subStructureName){
+        String imageId = subStructureService.uploadImages(image, subStructureName);
+        return Response.ok(imageId, "Image saved successfully!");
+    }
+
+    @GetMapping("image/{subStructureName}/{imageId}")
+    public ResponseEntity<byte[]> getContentImage(@PathVariable String subStructureName, @PathVariable String imageId) {
+        byte[] imageData = subStructureService.getImage(subStructureName, imageId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(getMediaTypeForImageId(imageId));
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    private MediaType getMediaTypeForImageId(String imageId) {
+        if (imageId.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
+            return MediaType.IMAGE_JPEG;
+        } else {
+            // Default or fallback content type
+            return MediaType.APPLICATION_OCTET_STREAM;
+        }
+    }
+
+    public SubStructureController(SubStructureService subStructureService, Mapper<SubStructureEntity, SubStructureDto> subStructureMapper) {
+        this.subStructureService = subStructureService;
+        this.subStructureMapper = subStructureMapper;
     }
 }

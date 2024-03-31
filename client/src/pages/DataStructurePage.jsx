@@ -55,8 +55,8 @@ const DataStructurePage = () => {
   const handleSubStructureClick = (subStructure) => {
     setSelectedSubStructure(subStructure);
     console.log(subStructure);
-    if (subStructure !== null && subStructure.contents.length !== 0) {
-      setContent(subStructure.contents[0].content);
+    if (subStructure !== null && subStructure.content !== null) {
+      setContent(subStructure.content);
     } else {
       setContent(null);
     }

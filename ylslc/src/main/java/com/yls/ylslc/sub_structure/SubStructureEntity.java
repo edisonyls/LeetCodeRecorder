@@ -1,13 +1,10 @@
 package com.yls.ylslc.sub_structure;
 
-import com.yls.ylslc.content.ContentEntity;
 import com.yls.ylslc.data_structure.DataStructureEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -25,14 +22,9 @@ public class SubStructureEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "subStructure", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ContentEntity> contents = new ArrayList<>();
-
-    public void addContent(ContentEntity contentEntity){
-        contents.add(contentEntity);
-        contentEntity.setSubStructure(this);
-    }
-
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String content;
 }
 
 

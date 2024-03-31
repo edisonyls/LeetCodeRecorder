@@ -8,7 +8,7 @@ import EditorWithMenuBar from "./EditorWithMenuBar";
 const fetchImage = async (imageId, subStructureName) => {
   try {
     const response = await axiosInstance.get(
-      `content/image/${subStructureName}/${imageId}`,
+      `sub-structure/image/${subStructureName}/${imageId}`,
       { responseType: "blob" }
     );
     return URL.createObjectURL(response.data);
@@ -113,7 +113,7 @@ const ContentDisplay = ({
         setAddClicked={setAddClicked}
       />
     );
-  } else if (selectedSubStructure.contents.length !== 0) {
+  } else if (selectedSubStructure.content !== null) {
     return (
       <>
         <ContentArea safeHtml={safeHtml} name={selectedSubStructure?.name} />

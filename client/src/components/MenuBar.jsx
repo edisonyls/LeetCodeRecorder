@@ -40,7 +40,7 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
     fileData.append("subStructureName", selectedSubStructure.name);
     try {
       const response = await axiosInstance.post(
-        "content/upload-image",
+        "sub-structure/upload-image",
         fileData,
         {
           headers: {
@@ -85,7 +85,7 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
         setContentUploading(true);
         const stringContent = JSON.stringify(contentJsonObject);
         await axiosInstance
-          .post(`content/${selectedSubStructure.id}`, {
+          .patch(`sub-structure/content/${selectedSubStructure.id}`, {
             content: stringContent,
           })
           .then(() => {
@@ -141,9 +141,6 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
       alert("Please select an image file.");
     }
   };
-
-  if (imageUploading) {
-  }
 
   return (
     <Box
