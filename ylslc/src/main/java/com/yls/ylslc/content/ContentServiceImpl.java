@@ -11,15 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
-public class ContentServiceImpl implements ContentService{
+public class ContentServiceImpl implements ContentService {
     private final ContentRepository contentRepository;
     private final SubStructureRepository subStructureRepository;
-    private S3Service s3Service;
-    private S3Buckets s3Buckets;
-    private UserService userService;
+    private final S3Service s3Service;
+    private final S3Buckets s3Buckets;
+    private final UserService userService;
 
     public ContentServiceImpl(ContentRepository contentRepository, SubStructureRepository subStructureRepository, S3Service s3Service, S3Buckets s3Buckets, UserService userService) {
         this.contentRepository = contentRepository;
@@ -29,19 +28,34 @@ public class ContentServiceImpl implements ContentService{
         this.userService = userService;
     }
 
+
     @Override
-    public List<ContentEntity> createMultipleContent(UUID subStructureEntityId, List<ContentEntity> contentEntities) {
-        SubStructureEntity subStructureEntity = subStructureRepository.findById(subStructureEntityId)
-                .orElseThrow(() -> new IllegalStateException("SubStructureEntity not found"));
+    public String uploadImages(MultipartFile image, String subStructureName) {
+        String originalImageName = image.getOriginalFilename();
+        String fileExtension = "";
 
-        // Associate each content with the sub-structure
-        contentEntities.forEach(contentEntity -> {
-            contentEntity.setSubStructure(subStructureEntity);
-            subStructureEntity.addContent(contentEntity);
-        });
+        if (originalImageName != null && originalImageName.contains(".")) {
+            fileExtension = originalImageName.substring(originalImageName.lastIndexOf("."));
+        }
+        String imageId = UUID.randomUUID() + fileExtension;
 
-        // Save all content entities
-        return contentRepository.saveAll(contentEntities);
+        // Determines the content type (MIME type) of the file. If the content type is available, it uses that;
+        // otherwise, it defaults to "application/octet-stream", a generic binary stream.
+        String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
+
+        String username = userService.getCurrentUser().getUsername();
+
+        try {
+            s3Service.putObject(
+                    s3Buckets.getStorageLocation(),
+                    String.format("content-images/%s/%s/%s", username,subStructureName, imageId),
+                    image.getBytes(),
+                    contentType // Pass the content type here
+            );
+            return imageId;
+        } catch (IOException e) {
+            return "FAILED";
+        }
     }
 
     @Override
@@ -62,10 +76,11 @@ public class ContentServiceImpl implements ContentService{
     }
 
     @Override
-    public String uploadImages(MultipartFile image, UUID subStructureId) {
-        return null;
+    public byte[] getImage(String subStructureName, String imageId) {
+       String username = userService.getCurrentUser().getUsername();
+       return s3Service.getObject(
+               s3Buckets.getStorageLocation(),
+               "content-images/%s/%s/%s".formatted(username,subStructureName, imageId)
+       );
     }
-
-
-
 }

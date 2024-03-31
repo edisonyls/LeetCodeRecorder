@@ -20,14 +20,7 @@ public class ContentEntity {
     @JoinColumn(name="sub_structure_id")
     private SubStructureEntity subStructure;
 
-    @Enumerated(value = EnumType.STRING)
-    private ContentType type;
-
+    @Lob
     @Column(columnDefinition = "TEXT")
-    private String text;
-
-    private String imageId;
-
-
-
+    private String content;
 }

@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  LinearProgress,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { GreyBackgroundButton } from "../generic/GenericButton";
 import axiosInstance from "../../config/axiosConfig";
 import EditorWithMenuBar from "./EditorWithMenuBar";
-import DOMPurify from "dompurify";
 
 const fetchImage = async (imageId, subStructureName) => {
   try {
@@ -89,7 +83,6 @@ const ContentDisplay = ({
   useEffect(() => {
     if (!selectedSubStructure) return;
     setLoading(true);
-
     (async () => {
       try {
         const parsedContent = JSON.parse(content);
@@ -104,7 +97,7 @@ const ContentDisplay = ({
         setLoading(false);
       }
     })();
-  }, [content, selectedSubStructure?.name]);
+  }, [content, selectedSubStructure, addClicked]);
 
   if (!selectedStructure) {
     return <NoSelectionMessage message="Please select a data structure." />;
@@ -117,11 +110,14 @@ const ContentDisplay = ({
       <EditorArea
         onClose={() => setAddClicked(false)}
         selectedSubStructure={selectedSubStructure}
+        setAddClicked={setAddClicked}
       />
     );
   } else if (selectedSubStructure.contents.length !== 0) {
     return (
-      <ContentArea safeHtml={safeHtml} name={selectedSubStructure?.name} />
+      <>
+        <ContentArea safeHtml={safeHtml} name={selectedSubStructure?.name} />
+      </>
     );
   } else {
     return (
@@ -185,7 +181,7 @@ const LoadingState = ({ name }) => (
   </Box>
 );
 
-const EditorArea = ({ onClose, selectedSubStructure }) => (
+const EditorArea = ({ onClose, selectedSubStructure, setAddClicked }) => (
   <Box>
     <Typography
       variant="h5"
@@ -202,6 +198,7 @@ const EditorArea = ({ onClose, selectedSubStructure }) => (
       <EditorWithMenuBar
         onClose={onClose}
         selectedSubStructure={selectedSubStructure}
+        setAddClicked={setAddClicked}
       />
     </Box>
   </Box>

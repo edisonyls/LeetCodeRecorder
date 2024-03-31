@@ -17,13 +17,18 @@ const extensions = [
 
 const content = ``;
 
-const EditorWithMenuBar = ({ onClose, selectedSubStructure }) => {
+const EditorWithMenuBar = ({
+  onClose,
+  selectedSubStructure,
+  setAddClicked,
+}) => {
   return (
     <EditorProvider
       slotBefore={
         <MenuBar
           onClose={onClose}
           selectedSubStructure={selectedSubStructure}
+          setAddClicked={setAddClicked}
         />
       }
       extensions={extensions}

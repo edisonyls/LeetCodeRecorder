@@ -18,12 +18,13 @@ import { grey } from "@mui/material/colors";
 import { WarningDialog } from "./data_structure_page/DataStructureDialogs";
 import axiosInstance from "../config/axiosConfig";
 
-const MenuBar = ({ onClose, selectedSubStructure }) => {
+const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
   const { editor } = useCurrentEditor();
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [contentUploading, setContentUploading] = useState(false);
+  const [emptyContentOpen, setEmptyContentOpen] = useState(false);
 
   const open = Boolean(anchorEl);
 
@@ -60,29 +61,40 @@ const MenuBar = ({ onClose, selectedSubStructure }) => {
   const handleSave = async () => {
     if (editor && selectedSubStructure) {
       const contentJsonObject = editor.getJSON();
-      setImageUploading(true);
-      for (const node of contentJsonObject.content) {
-        if (node.type === "image") {
-          const blobUrl = node.attrs.src;
-          const imageFile = await convertBlobUrlToFile(blobUrl);
-          const imageId = await uploadImageToBackend(imageFile);
-          //   // Replace the src with the new imageId or URL from the backend
-          node.attrs.src = imageId;
+      const isEmpty = contentJsonObject.content.every((node) => {
+        return (
+          node.type === "paragraph" &&
+          (!node.content || node.content.length === 0)
+        );
+      });
+      if (isEmpty) {
+        setEmptyContentOpen(true);
+        return;
+      } else {
+        setImageUploading(true);
+        for (const node of contentJsonObject.content) {
+          if (node.type === "image") {
+            const blobUrl = node.attrs.src;
+            const imageFile = await convertBlobUrlToFile(blobUrl);
+            const imageId = await uploadImageToBackend(imageFile);
+            //   // Replace the src with the new imageId or URL from the backend
+            node.attrs.src = imageId;
+          }
         }
+        setImageUploading(false);
+        setContentUploading(true);
+        const stringContent = JSON.stringify(contentJsonObject);
+        await axiosInstance
+          .post(`content/${selectedSubStructure.id}`, {
+            content: stringContent,
+          })
+          .then(() => {
+            setAddClicked(false);
+          })
+          .catch((error) => {
+            console.log("Failed to upload content: " + error);
+          });
       }
-      setImageUploading(false);
-      setContentUploading(true);
-      const stringContent = JSON.stringify(contentJsonObject);
-      await axiosInstance
-        .post(`content/${selectedSubStructure.id}`, {
-          content: stringContent,
-        })
-        .then(() => {
-          console.log("Success");
-        })
-        .catch((error) => {
-          console.log("Failed to upload content: " + error);
-        });
     } else {
       console.log("Error in editor");
     }
@@ -130,6 +142,9 @@ const MenuBar = ({ onClose, selectedSubStructure }) => {
     }
   };
 
+  if (imageUploading) {
+  }
+
   return (
     <Box
       sx={{
@@ -146,6 +161,14 @@ const MenuBar = ({ onClose, selectedSubStructure }) => {
           optionNumber={2}
           onClose={onClose}
           onCancel={() => setDialogOpen(false)}
+        />
+      )}
+      {emptyContentOpen && (
+        <WarningDialog
+          dialogOpen={emptyContentOpen}
+          title="Empty Content!"
+          text="You have not yet entered anything in the editor."
+          onClose={() => setEmptyContentOpen(false)}
         />
       )}
       <Box>

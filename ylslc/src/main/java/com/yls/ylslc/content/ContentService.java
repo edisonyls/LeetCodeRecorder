@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ContentService {
-    List<ContentEntity> createMultipleContent(UUID subStructureEntityId, List<ContentEntity> contentEntities);
-    String uploadImages(MultipartFile image, UUID subStructureId);
+    String uploadImages(MultipartFile image, String subStructureName);
 
     ContentEntity createContent(UUID subStructureEntityId, ContentEntity contentEntity);
 
     List<ContentEntity> getContents(UUID subStructureId);
+
+    byte[] getImage(String subStructureName, String imageId);
 }

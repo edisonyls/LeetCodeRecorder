@@ -13,7 +13,5 @@ import java.util.UUID;
 @Builder
 public class ContentDto {
     private UUID id;
-    private ContentType type;
-    private String text;
-    private String imageId;
+    private String content;
 }
