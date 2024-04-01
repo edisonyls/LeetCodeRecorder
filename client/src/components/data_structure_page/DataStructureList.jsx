@@ -15,6 +15,8 @@ import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axiosInstance from "../../config/axiosConfig";
 import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
+import { useDataStructure } from "../../context/dataStructureContext";
+import { DataStructureHooks } from "../../hooks/DataStructureHooks";
 
 const DataStructureList = ({
   dataStructure,
@@ -22,6 +24,8 @@ const DataStructureList = ({
   fetchDataStructures,
   addClicked,
 }) => {
+  const { addDataStructure, renameDataStructure, deleteDataStructure } =
+    DataStructureHooks();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [warningDialogOpen, setWaringDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(""); // Add, rename and delete
@@ -51,56 +55,23 @@ const DataStructureList = ({
   const handleSubmit = () => {
     switch (actionType) {
       case "Add":
-        handleAddDataStructure(newName);
+        addDataStructure(newName);
+        setDialogOpen(false);
         break;
       case "Rename":
-        handleRenameDataStructure(selectedId, newName);
+        renameDataStructure(selectedId, newName);
+        setDialogOpen(false);
         break;
       case "Delete":
-        handleDeleteDataStructure(selectedId);
+        deleteDataStructure(selectedId);
+        handleMainStructureClick(null);
+        setSelectedId(null);
+        setDialogOpen(false);
         break;
       default:
         break;
     }
     handleDialogClose();
-  };
-
-  const handleAddDataStructure = async (name) => {
-    await axiosInstance
-      .post("data-structure", { name, subStructures: [] })
-      .then(() => {
-        fetchDataStructures();
-        setDialogOpen(false);
-      })
-      .catch((error) => {
-        console.error("Failed to add new data structure:", error);
-      });
-  };
-
-  const handleRenameDataStructure = async (id, newName) => {
-    await axiosInstance
-      .patch(`data-structure/${id}`, { name: newName }) // Assuming the backend expects a JSON object
-      .then(() => {
-        fetchDataStructures(); // Refresh the list to show the updated name
-        setDialogOpen(false);
-      })
-      .catch((error) => {
-        console.error("Failed to rename data structure:", error);
-      });
-  };
-
-  const handleDeleteDataStructure = async (id) => {
-    await axiosInstance
-      .delete(`data-structure/${id}`)
-      .then(() => {
-        handleMainStructureClick(null);
-        setSelectedId(null);
-        setDialogOpen(false);
-        fetchDataStructures();
-      })
-      .catch((error) => {
-        console.error("Failed to delete data structure:", error);
-      });
   };
 
   const handleMenuItemClick = (type) => {

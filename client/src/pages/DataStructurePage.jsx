@@ -9,44 +9,24 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
-import axiosInstance from "../config/axiosConfig";
 import DataStructureList from "../components/data_structure_page/DataStructureList";
 import SubStructureList from "../components/data_structure_page/SubStructureList";
 import ContentDisplay from "../components/data_structure_page/ContentDisplay";
+import { DataStructureHooks } from "../hooks/DataStructureHooks";
+import { useDataStructure } from "../context/dataStructureContext";
 
 const DataStructurePage = () => {
-  const [dataStructure, setDataStructure] = useState([]);
+  const { state } = useDataStructure();
+  const { dataStructures, loading, error } = state;
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [selectedSubStructure, setSelectedSubStructure] = useState("");
-  const [loading, setLoading] = useState(false);
   const [addClicked, setAddClicked] = useState(false);
   const [content, setContent] = useState(null);
+  const { fetchDataStructures } = DataStructureHooks();
 
   useEffect(() => {
     fetchDataStructures();
   }, []);
-
-  const fetchDataStructures = async () => {
-    setLoading(true);
-    await axiosInstance
-      .get("data-structure")
-      .then((response) => {
-        const fetchedData = response.data.data;
-        // Update selectedStructure with the latest info
-        if (selectedStructure) {
-          const updatedSelectedStructure = fetchedData.find(
-            (structure) => structure.id === selectedStructure.id
-          );
-          setSelectedStructure(updatedSelectedStructure);
-        }
-        setDataStructure(fetchedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch data structures:", error);
-        setLoading(false);
-      });
-  };
 
   const handleMainStructureClick = (structure) => {
     setSelectedStructure(structure);
@@ -70,6 +50,7 @@ const DataStructurePage = () => {
         minHeight: "100vh",
       }}
     >
+      {/* {console.log(dataStructure)} */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -98,14 +79,14 @@ const DataStructurePage = () => {
                 }}
               >
                 <DataStructureList
-                  dataStructure={dataStructure}
+                  dataStructure={dataStructures}
                   handleMainStructureClick={handleMainStructureClick}
                   fetchDataStructures={fetchDataStructures}
                   addClicked={addClicked}
                 />
                 <SubStructureList
                   selectedStructure={selectedStructure}
-                  dataStructure={dataStructure}
+                  dataStructure={dataStructures}
                   handleSubStructureClick={handleSubStructureClick}
                   fetchDataStructures={fetchDataStructures}
                   addClicked={addClicked}
