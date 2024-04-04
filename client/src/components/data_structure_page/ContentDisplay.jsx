@@ -38,6 +38,61 @@ const jsonToHtml = async (node, subStructureId) => {
         )
       );
       return `<p>${paragraphContent.join("")}</p>`;
+    case "heading":
+      const headingContent = await Promise.all(
+        node.content.map((contentNode) =>
+          jsonToHtml(contentNode, subStructureId)
+        )
+      );
+      return `<h${node.attrs.level}>${headingContent.join("")}</h${
+        node.attrs.level
+      }>`;
+
+    case "bulletList":
+      const bulletListItems = await Promise.all(
+        node.content.map((item) => jsonToHtml(item, subStructureId))
+      );
+      return `<ul>${bulletListItems.join("")}</ul>`;
+
+    case "orderedList":
+      const orderedListItems = await Promise.all(
+        node.content.map((item) => jsonToHtml(item, subStructureId))
+      );
+      return `<ol>${orderedListItems.join("")}</ol>`;
+
+    case "listItem":
+      const listItemContent = await Promise.all(
+        node.content.map((contentNode) =>
+          jsonToHtml(contentNode, subStructureId)
+        )
+      );
+      return `<li>${listItemContent.join("")}</li>`;
+
+    case "blockquote":
+      const blockquoteContent = await Promise.all(
+        node.content.map((contentNode) =>
+          jsonToHtml(contentNode, subStructureId)
+        )
+      );
+      return `<blockquote style="color: #fafafa; border-left: 4px solid #ccc; padding-left: 16px; margin-left: 0; font-style: italic;">${blockquoteContent.join(
+        ""
+      )}</blockquote>`;
+
+    case "codeBlock":
+      const codeBlockContent = node.content
+        ? await Promise.all(
+            node.content.map((contentNode) =>
+              jsonToHtml(contentNode, subStructureId)
+            )
+          )
+        : [node.text || ""];
+      return `<pre style="background-color: black; color: #fafafa; padding: 16px; border-radius: 8px; font-family: 'Jet Brain', monospace;"><code>${codeBlockContent.join(
+        ""
+      )}</code></pre>`;
+
+    case "horizontalRule":
+      return `<hr style="border: 0; height: 2px; background-color: #fafafa;" />`;
+
     case "text":
       let text = node.text;
       if (node.marks) {
@@ -53,7 +108,7 @@ const jsonToHtml = async (node, subStructureId) => {
               text = `<strike>${text}</strike>`;
               break;
             case "code":
-              text = `<code>${text}</code>`;
+              text = `<code style="background-color: #212121; color: white; padding: 2px 4px; border-radius: 4px; font-family: 'Jet Brain', monospace; font-size: 0.85em;">${text}</code>`;
               break;
             default:
               break;

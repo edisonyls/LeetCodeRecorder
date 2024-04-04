@@ -8,6 +8,7 @@ import {
   MenuItem,
   Tooltip,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -115,12 +116,15 @@ const MenuBar = ({
   };
 
   const getCurrentHeadingLevel = () => {
+    if (editor.isActive("paragraph")) {
+      return "Normal Text";
+    }
     for (let level = 1; level <= 6; level++) {
       if (editor.isActive("heading", { level })) {
-        return level.toString();
+        return `Heading ${level}`;
       }
     }
-    return "";
+    return "Normal Text"; // Default to "Normal Text" if no other formats match
   };
 
   const handleImageUpload = (event) => {
@@ -161,9 +165,13 @@ const MenuBar = ({
         />
       )}
       <Box>
-        <IconButton aria-label="heading-level" onClick={handleMenuClick}>
+        {/* <Box sx={{ display: "flex", alignItems: "center" }}> */}
+        {/* <Typography variant="body1">{getCurrentHeadingLevel()}</Typography> */}
+        <IconButton aria-label="formatting-options" onClick={handleMenuClick}>
           <KeyboardArrowDownIcon />
         </IconButton>
+        {/* </Box> */}
+
         <Menu
           anchorEl={anchorEl}
           open={open}
