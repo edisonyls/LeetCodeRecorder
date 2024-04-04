@@ -96,14 +96,11 @@ export const WhiteBackgroundButtonWithInput = ({
   ...props
 }) => {
   const inputRef = useRef(null);
-
-  // Function to trigger input click on button click
   const handleButtonClick = () => {
     if (inputRef.current) {
       inputRef.current.click();
     }
   };
-
   return (
     <Button
       variant="outlined"
@@ -138,12 +135,7 @@ export const WhiteBackgroundButtonWithInput = ({
   );
 };
 
-export const GreyBackgroundButton = ({
-  buttonText,
-  icon,
-
-  ...props
-}) => {
+export const GreyBackgroundButton = ({ buttonText, icon, ...props }) => {
   return (
     <Button
       variant="outlined"
@@ -158,6 +150,87 @@ export const GreyBackgroundButton = ({
         "&:hover": {
           backgroundColor: grey[50],
           color: "black",
+        },
+        ...props.sx,
+      }}
+      {...props}
+    >
+      {icon && <span style={{ marginTop: 5, marginRight: 5 }}>{icon}</span>}
+      {buttonText}
+    </Button>
+  );
+};
+
+export const GreyBackgroundButtonWithInput = ({
+  buttonText,
+  icon,
+  inputType,
+  inputId,
+  inputKey,
+  inputOnChange,
+  ...props
+}) => {
+  const inputRef = useRef(null);
+  const handleButtonClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  return (
+    <Button
+      variant="outlined"
+      color="inherit"
+      sx={{
+        minWidth: "120px",
+        height: "40px",
+        borderRadius: "20px",
+        borderColor: grey[50],
+        ml: 1,
+        mr: 1,
+        "&:hover": {
+          backgroundColor: grey[50],
+          color: "black",
+        },
+        ...props.sx,
+      }}
+      onClick={handleButtonClick}
+      {...props}
+    >
+      {icon && <span style={{ marginTop: 5, marginRight: 5 }}>{icon}</span>}
+      {buttonText}
+      <input
+        type={inputType}
+        id={inputId}
+        key={inputKey}
+        hidden
+        onChange={inputOnChange}
+        ref={inputRef}
+      />
+    </Button>
+  );
+};
+
+export const LightGreyBackgroundButton = ({
+  buttonText,
+  icon,
+  selected,
+  ...props
+}) => {
+  return (
+    <Button
+      variant="outlined"
+      color="inherit"
+      sx={{
+        minWidth: "120px",
+        height: "40px",
+        borderRadius: "20px",
+        borderColor: selected ? "white" : grey[800],
+        backgroundColor: selected ? grey[800] : "transparent",
+        color: selected ? grey[50] : grey[800],
+        "&:hover": {
+          borderColor: grey[800],
+          backgroundColor: grey[800],
+          color: grey[50],
         },
         ...props.sx,
       }}

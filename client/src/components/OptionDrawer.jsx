@@ -37,9 +37,9 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout }) => {
       onClick: () => navigate("/friends"),
     },
     {
-      text: "Algorithm Bank",
+      text: "Bank",
       icon: <AccountTree />,
-      onClick: () => navigate("/algorithm"),
+      onClick: () => navigate("/bank"),
     },
   ];
 
