@@ -5,10 +5,10 @@ import { GreyBackgroundButton } from "../generic/GenericButton";
 import axiosInstance from "../../config/axiosConfig";
 import EditorWithMenuBar from "./EditorWithMenuBar";
 
-const fetchImage = async (imageId, subStructureName) => {
+const fetchImage = async (imageId, subStructureId) => {
   try {
     const response = await axiosInstance.get(
-      `sub-structure/image/${subStructureName}/${imageId}`,
+      `sub-structure/image/${subStructureId}/${imageId}`,
       { responseType: "blob" }
     );
     return URL.createObjectURL(response.data);
@@ -18,7 +18,7 @@ const fetchImage = async (imageId, subStructureName) => {
   }
 };
 
-const jsonToHtml = async (node, subStructureName) => {
+const jsonToHtml = async (node, subStructureId) => {
   if (!node || typeof node !== "object" || !node.type) {
     return "";
   }
@@ -27,14 +27,14 @@ const jsonToHtml = async (node, subStructureName) => {
     case "doc":
       const docContent = await Promise.all(
         node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureName)
+          jsonToHtml(contentNode, subStructureId)
         )
       );
       return docContent.join("");
     case "paragraph":
       const paragraphContent = await Promise.all(
         node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureName)
+          jsonToHtml(contentNode, subStructureId)
         )
       );
       return `<p>${paragraphContent.join("")}</p>`;
@@ -62,7 +62,7 @@ const jsonToHtml = async (node, subStructureName) => {
       }
       return text;
     case "image":
-      const imageSrc = await fetchImage(node.attrs.src, subStructureName);
+      const imageSrc = await fetchImage(node.attrs.src, subStructureId);
       return `<img src="${imageSrc}" alt="image" title="image" style="width: 100%; max-height: 300px; object-fit: contain;"/>`;
     default:
       return "";
@@ -88,7 +88,7 @@ const ContentDisplay = ({
         const parsedContent = JSON.parse(content);
         const generatedHtml = await jsonToHtml(
           parsedContent,
-          selectedSubStructure.name
+          selectedSubStructure.id
         );
         setSafeHtml(generatedHtml);
       } catch (error) {
@@ -113,6 +113,7 @@ const ContentDisplay = ({
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructure.id}
         safeHtml={safeHtml}
+        content={content}
       />
     );
   } else if (selectedSubStructure.content !== null) {
@@ -191,6 +192,7 @@ const EditorArea = ({
   setAddClicked,
   selectedStructureId,
   safeHtml,
+  content,
 }) => (
   <Box>
     <Typography
@@ -211,6 +213,7 @@ const EditorArea = ({
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructureId}
         safeHtml={safeHtml}
+        content={content}
       />
     </Box>
   </Box>

@@ -8,6 +8,7 @@ import com.yls.ylslc.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -63,16 +64,28 @@ public class SubStructureServiceImpl implements SubStructureService{
     }
 
     @Override
-    public byte[] getImage(String subStructureName, String imageId) {
+    public byte[] getImage(String subStructureId, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(
                 s3Buckets.getStorageLocation(),
-                "content-images/%s/%s/%s".formatted(username,subStructureName, imageId)
+                "content-images/%s/%s/%s".formatted(username,subStructureId, imageId)
         );
     }
 
     @Override
-    public String uploadImages(MultipartFile image, String subStructureName) {
+    public Boolean deleteImage(String subStructureId, String imageId) {
+        String username = userService.getCurrentUser().getUsername();
+        String key = String.format("content-images/%s/%s/%s", username, subStructureId, imageId);
+        try {
+            s3Service.deleteObject(s3Buckets.getStorageLocation(), key);
+            return true;
+        } catch (S3Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public String uploadImages(MultipartFile image, String subStructureId) {
         String originalImageName = image.getOriginalFilename();
         String fileExtension = "";
 
@@ -90,7 +103,7 @@ public class SubStructureServiceImpl implements SubStructureService{
         try {
             s3Service.putObject(
                     s3Buckets.getStorageLocation(),
-                    String.format("content-images/%s/%s/%s", username,subStructureName, imageId),
+                    String.format("content-images/%s/%s/%s", username, subStructureId, imageId),
                     image.getBytes(),
                     contentType // Pass the content type here
             );

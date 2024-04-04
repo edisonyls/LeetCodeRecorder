@@ -11,10 +11,10 @@ export const ContentHooks = () => {
     return new File([blob], "image.jpg", { type: "image/jpeg" }); // Customize filename and mimetype as needed
   }
 
-  const uploadImageToBackend = async (imageFile, subStructureName) => {
+  const uploadImageToBackend = async (imageFile, subStructureId) => {
     const fileData = new FormData();
     fileData.append("image", imageFile);
-    fileData.append("subStructureName", subStructureName);
+    fileData.append("subStructureId", subStructureId);
     try {
       const response = await axiosInstance.post(
         "sub-structure/upload-image",
@@ -35,7 +35,18 @@ export const ContentHooks = () => {
     }
   };
 
-  const handleSave = async (subStructureId, stringContent, dataStructureId) => {
+  const deleteImage = async (subStructureId, imageId) => {
+    await axiosInstance.delete(
+      `sub-structure/image/${subStructureId}/${imageId}`
+    );
+  };
+
+  const handleSave = async (
+    subStructureId,
+    stringContent,
+    dataStructureId,
+    imageSrcs
+  ) => {
     dispatch({ type: actionTypes.PROCESS_START });
     try {
       const response = await axiosInstance.patch(
@@ -44,6 +55,17 @@ export const ContentHooks = () => {
           content: stringContent,
         }
       );
+
+      // Efficiently delete images and handle potential errors
+      await Promise.all(
+        imageSrcs.map((imageId) =>
+          deleteImage(subStructureId, imageId).catch((error) => {
+            console.error(`Failed to delete image ${imageId}:`, error);
+            // Optionally handle this error in a more user-friendly way
+          })
+        )
+      );
+
       dispatch({
         type: actionTypes.UPDATE_CONTENT,
         payload: {
@@ -53,7 +75,8 @@ export const ContentHooks = () => {
       });
     } catch (error) {
       dispatch({ type: actionTypes.PROCESS_FAILURE, error: error });
-      console.log("Failed to save content: ", error);
+      console.error("Failed to save content: ", error);
+      // Optionally, update the UI to inform the user of the failure
     }
   };
 

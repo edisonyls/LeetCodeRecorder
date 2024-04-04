@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import "./data_structure_page/EditorWithMenuBar.css";
 import { useCurrentEditor } from "@tiptap/react";
-import { Box, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
@@ -23,18 +30,20 @@ const MenuBar = ({
   selectedSubStructure,
   setAddClicked,
   selectedStructureId,
+  content,
 }) => {
   const { handleSave, convertBlobUrlToFile, uploadImageToBackend } =
     ContentHooks();
   const { editor } = useCurrentEditor();
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [imageUploading, setImageUploading] = useState(false);
-  const [contentUploading, setContentUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [emptyContentOpen, setEmptyContentOpen] = useState(false);
 
   const open = Boolean(anchorEl);
 
+  // TODO: DELETING THE EXISTING IMAGE AND RE-UPLOADING THE SAME IMAGES TO S3 IS VERY IN-EFFICIENT.
+  // I IGNORED IT FOR NOW
   const UploadContent = async () => {
     if (editor && selectedSubStructure) {
       const contentJsonObject = editor.getJSON();
@@ -49,23 +58,35 @@ const MenuBar = ({
         setEmptyContentOpen(true);
         return;
       } else {
-        setImageUploading(true);
+        setLoading(true);
+        const imageSrcs = [];
+        console.log(content);
+        if (content !== null && content !== undefined) {
+          for (const node of JSON.parse(content).content) {
+            if (node.type === "image") {
+              imageSrcs.push(node.attrs.src);
+            }
+          }
+        }
         for (const node of contentJsonObject.content) {
           if (node.type === "image") {
             const blobUrl = node.attrs.src;
             const imageFile = await convertBlobUrlToFile(blobUrl);
             const imageId = await uploadImageToBackend(
               imageFile,
-              selectedSubStructure.name
+              selectedSubStructure.id
             );
             //   // Replace the src with the new imageId or URL from the backend
             node.attrs.src = imageId;
           }
         }
-        setImageUploading(false);
-        setContentUploading(true);
-        const stringContent = JSON.stringify(contentJsonObject);
-        handleSave(selectedSubStructure.id, stringContent, selectedStructureId);
+        setLoading(false);
+        handleSave(
+          selectedSubStructure.id,
+          JSON.stringify(contentJsonObject),
+          selectedStructureId,
+          imageSrcs
+        );
         setAddClicked(false);
       }
     }
@@ -281,8 +302,16 @@ const MenuBar = ({
           </IconButton>
         </Tooltip>
         <Tooltip title="Save">
-          <IconButton onClick={UploadContent} style={{ color: grey[50] }}>
-            <SaveIcon />
+          <IconButton
+            onClick={UploadContent}
+            style={{ color: grey[50] }}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress size={24} style={{ color: grey[50] }} />
+            ) : (
+              <SaveIcon />
+            )}
           </IconButton>
         </Tooltip>
       </Box>

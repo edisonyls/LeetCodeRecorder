@@ -59,8 +59,8 @@ public class SubStructureController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
     public Response uploadContentImages(@RequestPart("image") MultipartFile image,
-                                 @RequestPart("subStructureName") String subStructureName){
-        String imageId = subStructureService.uploadImages(image, subStructureName);
+                                 @RequestPart("subStructureId") String subStructureId){
+        String imageId = subStructureService.uploadImages(image, subStructureId);
         return Response.ok(imageId, "Image saved successfully!");
     }
 
@@ -72,6 +72,16 @@ public class SubStructureController {
         headers.setContentType(getMediaTypeForImageId(imageId));
 
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("image/{subStructureId}/{imageId}")
+    public Response deleteImage(@PathVariable String subStructureId, @PathVariable String imageId){
+        Boolean deleted = subStructureService.deleteImage(subStructureId, imageId);
+        if (deleted) {
+            return Response.ok(true, "Image deleted successfully!");
+        } else {
+            return Response.failed(HttpStatus.BAD_REQUEST, "Image deleted unsuccessfully!");
+        }
     }
 
     private MediaType getMediaTypeForImageId(String imageId) {

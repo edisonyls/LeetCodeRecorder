@@ -13,10 +13,12 @@ public interface SubStructureService {
 
     SubStructureEntity delete(UUID id);
 
-    byte[] getImage(String subStructureName, String imageId);
+    byte[] getImage(String subStructureId, String imageId);
 
-    String uploadImages(MultipartFile image, String subStructureName);
+    String uploadImages(MultipartFile image, String subStructureId);
 
 
     SubStructureEntity updateContent(UUID id, String content);
+
+    Boolean deleteImage(String subStructureId, String imageId);
 }

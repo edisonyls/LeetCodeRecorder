@@ -23,6 +23,7 @@ const EditorWithMenuBar = ({
   setAddClicked,
   selectedStructureId,
   safeHtml,
+  content,
 }) => {
   return (
     <EditorProvider
@@ -32,6 +33,7 @@ const EditorWithMenuBar = ({
           selectedSubStructure={selectedSubStructure}
           setAddClicked={setAddClicked}
           selectedStructureId={selectedStructureId}
+          content={content}
         />
       }
       extensions={extensions}
