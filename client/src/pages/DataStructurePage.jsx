@@ -17,7 +17,7 @@ import { useDataStructure } from "../context/dataStructureContext";
 
 const DataStructurePage = () => {
   const { state } = useDataStructure();
-  const { dataStructures, loading, error } = state;
+  const { dataStructures, loading } = state;
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [selectedSubStructure, setSelectedSubStructure] = useState("");
   const [addClicked, setAddClicked] = useState(false);
@@ -26,7 +26,7 @@ const DataStructurePage = () => {
 
   useEffect(() => {
     fetchDataStructures();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedStructure) {
