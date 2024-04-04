@@ -15,13 +15,14 @@ const extensions = [
   Image,
 ];
 
-const content = ``;
+// const content = ``;
 
 const EditorWithMenuBar = ({
   onClose,
   selectedSubStructure,
   setAddClicked,
   selectedStructureId,
+  safeHtml,
 }) => {
   return (
     <EditorProvider
@@ -34,7 +35,7 @@ const EditorWithMenuBar = ({
         />
       }
       extensions={extensions}
-      content={content}
+      content={safeHtml}
     ></EditorProvider>
   );
 };

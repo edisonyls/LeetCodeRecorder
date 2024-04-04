@@ -112,13 +112,16 @@ const ContentDisplay = ({
         selectedSubStructure={selectedSubStructure}
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructure.id}
+        safeHtml={safeHtml}
       />
     );
   } else if (selectedSubStructure.content !== null) {
     return (
-      <>
-        <ContentArea safeHtml={safeHtml} name={selectedSubStructure?.name} />
-      </>
+      <ContentArea
+        safeHtml={safeHtml}
+        name={selectedSubStructure?.name}
+        setAddClicked={setAddClicked}
+      />
     );
   } else {
     return (
@@ -187,6 +190,7 @@ const EditorArea = ({
   selectedSubStructure,
   setAddClicked,
   selectedStructureId,
+  safeHtml,
 }) => (
   <Box>
     <Typography
@@ -206,12 +210,13 @@ const EditorArea = ({
         selectedSubStructure={selectedSubStructure}
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructureId}
+        safeHtml={safeHtml}
       />
     </Box>
   </Box>
 );
 
-const ContentArea = ({ safeHtml, name }) => (
+const ContentArea = ({ safeHtml, name, setAddClicked }) => (
   <Box>
     <Box
       sx={{
@@ -235,7 +240,10 @@ const ContentArea = ({ safeHtml, name }) => (
         {name}
       </Typography>
       <Box sx={{ flexGrow: 1 }} />
-      <GreyBackgroundButton buttonText="Edit" />
+      <GreyBackgroundButton
+        buttonText="Edit"
+        onClick={() => setAddClicked(true)}
+      />
     </Box>
     <div
       dangerouslySetInnerHTML={{ __html: safeHtml }}
