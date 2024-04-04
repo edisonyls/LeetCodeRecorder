@@ -13,15 +13,12 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import axiosInstance from "../../config/axiosConfig";
 import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
-import { useDataStructure } from "../../context/dataStructureContext";
 import { DataStructureHooks } from "../../hooks/DataStructureHooks";
 
 const DataStructureList = ({
   dataStructure,
   handleMainStructureClick,
-  fetchDataStructures,
   addClicked,
 }) => {
   const { addDataStructure, renameDataStructure, deleteDataStructure } =
@@ -65,6 +62,7 @@ const DataStructureList = ({
       case "Delete":
         deleteDataStructure(selectedId);
         handleMainStructureClick(null);
+        setSelectedStructure(null);
         setSelectedId(null);
         setDialogOpen(false);
         break;

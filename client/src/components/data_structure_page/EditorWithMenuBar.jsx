@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./EditorWithMenuBar.css";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
@@ -21,6 +21,7 @@ const EditorWithMenuBar = ({
   onClose,
   selectedSubStructure,
   setAddClicked,
+  selectedStructureId,
 }) => {
   return (
     <EditorProvider
@@ -29,6 +30,7 @@ const EditorWithMenuBar = ({
           onClose={onClose}
           selectedSubStructure={selectedSubStructure}
           setAddClicked={setAddClicked}
+          selectedStructureId={selectedStructureId}
         />
       }
       extensions={extensions}

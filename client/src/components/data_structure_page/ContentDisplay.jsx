@@ -111,6 +111,7 @@ const ContentDisplay = ({
         onClose={() => setAddClicked(false)}
         selectedSubStructure={selectedSubStructure}
         setAddClicked={setAddClicked}
+        selectedStructureId={selectedStructure.id}
       />
     );
   } else if (selectedSubStructure.content !== null) {
@@ -181,7 +182,12 @@ const LoadingState = ({ name }) => (
   </Box>
 );
 
-const EditorArea = ({ onClose, selectedSubStructure, setAddClicked }) => (
+const EditorArea = ({
+  onClose,
+  selectedSubStructure,
+  setAddClicked,
+  selectedStructureId,
+}) => (
   <Box>
     <Typography
       variant="h5"
@@ -199,6 +205,7 @@ const EditorArea = ({ onClose, selectedSubStructure, setAddClicked }) => (
         onClose={onClose}
         selectedSubStructure={selectedSubStructure}
         setAddClicked={setAddClicked}
+        selectedStructureId={selectedStructureId}
       />
     </Box>
   </Box>
@@ -206,17 +213,30 @@ const EditorArea = ({ onClose, selectedSubStructure, setAddClicked }) => (
 
 const ContentArea = ({ safeHtml, name }) => (
   <Box>
-    <Typography
-      variant="h5"
+    <Box
       sx={{
-        color: grey[50],
+        display: "flex",
+        alignItems: "center", // This centers the items vertically.
+        justifyContent: "center", // Initially center everything
         width: "100%",
-        textAlign: "center",
         mb: 4,
       }}
     >
-      {name}
-    </Typography>
+      <Box sx={{ flexGrow: 1 }} />
+
+      <Typography
+        variant="h5"
+        sx={{
+          position: "absolute",
+          color: grey[50],
+          textAlign: "center",
+        }}
+      >
+        {name}
+      </Typography>
+      <Box sx={{ flexGrow: 1 }} />
+      <GreyBackgroundButton buttonText="Edit" />
+    </Box>
     <div
       dangerouslySetInnerHTML={{ __html: safeHtml }}
       style={{ color: grey[50] }}

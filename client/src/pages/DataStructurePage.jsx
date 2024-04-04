@@ -28,13 +28,69 @@ const DataStructurePage = () => {
     fetchDataStructures();
   }, []);
 
+  useEffect(() => {
+    if (selectedStructure) {
+      // Find the updated structure in the global state
+      const updatedStructure = dataStructures.find(
+        (ds) => ds.id === selectedStructure.id
+      );
+      // Update selectedStructure if it has been found in the global state and is different
+      if (
+        updatedStructure &&
+        JSON.stringify(updatedStructure) !== JSON.stringify(selectedStructure)
+      ) {
+        setSelectedStructure(updatedStructure);
+      }
+    }
+  }, [dataStructures, selectedStructure]);
+
+  // Automatically select the first subStructure if available
+  useEffect(() => {
+    if (selectedStructure && selectedStructure.subStructures.length > 0) {
+      setSelectedSubStructure(selectedStructure.subStructures[0]);
+    } else {
+      setSelectedSubStructure(null);
+    }
+  }, [selectedStructure]);
+
+  // updated selectedSubStructure
+  useEffect(() => {
+    if (selectedStructure && selectedSubStructure) {
+      const updatedSelectedStructure = dataStructures.find(
+        (ds) => ds.id === selectedStructure.id
+      );
+      if (updatedSelectedStructure) {
+        const updatedSelectedSubStructure =
+          updatedSelectedStructure.subStructures.find(
+            (ss) => ss.id === selectedSubStructure.id
+          );
+        if (
+          updatedSelectedSubStructure &&
+          JSON.stringify(updatedSelectedSubStructure) !==
+            JSON.stringify(selectedSubStructure)
+        ) {
+          setSelectedSubStructure(updatedSelectedSubStructure);
+        }
+      }
+    }
+  }, [dataStructures, selectedSubStructure, selectedStructure]);
+
+  useEffect(() => {
+    // Check if the selectedSubStructure is not null and has content
+    if (selectedSubStructure && selectedSubStructure.content !== undefined) {
+      setContent(selectedSubStructure.content);
+    } else {
+      // Reset content if there's no selectedSubStructure or if it has no content
+      setContent(null);
+    }
+  }, [selectedSubStructure]);
+
   const handleMainStructureClick = (structure) => {
     setSelectedStructure(structure);
   };
 
   const handleSubStructureClick = (subStructure) => {
     setSelectedSubStructure(subStructure);
-    console.log(subStructure);
     if (subStructure !== null && subStructure.content !== null) {
       setContent(subStructure.content);
     } else {
@@ -81,14 +137,12 @@ const DataStructurePage = () => {
                 <DataStructureList
                   dataStructure={dataStructures}
                   handleMainStructureClick={handleMainStructureClick}
-                  fetchDataStructures={fetchDataStructures}
                   addClicked={addClicked}
                 />
                 <SubStructureList
                   selectedStructure={selectedStructure}
                   dataStructure={dataStructures}
                   handleSubStructureClick={handleSubStructureClick}
-                  fetchDataStructures={fetchDataStructures}
                   addClicked={addClicked}
                 />
               </Box>

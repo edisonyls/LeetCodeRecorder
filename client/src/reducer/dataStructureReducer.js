@@ -32,6 +32,7 @@ export function dataStructureReducer(state, action) {
         ...state,
         dataStructures: updatedDataStructures,
         loading: false,
+        error: null,
       };
     case actionTypes.DELETE_DATA_STRUCTURE:
       return {
@@ -40,6 +41,92 @@ export function dataStructureReducer(state, action) {
           (ds) => ds.id !== action.payload.id
         ),
         loading: false,
+        error: null,
+      };
+    case actionTypes.ADD_SUB_STRUCTURE:
+      return {
+        ...state,
+        dataStructures: state.dataStructures.map((dataStructure) => {
+          if (dataStructure.id === action.payload.dataStructureId) {
+            return {
+              ...dataStructure,
+              subStructures: [
+                ...dataStructure.subStructures,
+                action.payload.subStructure,
+              ],
+            };
+          }
+          return dataStructure;
+        }),
+        loading: false,
+        error: null,
+      };
+    case actionTypes.RENAME_SUB_STRUCTURE:
+      return {
+        ...state,
+        dataStructures: state.dataStructures.map((dataStructure) => {
+          if (dataStructure.id === action.payload.dataStructureId) {
+            // Found the parent dataStructure, now find and update the subStructure
+            const updatedSubStructures = dataStructure.subStructures.map(
+              (subStructure) => {
+                if (subStructure.id === action.payload.subStructure.id) {
+                  return {
+                    ...subStructure,
+                    name: action.payload.subStructure.name,
+                  };
+                }
+                return subStructure;
+              }
+            );
+            return { ...dataStructure, subStructures: updatedSubStructures };
+          }
+          return dataStructure;
+        }),
+        loading: false,
+        error: null,
+      };
+    case actionTypes.DELETE_SUB_STRUCTURE:
+      return {
+        ...state,
+        dataStructures: state.dataStructures.map((dataStructure) => {
+          if (dataStructure.id === action.payload.dataStructureId) {
+            const updatedSubStructures = dataStructure.subStructures.filter(
+              (subStructure) =>
+                subStructure.id !== action.payload.subStructure.id
+            );
+            return {
+              ...dataStructure,
+              subStructures: updatedSubStructures,
+            };
+          }
+          return dataStructure;
+        }),
+        loading: false,
+        error: null,
+      };
+    case actionTypes.UPDATE_CONTENT:
+      return {
+        ...state,
+        dataStructures: state.dataStructures.map((dataStructure) => {
+          if (dataStructure.id === action.payload.dataStructureId) {
+            // Found the parent dataStructure, now find and update the subStructure
+            const updatedSubStructures = dataStructure.subStructures.map(
+              (subStructure) => {
+                if (subStructure.id === action.payload.subStructure.id) {
+                  return {
+                    ...subStructure,
+                    content: action.payload.subStructure.content,
+                  };
+                }
+                return subStructure;
+              }
+            );
+            return { ...dataStructure, subStructures: updatedSubStructures };
+          }
+          return dataStructure;
+        }),
+        loading: false,
+        error: null,
       };
     default:
       return state;

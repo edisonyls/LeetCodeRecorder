@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   List,
@@ -12,17 +12,18 @@ import {
   Divider,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import axiosInstance from "../../config/axiosConfig";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
+import { SubStructureHooks } from "../../hooks/SubStructureHooks";
 
 const SubStructureList = ({
   selectedStructure,
   dataStructure,
   handleSubStructureClick,
-  fetchDataStructures,
   addClicked,
 }) => {
+  const { addSubStructure, renameSubStructure, deleteSubStructure } =
+    SubStructureHooks();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [warningDialogOpen, setWaringDialogOpen] = useState(false);
   const [actionType, setActionType] = useState(""); // Add, rename and delete
@@ -32,6 +33,12 @@ const SubStructureList = ({
   const [selectedSubStructure, setSelectedSubStructure] = useState(null);
 
   const open = Boolean(anchorEl); // To check if menu is open
+
+  useEffect(() => {
+    setSelectedSubStructure(null);
+    setDialogOpen(false);
+    setSelectedId(null);
+  }, [selectedStructure]);
 
   const handleDialogOpen = (type) => {
     setActionType(type);
@@ -43,6 +50,7 @@ const SubStructureList = ({
       const selectedSubStructure = structure?.subStructures.find(
         (subStructure) => subStructure.id === selectedId
       );
+      setSelectedSubStructure(selectedSubStructure);
       setNewName(selectedSubStructure ? selectedSubStructure.name : "");
     }
   };
@@ -53,15 +61,22 @@ const SubStructureList = ({
   };
 
   const handleSubmit = () => {
+    if (!selectedStructure) return;
     switch (actionType) {
       case "Add":
-        handleAddSubStructure(newName);
+        addSubStructure(selectedStructure.id, newName);
+        setDialogOpen(false);
         break;
       case "Rename":
-        handleRenameSubStructure(selectedId, newName);
+        renameSubStructure(selectedStructure.id, selectedId, newName);
+        setDialogOpen(false);
         break;
       case "Delete":
-        handleDeleteSubStructure(selectedId);
+        deleteSubStructure(selectedStructure.id, selectedId);
+        handleSubStructureClick(null);
+        setSelectedSubStructure(null);
+        setDialogOpen(false);
+        setSelectedId(null);
         break;
       default:
         break;
@@ -69,44 +84,6 @@ const SubStructureList = ({
     handleDialogClose();
   };
 
-  const handleAddSubStructure = async (name) => {
-    if (!selectedStructure) return;
-    await axiosInstance
-      .post(`sub-structure/${selectedStructure.id}`, { name, contents: [] })
-      .then(() => {
-        fetchDataStructures();
-        setDialogOpen(false);
-      })
-      .catch((error) => {
-        console.error("Failed to add new sub-structure:", error);
-      });
-  };
-
-  const handleRenameSubStructure = async (id, newName) => {
-    await axiosInstance
-      .patch(`sub-structure/${id}`, { name: newName })
-      .then(() => {
-        fetchDataStructures();
-        setDialogOpen(false);
-      })
-      .catch((error) => {
-        console.error("Failed to rename sub-structure:", error);
-      });
-  };
-
-  const handleDeleteSubStructure = async (id) => {
-    await axiosInstance
-      .delete(`sub-structure/${id}`)
-      .then(() => {
-        handleSubStructureClick(null);
-        setDialogOpen(false);
-        setSelectedId(null);
-        fetchDataStructures();
-      })
-      .catch((error) => {
-        console.error("Failed to delete sub-structure:", error);
-      });
-  };
   const handleMenuItemClick = (type) => {
     setAnchorEl(null);
     handleDialogOpen(type);

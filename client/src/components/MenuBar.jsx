@@ -16,9 +16,16 @@ import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
 import { WarningDialog } from "./data_structure_page/DataStructureDialogs";
-import axiosInstance from "../config/axiosConfig";
+import { ContentHooks } from "../hooks/ContentHooks";
 
-const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
+const MenuBar = ({
+  onClose,
+  selectedSubStructure,
+  setAddClicked,
+  selectedStructureId,
+}) => {
+  const { handleSave, convertBlobUrlToFile, uploadImageToBackend } =
+    ContentHooks();
   const { editor } = useCurrentEditor();
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -28,39 +35,10 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
 
   const open = Boolean(anchorEl);
 
-  async function convertBlobUrlToFile(blobUrl) {
-    const response = await fetch(blobUrl);
-    const blob = await response.blob();
-    return new File([blob], "image.jpg", { type: "image/jpeg" }); // Customize filename and mimetype as needed
-  }
-
-  const uploadImageToBackend = async (imageFile) => {
-    const fileData = new FormData();
-    fileData.append("image", imageFile);
-    fileData.append("subStructureName", selectedSubStructure.name);
-    try {
-      const response = await axiosInstance.post(
-        "sub-structure/upload-image",
-        fileData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (response.data.serverMessage === "SUCCESS") {
-        return response.data.data;
-      } else {
-        console.log("Image upload failed for content");
-      }
-    } catch (error) {
-      console.log("Error while uploading content image: " + error);
-    }
-  };
-
-  const handleSave = async () => {
+  const UploadContent = async () => {
     if (editor && selectedSubStructure) {
       const contentJsonObject = editor.getJSON();
+      // checking if user has entered anything
       const isEmpty = contentJsonObject.content.every((node) => {
         return (
           node.type === "paragraph" &&
@@ -76,7 +54,10 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
           if (node.type === "image") {
             const blobUrl = node.attrs.src;
             const imageFile = await convertBlobUrlToFile(blobUrl);
-            const imageId = await uploadImageToBackend(imageFile);
+            const imageId = await uploadImageToBackend(
+              imageFile,
+              selectedSubStructure.name
+            );
             //   // Replace the src with the new imageId or URL from the backend
             node.attrs.src = imageId;
           }
@@ -84,19 +65,9 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
         setImageUploading(false);
         setContentUploading(true);
         const stringContent = JSON.stringify(contentJsonObject);
-        await axiosInstance
-          .patch(`sub-structure/content/${selectedSubStructure.id}`, {
-            content: stringContent,
-          })
-          .then(() => {
-            setAddClicked(false);
-          })
-          .catch((error) => {
-            console.log("Failed to upload content: " + error);
-          });
+        handleSave(selectedSubStructure.id, stringContent, selectedStructureId);
+        setAddClicked(false);
       }
-    } else {
-      console.log("Error in editor");
     }
   };
 
@@ -310,7 +281,7 @@ const MenuBar = ({ onClose, selectedSubStructure, setAddClicked }) => {
           </IconButton>
         </Tooltip>
         <Tooltip title="Save">
-          <IconButton onClick={handleSave} style={{ color: grey[50] }}>
+          <IconButton onClick={UploadContent} style={{ color: grey[50] }}>
             <SaveIcon />
           </IconButton>
         </Tooltip>
