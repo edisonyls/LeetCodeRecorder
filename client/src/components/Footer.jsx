@@ -1,123 +1,91 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 
 const Footer = () => {
+  const handleIconClick = (url) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <FooterContainer>
-      <FooterLinks>
-        <FooterLinksWrapper>
-          <FooterItems>
-            <Typography
-              variant="h5"
-              sx={{ marginBottom: "16px", color: "#fff" }}
-            >
-              About Me
-            </Typography>
-            <FooterLink href="/">How it works</FooterLink>
-            <FooterLink href="/">How it works</FooterLink>
-          </FooterItems>
-          <FooterItems>
-            <Typography
-              variant="h5"
-              sx={{ marginBottom: "16px", color: "#fff" }}
-            >
-              New
-            </Typography>
-            <FooterLink href="/">How it works</FooterLink>
-            <FooterLink href="/">How it works</FooterLink>
-          </FooterItems>
-        </FooterLinksWrapper>
-        <FooterLinksWrapper>
-          <FooterItems>
-            <Typography
-              variant="h5"
-              sx={{ marginBottom: "16px", color: "#fff" }}
-            >
-              Check this
-            </Typography>
-            <FooterLink href="/">How it works</FooterLink>
-            <FooterLink href="/">How it works</FooterLink>
-          </FooterItems>
-          <FooterItems>
-            <Typography
-              variant="h5"
-              sx={{ marginBottom: "16px", color: "#fff" }}
-            >
-              Okay
-            </Typography>
-            <FooterLink href="/">How it works</FooterLink>
-            <FooterLink href="/">How it works</FooterLink>
-          </FooterItems>
-        </FooterLinksWrapper>
-      </FooterLinks>
       <SocialMediaBox>
         <SocialMediaWrap>
-          <FooterLogo>
-            <Typography>YLSLC © {new Date().getFullYear()}</Typography>
-          </FooterLogo>
-          <SocialIcon>
-            <a
-              style={{ color: "#fff", fontSize: "24px" }}
-              href="/"
-              target="_blank"
-            >
-              <InstagramIcon />
-            </a>
-            <a
-              style={{ color: "#fff", fontSize: "24px" }}
-              href="/"
-              target="_blank"
-            >
-              <LinkedInIcon />
-            </a>
-            <a
-              style={{ color: "#fff", fontSize: "24px" }}
-              href="/"
-              target="_blank"
-            >
-              <GitHubIcon />
-            </a>
-          </SocialIcon>
+          <Box sx={{ width: "200px" }}></Box>
+          <Typography
+            sx={{
+              fontSize: "18px",
+              color: "#fff",
+              textAlign: "center",
+              flexGrow: 0,
+              mx: "auto",
+            }}
+          >
+            YLSLC © {new Date().getFullYear()}
+          </Typography>
+
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", width: "200px" }}
+          >
+            <SocialIcon>
+              <IconButton
+                sx={{
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                }}
+                onClick={() =>
+                  handleIconClick("https://www.instagram.com/leesianyong/")
+                }
+              >
+                <InstagramIcon />
+              </IconButton>
+              <IconButton
+                sx={{
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                }}
+                onClick={() =>
+                  handleIconClick(
+                    "https://www.linkedin.com/in/lishun-yang-152aa01b8/"
+                  )
+                }
+              >
+                <LinkedInIcon />
+              </IconButton>
+              <IconButton
+                sx={{
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                }}
+                onClick={() => handleIconClick("https://github.com/edisonyls")}
+              >
+                <GitHubIcon />
+              </IconButton>
+            </SocialIcon>
+          </Box>
         </SocialMediaWrap>
       </SocialMediaBox>
     </FooterContainer>
   );
 };
+
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#141414",
-  padding: "5rem 0",
+  paddingTop: "20px",
+  paddingBottom: "20px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-}));
-
-const FooterLink = styled(Link)({
-  color: "#fff",
-  textDecoration: "none",
-  marginBottom: "0.5rem",
-  "&:hover": {
-    color: "#e9e9e9",
-    transition: "0.3s ease-out",
-  },
-});
-
-const FooterLinks = styled(Box)(({ theme }) => ({
-  width: "100%",
-  maxWidth: "1000px",
-  display: "flex",
-  justifyContent: "center",
-  [theme.breakpoints.down("md")]: { paddingTop: "2rem" },
-}));
-
-const FooterLinksWrapper = styled(Box)(({ theme }) => ({
-  display: "flex",
-  [theme.breakpoints.down("md")]: { flexDirection: "column" },
 }));
 
 const SocialMediaBox = styled(Box)(({ theme }) => ({
@@ -127,22 +95,14 @@ const SocialMediaBox = styled(Box)(({ theme }) => ({
 
 const SocialMediaWrap = styled(Box)(({ theme }) => ({
   display: "flex",
-  justifyContent: "space-between",
   alignItems: "center",
-  width: "90%",
-  maxWidth: "1000px",
-  margin: "40px auto 0 auto",
-  [theme.breakpoints.down("md")]: { flexDirection: "column" },
-}));
-
-const FooterLogo = styled(Box)(({ theme }) => ({
-  color: "#fff",
-  display: "flex",
-  alignItems: "center",
-  cursor: "pointer",
-  textDecoration: "none",
-  fontSize: "2rem",
-  [theme.breakpoints.down("md")]: { marginBottom: "2rem" },
+  justifyContent: "center",
+  width: "100%",
+  margin: "4px auto 0 auto",
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
 }));
 
 const SocialIcon = styled(Box)(({ theme }) => ({
@@ -150,18 +110,6 @@ const SocialIcon = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   alignItems: "center",
   width: "200px",
-}));
-
-const FooterItems = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  margin: "16px",
-  textAlign: "left",
-  width: "160px",
-  boxSizing: "border-box",
-
-  [theme.breakpoints.down("sm")]: { margin: 0, padding: "10px", width: "100%" },
 }));
 
 export default Footer;
