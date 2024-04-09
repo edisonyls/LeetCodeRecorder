@@ -9,22 +9,36 @@ import { BlackBackgroundButton } from "../generic/GenericButton";
 
 const HomeNavbar = () => {
   return (
-    <AppBar position="static" sx={{ background: "black", mb: 4 }}>
+    <AppBar position="static" sx={{ background: "black" }}>
       <Toolbar>
-        <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1, fontWeight: 700 }}>
-          <Box style={{ color: "inherit", textDecoration: "none" }}>YLSLC</Box>
+        <FlutterDashIcon sx={{ marginLeft: "4rem", fontSize: "2rem" }} />
+        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+          <Box
+            component={Link}
+            to="/"
+            style={{
+              fontSize: "18px",
+              textDecoration: "none",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+          >
+            YLSLC
+          </Box>
         </Typography>
-        <BlackBackgroundButton
-          component={Link}
-          to="/signin"
-          buttonText="Sign In"
-        />
-        <BlackBackgroundButton
-          component={Link}
-          to="/register"
-          buttonText="Register"
-        />
+
+        <Box>
+          <BlackBackgroundButton
+            component={Link}
+            to="/signin"
+            buttonText="Sign In"
+          />
+          <BlackBackgroundButton
+            component={Link}
+            to="/register"
+            buttonText="Register"
+          />
+        </Box>
       </Toolbar>
     </AppBar>
   );
