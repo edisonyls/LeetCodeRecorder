@@ -134,15 +134,20 @@ const RegisterPage = () => {
             sm={4}
             md={7}
             sx={{
-              backgroundImage:
-                "url(https://source.unsplash.com/random?wallpapers)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundImage:
+                  "url(https://source.unsplash.com/random?wallpapers)",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              },
             }}
           />
           <Grid
@@ -153,6 +158,12 @@ const RegisterPage = () => {
             component={Paper}
             elevation={6}
             square
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center", // Centers the form vertically
+              minHeight: "100vh", // Ensures the grid item doesn't shrink below the viewport height
+            }}
           >
             <Box
               sx={{
