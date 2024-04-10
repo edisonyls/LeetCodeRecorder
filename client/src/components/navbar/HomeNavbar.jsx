@@ -1,44 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
-import { Box } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import {
+  Box,
+  useMediaQuery,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  useTheme,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { BlackBackgroundButton } from "../generic/GenericButton";
 
 const HomeNavbar = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setDrawerOpen(newOpen);
+  };
+
+  const list = () => (
+    <Box
+      sx={{ width: 150 }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        <ListItem component={Link} to="/signin">
+          <ListItemText primary="Sign In" sx={{ color: "#fff" }} />
+        </ListItem>
+        <ListItem component={Link} to="/register" sx={{ color: "#fff" }}>
+          <ListItemText primary="Register" />
+        </ListItem>
+      </List>
+    </Box>
+  );
+
   return (
     <AppBar position="static" sx={{ background: "black" }}>
       <Toolbar>
-        <FlutterDashIcon sx={{ marginLeft: "4rem", fontSize: "2rem" }} />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+        <FlutterDashIcon
+          sx={{ marginLeft: "4rem", fontSize: { sm: "1rem", mxl: "2rem" } }}
+        />
+        <Typography variant="h6" sx={{ flexGrow: 1, ml: 1 }}>
           <Box
             component={Link}
             to="/"
-            style={{
-              fontSize: "18px",
-              textDecoration: "none",
-              color: "#fff",
-              fontWeight: "bold",
-            }}
+            sx={{ textDecoration: "none", color: "#fff", fontWeight: "bold" }}
           >
             YLSLC
           </Box>
         </Typography>
 
-        <Box>
-          <BlackBackgroundButton
-            component={Link}
-            to="/signin"
-            buttonText="Sign In"
-          />
-          <BlackBackgroundButton
-            component={Link}
-            to="/register"
-            buttonText="Register"
-          />
-        </Box>
+        {isMobile ? (
+          <>
+            <IconButton
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={toggleDrawer(false)}
+              sx={{
+                "& .MuiDrawer-paper": {
+                  backgroundColor: grey[900],
+                },
+              }}
+            >
+              {list()}
+            </Drawer>
+          </>
+        ) : (
+          <Box>
+            <BlackBackgroundButton
+              component={Link}
+              to="/signin"
+              buttonText="Sign In"
+            />
+            <BlackBackgroundButton
+              component={Link}
+              to="/register"
+              buttonText="Register"
+            />
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   );

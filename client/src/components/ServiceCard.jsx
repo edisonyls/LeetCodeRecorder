@@ -46,7 +46,7 @@ const ServiceCard = ({ title, text, imageSrc }) => {
           top: "350px",
           left: "30px",
           fontSize: "22px",
-          color: "#ffff8d",
+          color: "#fff",
         }}
       >
         {title}
@@ -56,7 +56,10 @@ const ServiceCard = ({ title, text, imageSrc }) => {
           position: "absolute",
           top: "400px",
           left: "30px",
-          fontSize: "18px",
+          fontSize: {
+            xs: "16px", // smartphones
+            xl: "18px", // large screens
+          },
           color: "#ffff8d",
         }}
       >

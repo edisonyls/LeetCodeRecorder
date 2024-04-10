@@ -14,14 +14,20 @@ import { grey } from "@mui/material/colors";
 function Home() {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Box component="main" flexGrow={1}>
+      <Box>
         <HomeNavbar />
         <Box sx={{ backgroundColor: grey[900] }}>
           <MainContainerBox>
             <MainContentBox>
               <Typography
                 sx={{
-                  fontSize: "4rem",
+                  fontSize: {
+                    xs: "1.5rem", // smartphones
+                    sm: "2rem", // tablets
+                    md: "2.5rem", // small laptops
+                    lg: "3rem", // desktops
+                    xl: "4rem", // large screens
+                  },
                   backgroundColor: "transparent",
                   backgroundImage:
                     "linear-gradient(to top, #0072ff 0%, #ff9100 100%)",
@@ -35,7 +41,13 @@ function Home() {
               </Typography>
               <Typography
                 sx={{
-                  fontSize: "4rem",
+                  fontSize: {
+                    xs: "1.5rem", // smartphones
+                    sm: "2rem", // tablets
+                    md: "2.5rem", // small laptops
+                    lg: "3rem", // desktops
+                    xl: "4rem", // large screens
+                  },
                   backgroundColor: "transparent",
                   backgroundImage:
                     "linear-gradient(to top, #D32F2F 0%, #FBC02D 100%)",
@@ -49,7 +61,13 @@ function Home() {
               </Typography>
               <Typography
                 sx={{
-                  fontSize: "2rem",
+                  fontSize: {
+                    xs: "0.75rem", // smartphones
+                    sm: "1rem", // tablets
+                    md: "1.3rem", // small laptops
+                    lg: "1.7rem", // desktops
+                    xl: "2rem", // large screens
+                  },
                   fontWeight: "700",
                   fontFamily: "Jet Brain",
                   color: "#fff",
@@ -86,7 +104,7 @@ function Home() {
           </MainContainerBox>
           <ServicesBox>
             <ServicesTypoH1>
-              See what you can make use of the service
+              See what services you can make use of
             </ServicesTypoH1>
             <ServicesContainerBox>
               <ServiceCard
@@ -96,7 +114,7 @@ function Home() {
               />
               <ServiceCard
                 title="Data Structure"
-                text="Make code efficient and easy to understand"
+                text="Make code efficient & effective"
                 imageSrc={DataStructureImage}
               />
               <ServiceCard
@@ -115,29 +133,29 @@ function Home() {
 
 const MainContainerBox = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateColumns: "1fr 1fr", // Default to two columns
   alignItems: "center",
   justifySelf: "center",
   margin: "0 auto",
   height: "100vh",
   backgroundColor: grey[900],
   zIndex: 1,
-  width: "100%",
-  maxWidth: "1300px",
+  width: "88%",
+  maxWidth: "1200px",
   padding: "0 50px",
   [theme.breakpoints.down("sm")]: {
-    display: "grid",
-    gridTemplateColumns: "auto",
-    alignItems: "center",
-    justifySelf: "center",
-    width: "100%",
-    margin: "0 auto",
-    height: "90vh",
+    gridTemplateColumns: "1fr",
+    padding: "0 20px",
+    height: "auto",
   },
 }));
 
 const MainContentBox = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down("sm")]: { textAlign: "center", marginBottom: "4rem" },
+  [theme.breakpoints.down("sm")]: {
+    textAlign: "center",
+    marginBottom: "4rem",
+    marginTop: "4rem",
+  },
 }));
 
 const MainButton = styled(Button)(({ theme }) => ({
@@ -192,11 +210,12 @@ const ServicesTypoH1 = styled(Typography)(({ theme }) => ({
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
   mozTextFillColor: "transparent",
+  padding: "2rem",
   [theme.breakpoints.down("md")]: {
     fontSize: "2rem",
     marginTop: "12rem",
   },
-  [theme.breakpoints.down("sm")]: { fontSize: "1.2rem" },
+  [theme.breakpoints.down("sm")]: { fontSize: "1.7rem", textAlign: "center" },
 }));
 
 const ServicesContainerBox = styled(Box)(({ theme }) => ({
