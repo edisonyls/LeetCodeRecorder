@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
-import { axiosInstance } from "../../config/axiosConfig";
 import ListIcon from "@mui/icons-material/List";
 import OptionDrawer from "../OptionDrawer";
 import { useUser } from "../../context/userContext";
@@ -17,22 +16,9 @@ const AuthenticatedNavbar = () => {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const response = await axiosInstance.get("user");
-  //     const data = await response.data;
-
-  //     if (data.serverMessage === "SUCCESS") {
-  //       setUser(data.data);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     getCurrentUser(token);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     console.log("Logging out...");
