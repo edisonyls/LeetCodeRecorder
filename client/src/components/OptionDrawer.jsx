@@ -13,33 +13,44 @@ import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Face from "@mui/icons-material/Face";
 import Group from "@mui/icons-material/Group";
-import AccountTree from "@mui/icons-material/AccountTree";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
 import { BlackBackgroundButton } from "./generic/GenericButton";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import AlgorithmIcon from "@mui/icons-material/Functions";
+import DataStructureIcon from "@mui/icons-material/Storage";
 
-const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout }) => {
+const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
   const navigate = useNavigate();
   const drawerOptions = [
     {
       text: "Dashboard",
       icon: <DashboardIcon />,
+      path: "/dashboard",
       onClick: () => navigate("/dashboard"),
     },
     {
       text: "Profile",
       icon: <AccountCircleIcon />,
+      path: "/profile",
       onClick: () => navigate("/profile"),
     },
     {
       text: "Friends",
       icon: <Group />,
+      path: "/friends",
       onClick: () => navigate("/friends"),
     },
     {
-      text: "Bank",
-      icon: <AccountTree />,
-      onClick: () => navigate("/bank"),
+      text: "Data Structure",
+      icon: <DataStructureIcon />,
+      path: "/data-structure",
+      onClick: () => navigate("/data-structure"),
+    },
+    {
+      text: "Algorithm",
+      icon: <AlgorithmIcon />,
+      path: "/algorithm",
+      onClick: () => navigate("/algorithm"),
     },
   ];
 
@@ -78,6 +89,10 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout }) => {
               margin: "5px 10px",
               borderRadius: "4px",
               cursor: "pointer",
+              backgroundColor:
+                currentPath === option.path
+                  ? "rgba(255, 255, 255, 0.2)"
+                  : "inherit", // Highlight if active
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
               },

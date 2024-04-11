@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import ListIcon from "@mui/icons-material/List";
@@ -13,6 +13,7 @@ const AuthenticatedNavbar = () => {
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { logout } = UserHooks();
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -75,6 +76,7 @@ const AuthenticatedNavbar = () => {
           isOpen={isDrawerOpen}
           toggleDrawer={toggleDrawer}
           handleLogout={handleLogout}
+          currentPath={location.pathname}
         />
       </Toolbar>
     </AppBar>

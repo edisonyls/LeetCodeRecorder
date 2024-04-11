@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 import NewQuestion from "./pages/NewQuestion";
 import QuestionDetails from "./pages/QuestionDetails";
 import ProfilePage from "./pages/ProfilePage";
-import Bank from "./pages/Bank";
 import FriendPage from "./pages/FriendPage";
 import DataStructurePage from "./pages/DataStructurePage";
 import AlgorithmPage from "./pages/AlgorithmPage";
@@ -36,7 +35,6 @@ function App() {
               />
               <Route path="algorithm" Component={AlgorithmPage} exact />
               <Route path="friends" Component={FriendPage} exact />
-              <Route path="bank" Component={Bank} exact />
             </Routes>
           </Router>
           <ToastContainer />
