@@ -96,7 +96,7 @@ const QuestionDetails = () => {
         <WhiteBackgroundButton
           icon={<ArrowBack />}
           onClick={() => {
-            navigate("/dashboard");
+            navigate(-1);
           }}
           buttonText="Back"
         />

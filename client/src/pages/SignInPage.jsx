@@ -39,7 +39,7 @@ export default function SignInPage() {
   const { login, getCurrentUser } = UserHooks();
   const { isAuthenticated, token, user, error } = state;
 
-  const [open, setOpen] = useState(false); // Add this line
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (error) {
