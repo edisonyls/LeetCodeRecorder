@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { register, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import PasswordValidator from "../components/PasswordValidator";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 function Copyright(props) {
   return (
@@ -36,14 +36,12 @@ function Copyright(props) {
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const { state } = useUser();
+  const { isAuthenticated, user, loading, error } = state;
+  const { register } = UserHooks();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const { user, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
 
   useEffect(() => {
     if (password.length > 0 && confirmPassword.length > 0) {
@@ -58,15 +56,13 @@ const RegisterPage = () => {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
+    if (error) {
+      toast.error(error);
     }
-    if (isSuccess || user) {
+    if (isAuthenticated || user) {
       navigate("/dashboard");
     }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [error, isAuthenticated, navigate, user]);
 
   const checkData = (data) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
@@ -118,7 +114,7 @@ const RegisterPage = () => {
       data.firstName = formatName({ name: data.firstName });
       data.lastName = formatName({ name: data.lastName });
       data.role = "USER";
-      dispatch(register(data));
+      register(data);
     }
   };
 

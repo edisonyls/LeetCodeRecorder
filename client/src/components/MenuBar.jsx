@@ -60,7 +60,7 @@ const MenuBar = ({
       } else {
         setLoading(true);
         const imageSrcs = [];
-        console.log(content);
+
         if (content !== null && content !== undefined) {
           for (const node of JSON.parse(content).content) {
             if (node.type === "image") {

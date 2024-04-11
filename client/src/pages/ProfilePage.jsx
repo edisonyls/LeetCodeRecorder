@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { Box, Card, CardContent, Container } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import axiosInstance from "../config/axiosConfig";
 import { ProfileEdit } from "../components/Profile";
 import { ProfileView } from "../components/Profile";
 import { GreyBackgroundButton } from "../components/generic/GenericButton";
 import { toast } from "react-toastify";
 import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 const ProfilePage = () => {
-  const { user, setUser } = useUser();
+  const { state } = useUser();
+  const { user } = state;
   const [editMode, setEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState({});
+  const [editedUser, setEditedUser] = useState(null);
+  const { updateUser } = UserHooks();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await axiosInstance.get("user");
-      const data = await response.data;
-
-      if (data.serverMessage === "SUCCESS") {
-        setUser(data.data);
-        setEditedUser(data.data);
-      }
-    };
-    fetchUserData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    setEditedUser(user);
+  }, [user]);
 
   const handleEdit = () => {
     setEditMode(true);
@@ -34,17 +27,8 @@ const ProfilePage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     const userId = editedUser.id;
-    try {
-      const res = await axiosInstance.put(`user/${userId}`, editedUser);
-      if (res.data.serverMessage === "SUCCESS") {
-        setUser(editedUser);
-        toast("Update successfully!");
-      } else {
-        console.log("Failed to update!");
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    updateUser(userId, editedUser);
+    toast("Update successfully!");
     setEditMode(false);
   };
 

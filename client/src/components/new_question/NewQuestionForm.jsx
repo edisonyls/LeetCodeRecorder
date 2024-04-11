@@ -7,7 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../config/axiosConfig";
+import { axiosInstance } from "../../config/axiosConfig";
 
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";

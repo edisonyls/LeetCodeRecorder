@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { GreyBackgroundButton } from "../generic/GenericButton";
-import axiosInstance from "../../config/axiosConfig";
+import { axiosInstance } from "../../config/axiosConfig";
 import EditorWithMenuBar from "./EditorWithMenuBar";
 
 const fetchImage = async (imageId, subStructureId) => {

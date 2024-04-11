@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../config/axiosConfig";
+import { axiosInstance } from "../config/axiosConfig";
 import AddIcon from "@mui/icons-material/Add";
-import { Container, Box } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
@@ -11,6 +11,7 @@ import GenericFormControl from "../components/generic/GenericFormControl";
 import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
+import { grey } from "@mui/material/colors";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -55,20 +56,18 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await axiosInstance
-        .get("question/all")
-        .then((response) => {
-          setQuestions(response.data.data);
-          setOriginalQuestions(response.data.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          alert("User not authenticated!");
-        });
+      try {
+        const response = await axiosInstance.get("question/all");
+        setQuestions(response.data.data);
+        setOriginalQuestions(response.data.data);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated regardless of success or error
+      }
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     let sortedQuestions = [...originalQuestions];
@@ -130,6 +129,20 @@ const Dashboard = () => {
         <GenericSpinner />
       </>
     );
+  } else if (originalQuestions === null) {
+    // Check if originalQuestions is null and render "No Data"
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography variant="h4">No Data</Typography>
+      </Box>
+    );
   } else {
     return (
       <Box
@@ -184,6 +197,20 @@ const Dashboard = () => {
               />
             </Box>
             <QuestionsTable questions={questions} onDelete={handleDelete} />
+            {originalQuestions && originalQuestions.length === 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "50vh", // Adjust height as needed
+                }}
+              >
+                <Typography variant="h5" sx={{ color: grey[600] }}>
+                  No Data Available
+                </Typography>
+              </Box>
+            )}
           </Container>
         </Box>
         <Footer />

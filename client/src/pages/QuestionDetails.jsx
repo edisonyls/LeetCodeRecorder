@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axiosInstance from "../config/axiosConfig";
+import { axiosInstance } from "../config/axiosConfig";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import CodeSnippet from "../components/CodeSnippet";
 import {
