@@ -19,23 +19,34 @@ const Dashboard = () => {
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
 
   const navigate = useNavigate();
 
-  const handleDelete = async (id, event) => {
-    event.stopPropagation(); // Prevent click event from reaching the TableRow
-
-    try {
-      await axiosInstance.delete(`question/${id}`);
-      // Remove the question from the list or refetch the list
-      const updatedQuestions = questions.filter(
-        (question) => question.id !== id
-      );
-      setQuestions(updatedQuestions);
-      setOriginalQuestions(updatedQuestions);
-    } catch (error) {
-      console.error("Error deleting question:", error);
+  const handleDelete = (id, event) => {
+    event.stopPropagation(); // Stop the event from propagating to the row click event
+    setQuestionToDeleteId(id); // Set the ID of the question to delete
+    setOpenDeleteDialog(true); // Open the delete confirmation dialog
+  };
+  const handleConfirmDelete = async () => {
+    setIsLoading(true);
+    if (questionToDeleteId !== null) {
+      try {
+        await axiosInstance.delete(`question/${questionToDeleteId}`);
+        const updatedQuestions = questions.filter(
+          (question) => question.id !== questionToDeleteId
+        );
+        setQuestions(updatedQuestions);
+        setOriginalQuestions(updatedQuestions);
+      } catch (error) {
+        console.error("Error deleting question:", error);
+        setIsLoading(false);
+      }
     }
+    setOpenDeleteDialog(false);
+    setQuestionToDeleteId(null);
+    setIsLoading(false);
   };
 
   const handleOpenDialog = (e) => {
@@ -172,9 +183,22 @@ const Dashboard = () => {
                 isOpen={openDialog}
                 onClose={handleCloseDialog}
                 onConfirm={handleConfirmDialog}
-                title="Create New Question"
+                title="Create with Timer?"
                 content="Do you want to create a new question with a timer setup?"
+                extraButtonOption={true}
+                onExtraAction={() => setOpenDialog(false)}
               />
+              <GenericDialog
+                isOpen={openDeleteDialog}
+                onClose={() => {
+                  setOpenDeleteDialog(false);
+                  setQuestionToDeleteId(null); // Optionally reset the ID here as well
+                }}
+                onConfirm={handleConfirmDelete}
+                title="Delete Question?"
+                content="Are you sure to delete this question?  This action cannot be undone."
+              />
+
               <GenericFormControl
                 label="Show questions as"
                 value={sortOption}

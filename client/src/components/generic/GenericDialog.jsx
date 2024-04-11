@@ -5,21 +5,30 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Box,
 } from "@mui/material";
 import { BlackBackgroundButton } from "./GenericButton";
 
-const GenericDialog = ({ isOpen, onClose, onConfirm, title, content }) => {
+const GenericDialog = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  content,
+  extraButtonOption,
+  onExtraAction,
+}) => {
   return (
     <Dialog
       open={isOpen}
       onClose={onClose}
       sx={{
         "& .MuiDialog-paper": {
-          backgroundColor: "#000", // Sets the background color to black
-          color: "#fff", // Sets the text color to white for all text in the dialog
+          backgroundColor: "#000",
+          color: "#fff",
         },
         "& .MuiDialogContentText-root, & .MuiDialogTitle-root": {
-          color: "#fff", // Ensure this applies to both the dialog content and title specifically, if needed
+          color: "#fff",
         },
       }}
     >
@@ -28,8 +37,13 @@ const GenericDialog = ({ isOpen, onClose, onConfirm, title, content }) => {
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <BlackBackgroundButton onClick={onClose} buttonText="No" />
-        <BlackBackgroundButton onClick={onConfirm} buttonText="Yes" />
+        {extraButtonOption === true && (
+          <BlackBackgroundButton onClick={onExtraAction} buttonText="Cancel" />
+        )}
+        <Box>
+          <BlackBackgroundButton onClick={onClose} buttonText="No" />
+          <BlackBackgroundButton onClick={onConfirm} buttonText="Yes" />
+        </Box>
       </DialogActions>
     </Dialog>
   );

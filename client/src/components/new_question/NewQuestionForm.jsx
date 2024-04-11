@@ -260,7 +260,6 @@ const NewQuestionForm = ({ timerValue }) => {
         imageId: solution.imageId,
       })),
     };
-    console.log(formattedData);
     try {
       const response = await axiosInstance.post("question", formattedData);
       if (response.data.serverMessage === "SUCCESS") {
@@ -375,7 +374,7 @@ const NewQuestionForm = ({ timerValue }) => {
           }}
         >
           <Typography sx={{ marginBottom: 1 }}>
-            Did you tackle this LeetCode problem?
+            Did you solve this LeetCode problem?
           </Typography>
           <SuccessToggle
             onChange={(success) =>
