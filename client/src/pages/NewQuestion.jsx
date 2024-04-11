@@ -15,6 +15,7 @@ const NewQuestion = () => {
   const navigate = useNavigate();
 
   const handleTimeSubmit = (time) => {
+    console.log(time);
     setTimeOfCompletion(time);
   };
 

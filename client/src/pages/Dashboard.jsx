@@ -153,7 +153,7 @@ const Dashboard = () => {
         }}
       >
         <AuthenticatedNavbar />
-        <Box component="main" sx={{ flexGrow: 1 }}>
+        <Box component="main" sx={{ flexGrow: 1, marginBottom: "4rem" }}>
           <Container>
             <Box
               sx={{
