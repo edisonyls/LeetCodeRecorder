@@ -49,7 +49,7 @@ const HomeNavbar = () => {
     <AppBar position="static" sx={{ background: "black" }}>
       <Toolbar>
         <FlutterDashIcon
-          sx={{ marginLeft: "4rem", fontSize: { sm: "1rem", mxl: "2rem" } }}
+          sx={{ marginLeft: "4rem", fontSize: { sm: "1rem", xl: "2rem" } }}
         />
         <Typography variant="h6" sx={{ flexGrow: 1, ml: 1 }}>
           <Box

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import { userReducer, initialState } from "../reducer/userReducer";
-import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 const UserContext = createContext();
 

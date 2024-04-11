@@ -328,7 +328,7 @@ const NewQuestionForm = ({ timerValue }) => {
             }}
           >
             <DatePicker
-              label="Date of Completion"
+              label="Date of Completion *"
               format="DD-MM-YYYY"
               value={question.dateOfCompletion}
               maxDate={dayjs()}
@@ -374,7 +374,7 @@ const NewQuestionForm = ({ timerValue }) => {
           }}
         >
           <Typography sx={{ marginBottom: 1 }}>
-            Did you solve this LeetCode problem?
+            Did you solve this LeetCode problem? *
           </Typography>
           <SuccessToggle
             onChange={(success) =>

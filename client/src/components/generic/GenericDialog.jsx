@@ -6,7 +6,10 @@ import {
   DialogContentText,
   DialogTitle,
   Box,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { BlackBackgroundButton } from "./GenericButton";
 
 const GenericDialog = ({
@@ -17,6 +20,8 @@ const GenericDialog = ({
   content,
   extraButtonOption,
   onExtraAction,
+  showHint,
+  hint,
 }) => {
   return (
     <Dialog
@@ -32,7 +37,27 @@ const GenericDialog = ({
         },
       }}
     >
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {title}
+        {showHint && (
+          <Tooltip
+            title={hint}
+            placement="top"
+            enterDelay={500}
+            leaveDelay={200}
+          >
+            <IconButton>
+              <HelpOutlineIcon sx={{ color: "#fff" }} />
+            </IconButton>
+          </Tooltip>
+        )}
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>

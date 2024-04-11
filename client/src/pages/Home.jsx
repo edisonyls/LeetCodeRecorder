@@ -26,7 +26,7 @@ function Home() {
                     sm: "2rem", // tablets
                     md: "2.5rem", // small laptops
                     lg: "3rem", // desktops
-                    xl: "4rem", // large screens
+                    xl: "3.5rem", // large screens
                   },
                   backgroundColor: "transparent",
                   backgroundImage:
@@ -46,7 +46,7 @@ function Home() {
                     sm: "2rem", // tablets
                     md: "2.5rem", // small laptops
                     lg: "3rem", // desktops
-                    xl: "4rem", // large screens
+                    xl: "3.5rem", // large screens
                   },
                   backgroundColor: "transparent",
                   backgroundImage:
@@ -137,12 +137,13 @@ const MainContainerBox = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifySelf: "center",
   margin: "0 auto",
-  height: "100vh",
+  height: "90vh",
   backgroundColor: grey[900],
   zIndex: 1,
   width: "88%",
   maxWidth: "1200px",
   padding: "0 50px",
+  gap: "1rem",
   [theme.breakpoints.down("sm")]: {
     gridTemplateColumns: "1fr",
     padding: "0 20px",
@@ -197,8 +198,8 @@ const ServicesBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   height: "auto",
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
+
+  paddingBottom: theme.spacing(10),
 }));
 
 const ServicesTypoH1 = styled(Typography)(({ theme }) => ({

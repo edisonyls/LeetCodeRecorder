@@ -37,7 +37,8 @@ function Copyright(props) {
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { state } = useUser();
-  const { isAuthenticated, user, loading, error } = state;
+  const { isAuthenticated, user, token, error } = state;
+  const { getCurrentUser } = UserHooks();
   const { register } = UserHooks();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -59,10 +60,13 @@ const RegisterPage = () => {
     if (error) {
       toast.error(error);
     }
-    if (isAuthenticated || user) {
+    if (token) {
+      getCurrentUser(token);
+    }
+    if (isAuthenticated && user) {
       navigate("/dashboard");
     }
-  }, [error, isAuthenticated, navigate, user]);
+  }, []);
 
   const checkData = (data) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;

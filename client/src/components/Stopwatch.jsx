@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IconButton, Box, Typography } from "@mui/material";
+import { IconButton, Box, Typography, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import GenericDialog from "./generic/GenericDialog";
@@ -58,7 +58,8 @@ const Stopwatch = ({ onTimeSubmit }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          border: "1px solid #000",
+          border: "1px solid #fff",
+          background: "#000",
           padding: "8px",
           borderRadius: "4px",
           marginRight: "8px",
@@ -71,21 +72,30 @@ const Stopwatch = ({ onTimeSubmit }) => {
             width: "100%",
           }}
         >
-          <Typography variant="h7" sx={{ marginRight: "8px", flexGrow: 1 }}>
-            Timer: {formatTime()}
-          </Typography>
-          <IconButton sx={{ color: "black" }} onClick={handlePauseResume}>
-            {isRunning ? <PauseIcon /> : <PlayArrowIcon />}
-          </IconButton>
-          <IconButton
-            sx={{ color: "black" }}
-            onClick={() => setOpenResetDialog(true)}
+          <Typography
+            variant="h7"
+            sx={{ marginRight: "8px", flexGrow: 1, color: "#fff" }}
           >
-            <ReplayIcon />
-          </IconButton>
-          <IconButton sx={{ color: "black" }} onClick={handleFinish}>
-            <CheckCircleOutlineIcon />
-          </IconButton>
+            Time Spent: {formatTime()}
+          </Typography>
+          <Tooltip title="start/pause">
+            <IconButton sx={{ color: "#fff" }} onClick={handlePauseResume}>
+              {isRunning ? <PauseIcon /> : <PlayArrowIcon />}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="reset">
+            <IconButton
+              sx={{ color: "#fff" }}
+              onClick={() => setOpenResetDialog(true)}
+            >
+              <ReplayIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="finish">
+            <IconButton sx={{ color: "#fff" }} onClick={handleFinish}>
+              <CheckCircleOutlineIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
       <GenericDialog

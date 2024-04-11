@@ -184,9 +184,11 @@ const Dashboard = () => {
                 onClose={handleCloseDialog}
                 onConfirm={handleConfirmDialog}
                 title="Create with Timer?"
-                content="Do you want to create a new question with a timer setup?"
+                content="Do you want to create a new question with a timer?"
                 extraButtonOption={true}
                 onExtraAction={() => setOpenDialog(false)}
+                showHint={true}
+                hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
               />
               <GenericDialog
                 isOpen={openDeleteDialog}

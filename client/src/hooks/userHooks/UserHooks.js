@@ -5,7 +5,7 @@ import { userActionTypes } from "../../reducer/userActions";
 export const UserHooks = () => {
   const { dispatch } = useUser();
 
-  const getCurrentUser = async (token) => {
+  const getCurrentUser = async () => {
     dispatch({ type: userActionTypes.PROCESS_START });
     try {
       const res = await axiosInstance.get("user");

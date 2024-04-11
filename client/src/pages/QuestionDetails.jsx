@@ -48,7 +48,7 @@ const QuestionDetails = () => {
           }
         })
         .catch((error) => {
-          console.log("Failed to fetch data");
+          console.log("Failed to fetch data: ", error);
         });
       setLoading(false);
     };

@@ -36,8 +36,8 @@ function Copyright(props) {
 export default function SignInPage() {
   const navigate = useNavigate();
   const { state } = useUser();
-  const { login } = UserHooks();
-  const { isAuthenticated, user, loading, error } = state;
+  const { login, getCurrentUser } = UserHooks();
+  const { isAuthenticated, token, user, error } = state;
 
   const [open, setOpen] = useState(false); // Add this line
 
@@ -45,10 +45,13 @@ export default function SignInPage() {
     if (error) {
       toast.error(error);
     }
-    if (isAuthenticated && user) {
+    if (token) {
+      getCurrentUser(token);
+    }
+    if (isAuthenticated && user && Object.keys(user).length > 0) {
       navigate("/dashboard");
     }
-  }, [error, isAuthenticated, navigate, user]);
+  }, [error, isAuthenticated, navigate, user, getCurrentUser, token]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
