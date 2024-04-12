@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { register, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import PasswordValidator from "../components/PasswordValidator";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 function Copyright(props) {
   return (
@@ -36,14 +36,13 @@ function Copyright(props) {
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const { state } = useUser();
+  const { isAuthenticated, user, token, error } = state;
+  const { getCurrentUser } = UserHooks();
+  const { register } = UserHooks();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const { user, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
 
   useEffect(() => {
     if (password.length > 0 && confirmPassword.length > 0) {
@@ -58,15 +57,16 @@ const RegisterPage = () => {
   }, [password, confirmPassword]);
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
+    if (error) {
+      toast.error(error);
     }
-    if (isSuccess || user) {
+    if (token) {
+      getCurrentUser(token);
+    }
+    if (isAuthenticated && user) {
       navigate("/dashboard");
     }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [error, getCurrentUser, isAuthenticated, navigate, token, user]);
 
   const checkData = (data) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
@@ -118,7 +118,7 @@ const RegisterPage = () => {
       data.firstName = formatName({ name: data.firstName });
       data.lastName = formatName({ name: data.lastName });
       data.role = "USER";
-      dispatch(register(data));
+      register(data);
     }
   };
 
@@ -134,15 +134,20 @@ const RegisterPage = () => {
             sm={4}
             md={7}
             sx={{
-              backgroundImage:
-                "url(https://source.unsplash.com/random?wallpapers)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundImage:
+                  "url(https://source.unsplash.com/random?wallpapers)",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              },
             }}
           />
           <Grid
@@ -153,6 +158,12 @@ const RegisterPage = () => {
             component={Paper}
             elevation={6}
             square
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center", // Centers the form vertically
+              minHeight: "100vh", // Ensures the grid item doesn't shrink below the viewport height
+            }}
           >
             <Box
               sx={{

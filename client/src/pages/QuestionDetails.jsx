@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axiosInstance from "../config/axiosConfig";
+import { axiosInstance } from "../config/axiosConfig";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import CodeSnippet from "../components/CodeSnippet";
 import {
@@ -48,7 +48,7 @@ const QuestionDetails = () => {
           }
         })
         .catch((error) => {
-          console.log("Failed to fetch data");
+          console.log("Failed to fetch data: ", error);
         });
       setLoading(false);
     };
@@ -96,7 +96,7 @@ const QuestionDetails = () => {
         <WhiteBackgroundButton
           icon={<ArrowBack />}
           onClick={() => {
-            navigate("/dashboard");
+            navigate(-1);
           }}
           buttonText="Back"
         />

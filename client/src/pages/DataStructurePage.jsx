@@ -106,7 +106,6 @@ const DataStructurePage = () => {
         minHeight: "100vh",
       }}
     >
-      {/* {console.log(dataStructure)} */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -128,18 +127,19 @@ const DataStructurePage = () => {
                   display: "flex",
                   bgcolor: grey[800],
                   color: grey[50],
-                  p: 2,
                   borderRadius: 1,
                   minHeight: 300,
                   overflow: "auto",
                 }}
               >
                 <DataStructureList
+                  sx={{ flex: 1 }}
                   dataStructure={dataStructures}
                   handleMainStructureClick={handleMainStructureClick}
                   addClicked={addClicked}
                 />
                 <SubStructureList
+                  sx={{ flex: 1 }}
                   selectedStructure={selectedStructure}
                   dataStructure={dataStructures}
                   handleSubStructureClick={handleSubStructureClick}
@@ -155,7 +155,7 @@ const DataStructurePage = () => {
                   color: grey[50],
                   p: 2,
                   borderRadius: 1,
-                  minHeight: 380,
+                  minHeight: 365,
                   overflow: "auto",
                 }}
               >

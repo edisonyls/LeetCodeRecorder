@@ -13,8 +13,8 @@ import java.util.UUID;
 @Table(name="solution")
 public class SolutionEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -26,10 +26,6 @@ public class SolutionEntity {
     private String codeSnippet;
     private String imageId;
 
-
-    public SolutionEntity(){
-        this.id = UUID.randomUUID();
-    }
 
 
 

@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Link,
   Paper,
   Box,
   Grid,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { login, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 function Copyright(props) {
   return (
@@ -34,27 +35,36 @@ function Copyright(props) {
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { user, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
+  const { state } = useUser();
+  const { login, getCurrentUser } = UserHooks();
+  const { isAuthenticated, token, user, error } = state;
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
+    if (error) {
+      toast.error(error);
     }
-
-    if (isSuccess || user) {
+    if (token) {
+      getCurrentUser(token);
+    }
+    if (isAuthenticated && user && Object.keys(user).length > 0) {
       navigate("/dashboard");
     }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [error, isAuthenticated, navigate, user, getCurrentUser, token]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
-    dispatch(login(data));
+    login(data);
+  };
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
   };
 
   return (
@@ -120,11 +130,7 @@ export default function SignInPage() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-                sx={{ marginBottom: 2, marginTop: 2 }}
+                sx={{ marginBottom: "2rem" }}
               />
               <WhiteBackgroundButton
                 buttonText="Sign In"
@@ -133,7 +139,8 @@ export default function SignInPage() {
               />
               <Grid container sx={{ marginTop: 2 }}>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link href="#" variant="body2" onClick={handleOpenDialog}>
+                    {/* Change this line */}
                     Forgot password?
                   </Link>
                 </Grid>
@@ -148,6 +155,13 @@ export default function SignInPage() {
           </Box>
         </Grid>
       </Grid>
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>{"Feature in Development"}</DialogTitle>
+        <DialogContent>
+          This feature is currently being developed and is not available at the
+          moment. Please check back later!
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }

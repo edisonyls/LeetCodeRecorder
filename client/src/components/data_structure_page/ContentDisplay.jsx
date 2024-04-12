@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { GreyBackgroundButton } from "../generic/GenericButton";
-import axiosInstance from "../../config/axiosConfig";
+import { axiosInstance } from "../../config/axiosConfig";
 import EditorWithMenuBar from "./EditorWithMenuBar";
 
 const fetchImage = async (imageId, subStructureId) => {
@@ -110,6 +110,12 @@ const jsonToHtml = async (node, subStructureId) => {
             case "code":
               text = `<code style="background-color: #212121; color: white; padding: 2px 4px; border-radius: 4px; font-family: 'Jet Brain', monospace; font-size: 0.85em;">${text}</code>`;
               break;
+            case "textStyle":
+              if (mark.attrs && mark.attrs.color) {
+                // Apply the textStyle color attribute to the text
+                text = `<span style="color: ${mark.attrs.color};">${text}</span>`;
+              }
+              break;
             default:
               break;
           }
@@ -157,7 +163,9 @@ const ContentDisplay = ({
   if (!selectedStructure) {
     return <NoSelectionMessage message="Please select a data structure." />;
   } else if (!selectedSubStructure) {
-    return <NoSelectionMessage message="Please select a sub-structure." />;
+    return (
+      <NoSelectionMessage message="Please select a variant or type of the data structure." />
+    );
   } else if (loading) {
     return <LoadingState name={selectedSubStructure?.name} />;
   } else if (addClicked) {

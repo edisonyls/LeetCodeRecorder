@@ -45,7 +45,6 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    @Transactional
     public QuestionEntity createQuestion(QuestionEntity questionEntity) {
         UserEntity userEntity = userService.getCurrentUser();
         questionEntity.setUser(userEntity);

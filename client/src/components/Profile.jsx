@@ -15,7 +15,7 @@ import { grey } from "@mui/material/colors";
 import GenericTextField from "./generic/GenricTextField";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
-export const ProfileView = ({ user, onEdit }) => {
+export const ProfileView = ({ user }) => {
   return (
     <div>
       <Box
@@ -57,7 +57,7 @@ export const ProfileView = ({ user, onEdit }) => {
           >
             Sex
           </Typography>
-          {displayValueOrPlaceholder(user.sex)}
+          <Typography>{displayValueOrPlaceholder(user.sex)}</Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography
@@ -67,7 +67,9 @@ export const ProfileView = ({ user, onEdit }) => {
           >
             Mobile Number
           </Typography>
-          {displayValueOrPlaceholder(user.mobileNumber)}
+          <Typography>
+            {displayValueOrPlaceholder(user.mobileNumber)}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography
@@ -77,10 +79,12 @@ export const ProfileView = ({ user, onEdit }) => {
           >
             Personal Info
           </Typography>
-          {displayValueOrPlaceholder(
-            user.personalInfo,
-            "No personal information provided"
-          )}
+          <Typography>
+            {displayValueOrPlaceholder(
+              user.personalInfo,
+              "No personal information provided"
+            )}
+          </Typography>
         </Grid>
       </Grid>
     </div>
@@ -112,7 +116,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             ? `${editedUser.firstName[0]}${editedUser.lastName[0]}`
             : "😢"}
         </Avatar>
-        <Typography variant="subtitle1" sx={{ color: grey[300], mt: 1 }}>
+        <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {editedUser.username}
         </Typography>
       </Box>
@@ -124,8 +128,8 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             name="firstName"
             value={editedUser.firstName || ""}
             onChange={handleChange}
+            inputLabelColor={grey[400]}
             inputColor={grey[50]}
-            inputLabelColor={grey[300]}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -135,8 +139,9 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             name="lastName"
             value={editedUser.lastName || ""}
             onChange={handleChange}
-            inputLabelColor={grey[300]}
+            inputLabelColor={grey[400]}
             focusColor={"grey"}
+            inputColor={grey[50]}
           />
         </Grid>
       </Grid>
@@ -144,7 +149,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
       <Grid container spacing={4} sx={{ mt: 3, px: 4, mb: 4 }}>
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <InputLabel style={{ color: grey[50] }}>Sex</InputLabel>
+            <InputLabel style={{ color: grey[400] }}>Sex</InputLabel>
             <Select
               label="Sex"
               name="sex"
@@ -160,10 +165,17 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
                   },
                 },
               }}
+              sx={{ color: grey[50] }}
             >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-              <MenuItem value="Secret">Secret</MenuItem>
+              <MenuItem value="Male" sx={{ color: grey[50] }}>
+                Male
+              </MenuItem>
+              <MenuItem value="Female" sx={{ color: grey[50] }}>
+                Female
+              </MenuItem>
+              <MenuItem value="Prefer Not To Say" sx={{ color: grey[50] }}>
+                Prefer Not To Say
+              </MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -174,8 +186,8 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             name="mobileNumber"
             value={editedUser.mobileNumber || ""}
             onChange={handleChange}
+            inputLabelColor={grey[400]}
             inputColor={grey[50]}
-            inputLabelColor={grey[300]}
           />
         </Grid>
         <Grid item xs={12}>
@@ -186,8 +198,8 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             multiline
             value={editedUser.personalInfo || ""}
             onChange={handleChange}
+            inputLabelColor={grey[400]}
             inputColor={grey[50]}
-            inputLabelColor={grey[300]}
           />
         </Grid>
       </Grid>

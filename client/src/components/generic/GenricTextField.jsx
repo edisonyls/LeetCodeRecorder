@@ -6,6 +6,7 @@ const GenericTextField = ({
   value,
   onChange,
   inputLabelColor,
+  inputColor,
 }) => {
   return (
     <TextField
@@ -17,6 +18,11 @@ const GenericTextField = ({
       InputLabelProps={{
         sx: {
           color: inputLabelColor,
+        },
+      }}
+      InputProps={{
+        sx: {
+          color: inputColor,
         },
       }}
     />

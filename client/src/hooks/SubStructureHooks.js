@@ -1,4 +1,4 @@
-import axiosInstance from "../config/axiosConfig";
+import { axiosInstance } from "../config/axiosConfig";
 import { useDataStructure } from "../context/dataStructureContext";
 import { actionTypes } from "../reducer/dataStructureActions";
 

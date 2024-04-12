@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./data_structure_page/EditorWithMenuBar.css";
 import { useCurrentEditor } from "@tiptap/react";
+import { GithubPicker } from "react-color";
 import {
   Box,
   IconButton,
@@ -8,7 +9,9 @@ import {
   MenuItem,
   Tooltip,
   CircularProgress,
+  Popover,
 } from "@mui/material";
+import PaletteIcon from "@mui/icons-material/Palette";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
@@ -36,6 +39,7 @@ const MenuBar = ({
     ContentHooks();
   const { editor } = useCurrentEditor();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [colorAnchorEl, setColorAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emptyContentOpen, setEmptyContentOpen] = useState(false);
@@ -60,7 +64,7 @@ const MenuBar = ({
       } else {
         setLoading(true);
         const imageSrcs = [];
-        console.log(content);
+
         if (content !== null && content !== undefined) {
           for (const node of JSON.parse(content).content) {
             if (node.type === "image") {
@@ -126,6 +130,22 @@ const MenuBar = ({
     return "Normal Text"; // Default to "Normal Text" if no other formats match
   };
 
+  const handleColorChange = (color) => {
+    if (editor) {
+      editor.chain().focus().setColor(color.hex).run();
+    }
+  };
+
+  const openColorPicker = (event) => {
+    setColorAnchorEl(event.currentTarget);
+  };
+
+  const closeColorPicker = () => {
+    setColorAnchorEl(null);
+  };
+
+  const colorPickerOpen = Boolean(colorAnchorEl);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
 
@@ -167,7 +187,7 @@ const MenuBar = ({
         {/* <Box sx={{ display: "flex", alignItems: "center" }}> */}
         {/* <Typography variant="body1">{getCurrentHeadingLevel()}</Typography> */}
         <IconButton aria-label="formatting-options" onClick={handleMenuClick}>
-          <KeyboardArrowDownIcon />
+          <KeyboardArrowDownIcon style={{ color: grey[50] }} />
         </IconButton>
         {/* </Box> */}
 
@@ -195,11 +215,37 @@ const MenuBar = ({
           ))}
         </Menu>
 
+        <Tooltip title="Text Color">
+          <IconButton
+            onClick={openColorPicker}
+            style={{
+              color: editor.getAttributes("textStyle")?.color || grey[50],
+            }}
+          >
+            <PaletteIcon />
+          </IconButton>
+        </Tooltip>
+        <Popover
+          open={colorPickerOpen}
+          anchorEl={colorAnchorEl}
+          onClose={closeColorPicker}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <GithubPicker
+            colors={customColors}
+            color={editor.getAttributes("textStyle")?.color}
+            onChangeComplete={handleColorChange}
+          />
+        </Popover>
+
         <Tooltip title="Bold">
           <IconButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={!editor.can().chain().focus().toggleBold().run()}
-            style={{ color: editor.isActive("bold") ? grey[50] : grey[900] }}
+            style={{ color: editor.isActive("bold") ? grey[900] : grey[50] }}
           >
             <FormatBoldIcon />
           </IconButton>
@@ -208,7 +254,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={!editor.can().chain().focus().toggleItalic().run()}
-            style={{ color: editor.isActive("italic") ? grey[50] : grey[900] }}
+            style={{ color: editor.isActive("italic") ? grey[900] : grey[50] }}
           >
             <FormatItalicIcon />
           </IconButton>
@@ -218,7 +264,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleStrike().run()}
             disabled={!editor.can().chain().focus().toggleStrike().run()}
-            style={{ color: editor.isActive("strike") ? grey[50] : grey[900] }}
+            style={{ color: editor.isActive("strike") ? grey[900] : grey[50] }}
           >
             <StrikethroughSIcon />
           </IconButton>
@@ -228,7 +274,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editor.can().chain().focus().toggleCode().run()}
-            style={{ color: editor.isActive("code") ? grey[50] : grey[900] }}
+            style={{ color: editor.isActive("code") ? grey[900] : grey[50] }}
           >
             <CodeIcon />
           </IconButton>
@@ -239,7 +285,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             disabled={!editor.can().chain().focus().toggleBulletList().run()}
             style={{
-              color: editor.isActive("bulletList") ? grey[50] : grey[900],
+              color: editor.isActive("bulletList") ? grey[900] : grey[50],
             }}
           >
             <FormatListBulletedIcon />
@@ -251,7 +297,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             disabled={!editor.can().chain().focus().toggleOrderedList().run()}
             style={{
-              color: editor.isActive("orderedList") ? grey[50] : grey[900],
+              color: editor.isActive("orderedList") ? grey[900] : grey[50],
             }}
           >
             <FormatListNumberedIcon />
@@ -263,7 +309,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             disabled={!editor.can().chain().focus().toggleCodeBlock().run()}
             style={{
-              color: editor.isActive("codeBlock") ? grey[50] : grey[900],
+              color: editor.isActive("codeBlock") ? grey[900] : grey[50],
             }}
           >
             <CodeIcon />
@@ -275,7 +321,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             disabled={!editor.can().chain().focus().toggleBlockquote().run()}
             style={{
-              color: editor.isActive("blockquote") ? grey[50] : grey[900],
+              color: editor.isActive("blockquote") ? grey[900] : grey[50],
             }}
           >
             <FormatQuoteIcon />
@@ -285,13 +331,14 @@ const MenuBar = ({
         <Tooltip title="Horizontal Rule">
           <IconButton
             onClick={() => editor.chain().focus().setHorizontalRule().run()}
+            style={{ color: grey[50] }}
           >
             <HorizontalRuleIcon />
           </IconButton>
         </Tooltip>
 
         <Tooltip title="Upload Image">
-          <IconButton component="label">
+          <IconButton component="label" style={{ color: grey[50] }}>
             <ImageIcon />
             <input type="file" hidden onChange={handleImageUpload} />
           </IconButton>
@@ -325,5 +372,26 @@ const MenuBar = ({
     </Box>
   );
 };
+
+const customColors = [
+  "#000000", // black
+  "#fafafa", // white
+  "#F44336", // red
+  "#E91E63", // pink
+  "#9C27B0", // purple
+  "#673AB7", // deep purple
+  "#3F51B5", // indigo
+  "#2196F3", // blue
+  "#03A9F4", // light blue
+  "#00BCD4", // cyan
+  "#009688", // teal
+  "#4CAF50", // green
+  "#8BC34A", // light green
+  "#CDDC39", // lime
+  "#FFEB3B", // yellow
+  "#FFC107", // amber
+  "#FF9800", // orange
+  "#FF5722", // deep orange
+];
 
 export default MenuBar;

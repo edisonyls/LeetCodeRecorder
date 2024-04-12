@@ -2,8 +2,12 @@
 import axios from "axios";
 
 const token = JSON.parse(localStorage.getItem("user"));
-// const API_ENDPOINT = "http://localhost:8080/api/";
-const API_ENDPOINT = "https://api.ylslc.org/api/";
+const API_ENDPOINT = "http://localhost:8080/api/";
+// const API_ENDPOINT = "https://api.ylslc.org/api/";
+
+const axiosInstanceNoAuth = axios.create({
+  baseURL: API_ENDPOINT,
+});
 
 const axiosInstance = axios.create({
   baseURL: API_ENDPOINT,
@@ -25,4 +29,4 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-export default axiosInstance;
+export { axiosInstance, axiosInstanceNoAuth };

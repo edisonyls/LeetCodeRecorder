@@ -21,7 +21,7 @@ export const ActionDialog = ({
   onSubmit,
 }) => {
   const dialogTitle = `${actionType} ${structureName}`;
-  const inputLabel = `New ${structureName} Name`;
+  const inputLabel = `Name of ${structureName}`;
 
   return (
     <Dialog

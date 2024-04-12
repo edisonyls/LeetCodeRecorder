@@ -9,8 +9,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
   Divider,
 } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
@@ -29,7 +31,8 @@ const DataStructureList = ({
   const [anchorEl, setAnchorEl] = useState(null); // For the menu
   const [selectedId, setSelectedId] = useState(null); // storing the selected structure id
   const [newName, setNewName] = useState(""); // name of the renamed data structure
-  const [selectedStructure, setSelectedStructure] = useState(null);
+  const [selectedStructure, setSelectedStructure] = useState(null); // selected data structure by the user
+
   const open = Boolean(anchorEl); // To check if menu is open
 
   const handleDialogOpen = (type) => {
@@ -88,12 +91,7 @@ const DataStructureList = ({
   };
 
   return (
-    <Box
-      sx={{
-        width: "50%",
-        overflowY: "auto",
-      }}
-    >
+    <Box sx={{ width: "100%", p: 1 }}>
       <List>
         <ListItem>
           <Typography>Data Structures</Typography>
@@ -155,6 +153,22 @@ const DataStructureList = ({
             }}
           >
             <Typography>No data</Typography>
+            <Tooltip
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    maxWidth: 170,
+                    fontSize: "12px",
+                    p: 1,
+                  },
+                },
+              }}
+              title="Please click on the dot icon above to create a new data structure"
+            >
+              <IconButton>
+                <HelpOutlineIcon sx={{ color: "#fff", fontSize: "1rem" }} />
+              </IconButton>
+            </Tooltip>
           </Box>
         ) : (
           <Box

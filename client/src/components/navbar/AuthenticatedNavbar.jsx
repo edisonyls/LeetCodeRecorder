@@ -1,39 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { logout, reset } from "../../auth/authSlice";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
-import axiosInstance from "../../config/axiosConfig";
 import ListIcon from "@mui/icons-material/List";
 import OptionDrawer from "../OptionDrawer";
 import { useUser } from "../../context/userContext";
+import { UserHooks } from "../../hooks/userHooks/UserHooks";
 
 const AuthenticatedNavbar = () => {
-  const { user, setUser } = useUser();
-  // const [user, setUser] = useState({});
+  const { state } = useUser();
+  const { user, token } = state;
+  const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { logout } = UserHooks();
+  const location = useLocation();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await axiosInstance.get("user");
-      const data = await response.data;
-
-      if (data.serverMessage === "SUCCESS") {
-        setUser(data.data);
-      }
-    };
-
-    fetchUserData();
+    getCurrentUser(token);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     console.log("Logging out...");
-    dispatch(logout());
-    dispatch(reset());
+    logout();
     navigate("/");
   };
 
@@ -86,6 +76,7 @@ const AuthenticatedNavbar = () => {
           isOpen={isDrawerOpen}
           toggleDrawer={toggleDrawer}
           handleLogout={handleLogout}
+          currentPath={location.pathname}
         />
       </Toolbar>
     </AppBar>

@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Container, TextField, MenuItem, Typography, Box } from "@mui/material";
+import {
+  Container,
+  TextField,
+  MenuItem,
+  Typography,
+  Box,
+  InputAdornment,
+} from "@mui/material";
 import SuccessToggle from "./SuccessToggle";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../config/axiosConfig";
+import { axiosInstance } from "../../config/axiosConfig";
 
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
@@ -20,7 +26,7 @@ const NewQuestionForm = ({ timerValue }) => {
     dateOfCompletion: null,
     success: false,
     attempts: "",
-    timeOfCompletion: null,
+    timeOfCompletion: "",
     solutions: [
       {
         thinkingProcess: "",
@@ -69,6 +75,35 @@ const NewQuestionForm = ({ timerValue }) => {
     }));
   };
 
+  const handleTimeChange = (prop, value) => {
+    let numericValue = parseInt(value, 10);
+
+    if (isNaN(numericValue)) {
+      numericValue = 0;
+    }
+
+    if (prop === "minutes") {
+      numericValue = Math.max(numericValue, 0);
+    } else if (prop === "seconds") {
+      numericValue = Math.max(0, Math.min(numericValue, 59));
+    }
+
+    const stringValue = numericValue.toString();
+
+    setQuestion((prevQuestion) => {
+      const timeParts = prevQuestion.timeOfCompletion.split(":");
+      if (prop === "minutes") {
+        timeParts[0] = stringValue;
+      } else {
+        timeParts[1] = stringValue.padStart(2, "0");
+      }
+      return {
+        ...prevQuestion,
+        timeOfCompletion: timeParts.join(":"),
+      };
+    });
+  };
+
   const handleSolutionChange = (event, index) => {
     const { name, value } = event.target;
     setQuestion((prevQuestion) => {
@@ -97,6 +132,7 @@ const NewQuestionForm = ({ timerValue }) => {
       showCodeInput: false,
       imagePreviewUrl: "",
       file: null,
+      imageId: "",
     };
     setQuestion((prevQuestions) => ({
       ...prevQuestions,
@@ -165,9 +201,6 @@ const NewQuestionForm = ({ timerValue }) => {
     } else if (question.timeOfCompletion === null) {
       alert("Time of Completion is required.");
       return false;
-    } else if (!dayjs(question.timeOfCompletion).isValid()) {
-      alert("Time of Completion is invalid.");
-      return false;
     }
     return true;
   };
@@ -179,32 +212,36 @@ const NewQuestionForm = ({ timerValue }) => {
       return;
     }
     const uploadPromises = question.solutions.map(async (solution, index) => {
-      const fileData = new FormData();
-      fileData.append("image", solution.file);
-      fileData.append("questionNumber", question.number);
-      try {
-        const response = await axiosInstance.post(
-          "question/upload-image",
-          fileData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+      if (solution.file) {
+        const fileData = new FormData();
+        fileData.append("image", solution.file);
+        fileData.append("questionNumber", question.number);
+        try {
+          const response = await axiosInstance.post(
+            "question/upload-image",
+            fileData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (response.data.serverMessage === "SUCCESS") {
+            return { ...solution, imageId: response.data.data };
+          } else {
+            console.log("Image upload failed for solution", index);
+            return solution;
           }
-        );
-        if (response.data.serverMessage === "SUCCESS") {
-          return { ...solution, imageId: response.data.data };
-        } else {
-          console.log("Image upload failed for solution", index);
+        } catch (error) {
+          console.error(
+            "An error occurred during submission for solution",
+            index,
+            error
+          );
           return solution;
         }
-      } catch (error) {
-        console.error(
-          "An error occurred during submission for solution",
-          index,
-          error
-        );
-        return solution;
+      } else {
+        return solution; // Return the original solution if there's no file to upload
       }
     });
     try {
@@ -218,14 +255,11 @@ const NewQuestionForm = ({ timerValue }) => {
     }
   };
 
-  const submitRestData = async (e) => {
+  const submitRestData = async () => {
     const formattedData = {
       ...question,
       dateOfCompletion: question.dateOfCompletion
         ? question.dateOfCompletion.format("YYYY-MM-DD")
-        : "",
-      timeOfCompletion: question.timeOfCompletion
-        ? question.timeOfCompletion.format("mm:ss")
         : "",
       solutions: question.solutions.map((solution) => ({
         thinkingProcess: solution.thinkingProcess,
@@ -245,14 +279,13 @@ const NewQuestionForm = ({ timerValue }) => {
 
   useEffect(() => {
     if (timerValue) {
-      const [minutes, seconds] = timerValue.split(":").map(Number);
-      const newValue = dayjs().hour(0).minute(minutes).second(seconds);
       setQuestion((prevState) => ({
         ...prevState,
-        timeOfCompletion: newValue,
+        timeOfCompletion: timerValue,
       }));
     }
   }, [timerValue]);
+
   return (
     <Container maxWidth="md" sx={{ marginBottom: 4 }}>
       <form onSubmit={handleSubmit}>
@@ -298,42 +331,59 @@ const NewQuestionForm = ({ timerValue }) => {
               alignItems: "center",
               marginTop: 2,
               marginBottom: 1,
-              flexWrap: "wrap",
-              gap: { xs: 1, sm: 2, md: 3 },
+              gap: 2,
             }}
           >
             <DatePicker
-              label="Date of Completion"
+              label="Date of Completion *"
               format="DD-MM-YYYY"
               value={question.dateOfCompletion}
               maxDate={dayjs()}
               onChange={(newValue) =>
                 handleDateChange("dateOfCompletion", newValue)
               }
-              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
-            />
-            <TimePicker
-              label="Time of Completion"
-              views={["minutes", "seconds"]}
-              format="mm:ss"
-              value={question.timeOfCompletion}
-              onChange={(newValue) =>
-                handleDateChange("timeOfCompletion", newValue)
-              }
-              sx={{ minWidth: "auto", flexGrow: 1, margin: "auto" }}
+              sx={{ minWidth: "auto", flexGrow: 3, margin: "auto" }}
             />
             <TextField
-              margin="normal"
-              fullWidth={false}
-              label="Attempts"
-              name="attempts"
-              value={question.attempts}
-              onChange={handleChange}
-              sx={{ minWidth: "auto", margin: "auto", flexGrow: 1 }}
+              label="Minutes Spent"
+              name="minutes"
+              value={question.timeOfCompletion.split(":")[0]}
+              onChange={(e) => handleTimeChange("minutes", e.target.value)}
+              sx={{ flexGrow: 1 }}
               required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">minutes</InputAdornment>
+                ),
+              }}
+            />
+
+            <TextField
+              label="Seconds Spent"
+              name="seconds"
+              value={question.timeOfCompletion.split(":")[1] || ""}
+              onChange={(e) => handleTimeChange("seconds", e.target.value)}
+              sx={{ flexGrow: 1 }}
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">seconds</InputAdornment>
+                ),
+              }}
             />
           </Box>
         </LocalizationProvider>
+        <TextField
+          margin="normal"
+          label="Number of Attempts"
+          name="attempts"
+          value={question.attempts}
+          onChange={handleChange}
+          sx={{ flexGrow: 1 }}
+          required
+          fullWidth
+          type="number"
+        />
         <Box
           sx={{
             display: "flex",
@@ -344,7 +394,7 @@ const NewQuestionForm = ({ timerValue }) => {
           }}
         >
           <Typography sx={{ marginBottom: 1 }}>
-            Did you tackle this LeetCode problem?
+            Did you solve this LeetCode problem? *
           </Typography>
           <SuccessToggle
             onChange={(success) =>

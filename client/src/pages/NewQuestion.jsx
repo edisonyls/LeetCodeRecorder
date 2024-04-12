@@ -6,21 +6,32 @@ import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import Stopwatch from "../components/Stopwatch";
+import GenericDialog from "../components/generic/GenericDialog";
+import { ArrowBack } from "@mui/icons-material";
 
 const NewQuestion = () => {
   const [timeOfCompletion, setTimeOfCompletion] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const location = useLocation();
   const withTimer = location.state?.withTimer || false;
   const navigate = useNavigate();
 
   const handleTimeSubmit = (time) => {
+    console.log(time);
     setTimeOfCompletion(time);
   };
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <AuthenticatedNavbar />
+      <GenericDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={() => navigate(-1)}
+        title="Return to Dashboard"
+        content="Are you sure? All unsaved data will be lost."
+      />
       <Box
         sx={{
           mt: 2,
@@ -34,7 +45,8 @@ const NewQuestion = () => {
       >
         <Box sx={{ position: "absolute", left: "8%" }}>
           <WhiteBackgroundButton
-            onClick={() => navigate(-1)}
+            icon={<ArrowBack />}
+            onClick={() => setDialogOpen(true)}
             buttonText="Back"
           />
         </Box>

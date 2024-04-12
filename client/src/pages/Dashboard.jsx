@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../config/axiosConfig";
+import { axiosInstance } from "../config/axiosConfig";
 import AddIcon from "@mui/icons-material/Add";
-import { Container, Box } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
@@ -11,6 +11,7 @@ import GenericFormControl from "../components/generic/GenericFormControl";
 import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
+import { grey } from "@mui/material/colors";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -18,23 +19,34 @@ const Dashboard = () => {
   const [originalQuestions, setOriginalQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
 
   const navigate = useNavigate();
 
-  const handleDelete = async (id, event) => {
-    event.stopPropagation(); // Prevent click event from reaching the TableRow
-
-    try {
-      await axiosInstance.delete(`question/${id}`);
-      // Remove the question from the list or refetch the list
-      const updatedQuestions = questions.filter(
-        (question) => question.id !== id
-      );
-      setQuestions(updatedQuestions);
-      setOriginalQuestions(updatedQuestions);
-    } catch (error) {
-      console.error("Error deleting question:", error);
+  const handleDelete = (id, event) => {
+    event.stopPropagation(); // Stop the event from propagating to the row click event
+    setQuestionToDeleteId(id); // Set the ID of the question to delete
+    setOpenDeleteDialog(true); // Open the delete confirmation dialog
+  };
+  const handleConfirmDelete = async () => {
+    setIsLoading(true);
+    if (questionToDeleteId !== null) {
+      try {
+        await axiosInstance.delete(`question/${questionToDeleteId}`);
+        const updatedQuestions = questions.filter(
+          (question) => question.id !== questionToDeleteId
+        );
+        setQuestions(updatedQuestions);
+        setOriginalQuestions(updatedQuestions);
+      } catch (error) {
+        console.error("Error deleting question:", error);
+        setIsLoading(false);
+      }
     }
+    setOpenDeleteDialog(false);
+    setQuestionToDeleteId(null);
+    setIsLoading(false);
   };
 
   const handleOpenDialog = (e) => {
@@ -55,20 +67,18 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await axiosInstance
-        .get("question/all")
-        .then((response) => {
-          setQuestions(response.data.data);
-          setOriginalQuestions(response.data.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          alert("User not authenticated!");
-        });
+      try {
+        const response = await axiosInstance.get("question/all");
+        setQuestions(response.data.data);
+        setOriginalQuestions(response.data.data);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated regardless of success or error
+      }
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     let sortedQuestions = [...originalQuestions];
@@ -130,6 +140,20 @@ const Dashboard = () => {
         <GenericSpinner />
       </>
     );
+  } else if (originalQuestions === null) {
+    // Check if originalQuestions is null and render "No Data"
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography variant="h4">No Data</Typography>
+      </Box>
+    );
   } else {
     return (
       <Box
@@ -140,7 +164,7 @@ const Dashboard = () => {
         }}
       >
         <AuthenticatedNavbar />
-        <Box component="main" sx={{ flexGrow: 1 }}>
+        <Box component="main" sx={{ flexGrow: 1, marginBottom: "4rem" }}>
           <Container>
             <Box
               sx={{
@@ -159,9 +183,24 @@ const Dashboard = () => {
                 isOpen={openDialog}
                 onClose={handleCloseDialog}
                 onConfirm={handleConfirmDialog}
-                title="Create New Question"
-                content="Do you want to create a new question with a timer setup?"
+                title="Create with Timer?"
+                content="Do you want to create a new question with a timer?"
+                extraButtonOption={true}
+                onExtraAction={() => setOpenDialog(false)}
+                showHint={true}
+                hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
               />
+              <GenericDialog
+                isOpen={openDeleteDialog}
+                onClose={() => {
+                  setOpenDeleteDialog(false);
+                  setQuestionToDeleteId(null); // Optionally reset the ID here as well
+                }}
+                onConfirm={handleConfirmDelete}
+                title="Delete Question?"
+                content="Are you sure to delete this question?  This action cannot be undone."
+              />
+
               <GenericFormControl
                 label="Show questions as"
                 value={sortOption}
@@ -184,6 +223,20 @@ const Dashboard = () => {
               />
             </Box>
             <QuestionsTable questions={questions} onDelete={handleDelete} />
+            {originalQuestions && originalQuestions.length === 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "50vh", // Adjust height as needed
+                }}
+              >
+                <Typography variant="h5" sx={{ color: grey[600] }}>
+                  No Data Available
+                </Typography>
+              </Box>
+            )}
           </Container>
         </Box>
         <Footer />

@@ -50,46 +50,65 @@ const Solution = ({
           </IconButton>
         )}
       </Box>
+
+      <Typography
+        variant="body2"
+        sx={{ marginBottom: "1rem", marginLeft: "1rem" }}
+      >
+        Thinking Process
+      </Typography>
       <TextField
-        margin="normal"
         fullWidth
-        label="Thinking Process"
+        label="Enter your thinking process"
         name="thinkingProcess"
         multiline
         value={thinkingProcess}
         onChange={handleChange}
         sx={{ marginBottom: 2 }}
       />
-      <Typography variant="h8">Code Snippet</Typography>
+
       <Box
         sx={{
           display: "flex",
           flexDirection: showCodeInput || imagePreviewUrl ? "column" : "row",
-
           alignItems: "center",
           justifyContent: "center",
           gap: 2,
         }}
       >
         {showCodeInput ? (
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Paste your code snippet here"
-            name="codeSnippet"
-            multiline
-            value={codeSnippet}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleOnClick} edge="end">
-                    <DeleteForeverIcon style={{ color: "black" }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
+          <Box
+            sx={{
+              alignItems: "flex-start",
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
             }}
-          />
+          >
+            <Typography
+              variant="body2"
+              sx={{ marginBottom: "1rem", marginLeft: "1rem" }}
+            >
+              Code Snippet
+            </Typography>
+            <TextField
+              fullWidth
+              label="Paste your code snippet here"
+              name="codeSnippet"
+              multiline
+              value={codeSnippet}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleOnClick} edge="end">
+                      <DeleteForeverIcon style={{ color: "black" }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
         ) : (
           <WhiteBackgroundButton
             buttonText="Upload Code"
@@ -100,8 +119,13 @@ const Solution = ({
         )}
 
         {imagePreviewUrl ? (
-          <Paper elevation={0} sx={{ mt: 2, width: "96%", padding: 2 }}>
-            <Typography variant="body2">Image Preview:</Typography>
+          <Paper
+            elevation={0}
+            sx={{ width: "96%", padding: 2, marginTop: "-1rem" }}
+          >
+            <Typography variant="body2" sx={{ marginBottom: "8px" }}>
+              Image Preview:
+            </Typography>
             <img
               src={imagePreviewUrl}
               alt="Preview"
@@ -109,6 +133,7 @@ const Solution = ({
                 width: "100%",
                 maxHeight: "300px",
                 objectFit: "contain",
+                marginBottom: "1rem",
               }}
             />
             <WarningButton
