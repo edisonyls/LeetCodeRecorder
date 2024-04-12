@@ -12,11 +12,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Face from "@mui/icons-material/Face";
-import Group from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
 import { BlackBackgroundButton } from "./generic/GenericButton";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import AlgorithmIcon from "@mui/icons-material/Functions";
 import DataStructureIcon from "@mui/icons-material/Storage";
 
 const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
