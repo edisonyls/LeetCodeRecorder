@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, TextField, MenuItem, Typography, Box } from "@mui/material";
+import {
+  Container,
+  TextField,
+  MenuItem,
+  Typography,
+  Box,
+  InputAdornment,
+} from "@mui/material";
 import SuccessToggle from "./SuccessToggle";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -344,7 +351,13 @@ const NewQuestionForm = ({ timerValue }) => {
               onChange={(e) => handleTimeChange("minutes", e.target.value)}
               sx={{ flexGrow: 1 }}
               required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">minutes</InputAdornment>
+                ),
+              }}
             />
+
             <TextField
               label="Seconds Spent"
               name="seconds"
@@ -352,18 +365,25 @@ const NewQuestionForm = ({ timerValue }) => {
               onChange={(e) => handleTimeChange("seconds", e.target.value)}
               sx={{ flexGrow: 1 }}
               required
-            />
-            <TextField
-              margin="normal"
-              label="Attempts"
-              name="attempts"
-              value={question.attempts}
-              onChange={handleChange}
-              sx={{ flexGrow: 1 }}
-              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">seconds</InputAdornment>
+                ),
+              }}
             />
           </Box>
         </LocalizationProvider>
+        <TextField
+          margin="normal"
+          label="Number of Attempts"
+          name="attempts"
+          value={question.attempts}
+          onChange={handleChange}
+          sx={{ flexGrow: 1 }}
+          required
+          fullWidth
+          type="number"
+        />
         <Box
           sx={{
             display: "flex",

@@ -34,24 +34,24 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       path: "/profile",
       onClick: () => navigate("/profile"),
     },
-    {
-      text: "Friends",
-      icon: <Group />,
-      path: "/friends",
-      onClick: () => navigate("/friends"),
-    },
+    // {
+    //   text: "Friends",
+    //   icon: <Group />,
+    //   path: "/friends",
+    //   onClick: () => navigate("/friends"),
+    // },
     {
       text: "Data Structure",
       icon: <DataStructureIcon />,
       path: "/data-structure",
       onClick: () => navigate("/data-structure"),
     },
-    {
-      text: "Algorithm",
-      icon: <AlgorithmIcon />,
-      path: "/algorithm",
-      onClick: () => navigate("/algorithm"),
-    },
+    // {
+    //   text: "Algorithm",
+    //   icon: <AlgorithmIcon />,
+    //   path: "/algorithm",
+    //   onClick: () => navigate("/algorithm"),
+    // },
   ];
 
   return (

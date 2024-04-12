@@ -10,11 +10,13 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ActionDialog, WarningDialog } from "./DataStructureDialogs";
 import { SubStructureHooks } from "../../hooks/SubStructureHooks";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const SubStructureList = ({
   selectedStructure,
@@ -100,60 +102,85 @@ const SubStructureList = ({
   };
 
   return (
-    <Box sx={{ width: "50%", overflowY: "auto" }}>
+    <Box sx={{ width: "100%", p: 1 }}>
       <List>
-        {selectedStructure && (
-          <>
-            <ListItem>
-              <Typography>Sub Structures</Typography>
-              <IconButton
-                aria-label="more"
-                aria-controls="long-menu"
-                aria-haspopup="true"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                sx={{ marginLeft: "auto", color: grey[50] }}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={open}
-                onClose={() => setAnchorEl(null)}
-                sx={{
-                  padding: 0,
-                  "& .MuiDialog-paper": { bgcolor: grey[900], color: grey[50] },
-                }}
-              >
-                <MenuItem
-                  onClick={() => handleMenuItemClick("Add")}
-                  sx={{ color: grey[900] }}
-                >
-                  Add
-                </MenuItem>
-                <MenuItem
-                  onClick={() => handleMenuItemClick("Rename")}
-                  sx={{ color: grey[900] }}
-                  disabled={!selectedId}
-                >
-                  {selectedSubStructure
-                    ? `Rename ${selectedSubStructure.name}`
-                    : "Rename"}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => handleMenuItemClick("Delete")}
-                  sx={{ color: grey[900] }}
-                  disabled={!selectedId}
-                >
-                  {selectedSubStructure
-                    ? `Delete ${selectedSubStructure.name}`
-                    : "Delete"}
-                </MenuItem>
-              </Menu>
-            </ListItem>
-            <Divider sx={{ ml: 2, background: grey[50] }} />
-          </>
+        <ListItem>
+          <Typography>Variants & Types</Typography>
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            sx={{ marginLeft: "auto", color: grey[50] }}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={open}
+            onClose={() => setAnchorEl(null)}
+            sx={{
+              padding: 0,
+              "& .MuiDialog-paper": { bgcolor: grey[900], color: grey[50] },
+            }}
+          >
+            <MenuItem
+              onClick={() => handleMenuItemClick("Add")}
+              sx={{ color: grey[900] }}
+              disabled={dataStructure.length === 0}
+            >
+              Add
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleMenuItemClick("Rename")}
+              sx={{ color: grey[900] }}
+              disabled={!selectedId}
+            >
+              {selectedSubStructure
+                ? `Rename ${selectedSubStructure.name}`
+                : "Rename"}
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleMenuItemClick("Delete")}
+              sx={{ color: grey[900] }}
+              disabled={!selectedId}
+            >
+              {selectedSubStructure
+                ? `Delete ${selectedSubStructure.name}`
+                : "Delete"}
+            </MenuItem>
+          </Menu>
+        </ListItem>
+        <Divider sx={{ background: grey[50] }} />
+
+        {dataStructure.length === 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              minHeight: 300,
+            }}
+          >
+            <Typography>Please create a data structure</Typography>
+          </Box>
+        )}
+
+        {!selectedStructure && dataStructure.length !== 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              minHeight: 300,
+            }}
+          >
+            <Typography>Please select a data structure on the left</Typography>
+          </Box>
         )}
 
         {selectedStructure &&
@@ -168,6 +195,22 @@ const SubStructureList = ({
               }}
             >
               <Typography>No data</Typography>
+              <Tooltip
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      maxWidth: 250,
+                      fontSize: "12px",
+                      p: 1,
+                    },
+                  },
+                }}
+                title="If there is no further variant or type of selected data structure, you can create a dummy one with the same name "
+              >
+                <IconButton>
+                  <HelpOutlineIcon sx={{ color: "#fff", fontSize: "1rem" }} />
+                </IconButton>
+              </Tooltip>
             </Box>
           ) : (
             <Box

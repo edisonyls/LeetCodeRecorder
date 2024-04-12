@@ -66,7 +66,7 @@ const RegisterPage = () => {
     if (isAuthenticated && user) {
       navigate("/dashboard");
     }
-  }, []);
+  }, [error, getCurrentUser, isAuthenticated, navigate, token, user]);
 
   const checkData = (data) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
