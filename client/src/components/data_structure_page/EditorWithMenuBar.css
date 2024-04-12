@@ -29,8 +29,8 @@
 }
 
 .tiptap code {
-  background-color: rgba(97, 97, 97, 0.1);
-  color: #616161;
+  background-color: #eeeeee;
+  color: black;
 }
 
 .tiptap pre {
@@ -60,7 +60,7 @@
 
 .tiptap blockquote {
   padding-left: 1rem;
-  border-left: 2px solid rgba(13, 13, 13, 0.1);
+  border-left: 2px solid #eeeeee;
 }
 
 .tiptap hr {
