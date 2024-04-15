@@ -13,11 +13,11 @@ public class AuthenticationController {
         this.authServiceImpl = authServiceImpl;
     }
 
-    @GetMapping(path="/health")
+    @GetMapping(path="/authenticate/health")
     public String healthCheck(){
         return "OK";
     }
-    
+
     @PostMapping(path = "/register")
     public Response register(@RequestBody UserEntity request){
         return authServiceImpl.register(request);
