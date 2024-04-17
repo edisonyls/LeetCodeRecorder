@@ -19,7 +19,7 @@ export const UserHooks = () => {
         type: userActionTypes.PROCESS_FAILURE,
         error: error,
       });
-      console.log("Failed fetch current user details: " + error);
+      throw error;
     }
   };
 

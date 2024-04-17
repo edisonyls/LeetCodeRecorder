@@ -47,6 +47,7 @@ export function userReducer(state, action) {
         ...state,
         user: action.payload.user,
         loading: false,
+        error: null,
       };
     case userActionTypes.UPDATE_USER:
       return {

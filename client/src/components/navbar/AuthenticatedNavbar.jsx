@@ -9,7 +9,7 @@ import { UserHooks } from "../../hooks/userHooks/UserHooks";
 
 const AuthenticatedNavbar = () => {
   const { state } = useUser();
-  const { user, token } = state;
+  const { user, token, error } = state;
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { logout } = UserHooks();
@@ -18,8 +18,12 @@ const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getCurrentUser(token);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    getCurrentUser(token).catch((error) => {
+      alert("User credential expired. Please login again.");
+      logout();
+      navigate("/");
+    });
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -49,7 +53,7 @@ const AuthenticatedNavbar = () => {
     <AppBar position="static" sx={{ background: "black", mb: 4 }}>
       <Toolbar>
         <FlutterDashIcon />
-        <Typography variant="h8" sx={{ flexGrow: 1, ml: 1 }}>
+        <Typography variant="h6" sx={{ flexGrow: 1, ml: 1 }}>
           <Box
             component={Link}
             to="/dashboard"
@@ -58,7 +62,7 @@ const AuthenticatedNavbar = () => {
             YLSLC
           </Box>
         </Typography>
-        <Typography variant="h8" sx={{ marginRight: 2 }}>
+        <Typography variant="h6" sx={{ marginRight: 2 }}>
           {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
         </Typography>
         <IconButton
