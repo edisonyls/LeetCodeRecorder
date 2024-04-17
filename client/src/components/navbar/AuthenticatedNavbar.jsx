@@ -9,7 +9,7 @@ import { UserHooks } from "../../hooks/userHooks/UserHooks";
 
 const AuthenticatedNavbar = () => {
   const { state } = useUser();
-  const { user, token, error } = state;
+  const { user, token } = state;
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { logout } = UserHooks();
