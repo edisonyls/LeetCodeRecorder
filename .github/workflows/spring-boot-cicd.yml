@@ -38,4 +38,7 @@ jobs:
             sudo docker pull edisonyls/ylslc-spring:latest
             sudo docker stop spring_app || true
             sudo docker rm spring_app || true
-            sudo docker run -d --name spring_app -p 8080:8080 edisonyls/ylslc-spring:latest
+            sudo docker run -d --name spring_app -p 8080:8080 \
+              -e DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \
+              -e DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
+              edisonyls/ylslc-spring:latest

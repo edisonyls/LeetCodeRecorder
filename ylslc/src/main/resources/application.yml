@@ -3,3 +3,29 @@ aws:
   s3:
     buckets:
       storageLocation: ylslc-images
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:ylslc-db.crgos40mytxr.ap-southeast-2.rds.amazonaws.com}:3306/ylslc
+    # To use localhost for local development
+    # url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/ylslc
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 128MB
+      max-request-size: 128MB
+server:
+  error:
+    include-message: always
+  address: 0.0.0.0
+logging:
+  level:
+    root: warn
+
