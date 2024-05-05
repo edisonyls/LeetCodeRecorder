@@ -31,7 +31,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionEntity> getQuestions(){
-        return new ArrayList<>(questionRepository.findAll());
+        List<QuestionEntity> questions = questionRepository.findAll();
+        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt));
+        return questions;
     }
 
     @Override
@@ -86,23 +88,10 @@ public class QuestionServiceImpl implements QuestionService {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(
                 s3Buckets.getStorageLocation(),
-                "question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
+                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
         );
     }
 
-//    @Override
-//    public byte[] getQuestionImage(QuestionEntity questionEntity) {
-//        String questionImageId = questionEntity.getQuestionImageId();
-//        String username = userService.getCurrentUser().getUsername();
-//
-//        if (questionImageId == null || questionImageId.isEmpty()) {
-//            throw new RuntimeException("Image not found");
-//        }
-//        return s3Service.getObject(
-//                s3Buckets.getStorageLocation(),
-//                "question-images/%s/%s/%s".formatted(username, questionEntity.getNumber(), questionImageId)
-//        );
-//    }
 
     @Override
     public QuestionEntity getQuestionById(UUID id) {

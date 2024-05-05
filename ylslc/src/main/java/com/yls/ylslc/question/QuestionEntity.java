@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +35,13 @@ public class QuestionEntity {
     private Boolean success;
     private Integer attempts;
     private String timeOfCompletion;
+    private LocalDateTime createdAt;
+
+    // Automatically set the current date and time before persisting
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     // Add helper methods to manage bi-directional relationship
     public void addSolution(SolutionEntity solution) {

@@ -14,15 +14,20 @@ const Stopwatch = ({ onTimeSubmit }) => {
 
   useEffect(() => {
     let interval = null;
+    let startTime = Date.now() - time * 1000;
+
     if (isRunning) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
+        const now = Date.now();
+        const deltaTime = now - startTime;
+        setTime(Math.floor(deltaTime / 1000));
       }, 1000);
-    } else if (!isRunning && time !== 0) {
+    } else {
       clearInterval(interval);
     }
+
     return () => clearInterval(interval);
-  }, [isRunning, time]);
+  }, [isRunning]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatTime = () => {
     const minutes = Math.floor(time / 60);

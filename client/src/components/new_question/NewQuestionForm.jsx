@@ -382,7 +382,6 @@ const NewQuestionForm = ({ timerValue }) => {
           sx={{ flexGrow: 1 }}
           required
           fullWidth
-          type="number"
         />
         <Box
           sx={{

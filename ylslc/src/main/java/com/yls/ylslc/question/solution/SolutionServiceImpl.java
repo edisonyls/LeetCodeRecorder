@@ -51,7 +51,7 @@ public class SolutionServiceImpl implements SolutionService{
         try {
             s3Service.putObject(
                     s3Buckets.getStorageLocation(),
-                    String.format("question-images/%s/%s/%s", username, questionNumber, imageId),
+                    String.format("ylslc-question-images/%s/%s/%s", username, questionNumber, imageId),
                     image.getBytes(),
                     contentType // Pass the content type here
             );
