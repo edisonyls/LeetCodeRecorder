@@ -19,9 +19,26 @@ public class Response {
     public static Response ok(Object data, String message){
         return new Response(data, message);
     }
+    public static Response ok(String message){
+        return new Response(message);
+    }
 
     public static Response failed(HttpStatus status, String message){
         return new Response(status.value(), message);
+    }
+
+    public static Response failed(HttpStatus status, String message, String serverMessage){
+        return new Response(status.value(), message, serverMessage);
+    }
+
+    public Response(String message){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        this.status = HttpStatus.OK.value();
+        this.message = message;
+        this.data = null;
+        this.timeStamp = df.format(new Date());
+        this.serverMessage = "SUCCESS";
     }
 
     public Response(Object data, String message){

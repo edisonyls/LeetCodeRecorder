@@ -28,5 +28,7 @@ public interface QuestionService {
 
     QuestionEntity getQuestionById(UUID id);
 
+    QuestionEntity updateStar(UUID id);
+
     long countQuestion();
 }

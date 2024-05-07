@@ -122,6 +122,17 @@ public class QuestionController {
         return Response.ok(questionService.countQuestion(), "Count the number of questions successfully!");
     }
 
+    @PutMapping("/toggleStar/{id}")
+    public Response toggleStar(@PathVariable UUID id){
+        try {
+            QuestionEntity question = questionService.updateStar(id);
+            QuestionDto updatedQuestion = questionMapper.mapTo(question);
+            return Response.ok(updatedQuestion,"Star updated!");
+        } catch (Exception e) {
+            return Response.failed(HttpStatus.INTERNAL_SERVER_ERROR, "Star update failed", e.toString());
+        }
+    }
+
     private MediaType getMediaTypeForImageId(String imageId) {
         if (imageId.endsWith(".png")) {
             return MediaType.IMAGE_PNG;

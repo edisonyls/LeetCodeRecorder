@@ -101,6 +101,21 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public QuestionEntity updateStar(UUID id) {
+        return questionRepository.findById(id).map(question -> {
+            Boolean currentStar = question.getStar();
+            if (currentStar == null) {
+                question.setStar(true);  // Set to true if currently null
+            } else {
+                question.setStar(!currentStar);  // Toggle between true and false
+            }
+            return questionRepository.save(question);
+        }).orElseThrow(() -> new RuntimeException("Question not found"));
+    }
+
+
+
+    @Override
     public long countQuestion() {
         return questionRepository.count();
     }

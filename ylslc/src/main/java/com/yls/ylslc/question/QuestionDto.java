@@ -28,5 +28,6 @@ public class QuestionDto {
     private Integer attempts;
     private String timeOfCompletion;
     private List<SolutionDto> solutions;
+    private Boolean star;
     private LocalDateTime createdAt;
 }

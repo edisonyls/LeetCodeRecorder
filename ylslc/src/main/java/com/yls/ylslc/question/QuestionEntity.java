@@ -35,6 +35,7 @@ public class QuestionEntity {
     private Boolean success;
     private Integer attempts;
     private String timeOfCompletion;
+    private Boolean star;
     private LocalDateTime createdAt;
 
     // Automatically set the current date and time before persisting
