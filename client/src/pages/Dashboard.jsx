@@ -68,7 +68,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axiosInstance.get("question/all");
+        const response = await axiosInstance.get("question");
         setQuestions(response.data.data);
         setOriginalQuestions(response.data.data);
       } catch (error) {

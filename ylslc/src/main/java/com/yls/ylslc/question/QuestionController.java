@@ -117,6 +117,11 @@ public class QuestionController {
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 
+    @GetMapping("number")
+    public Response getNumberOfQuestions(){
+        return Response.ok(questionService.countQuestion(), "Count the number of questions successfully!");
+    }
+
     private MediaType getMediaTypeForImageId(String imageId) {
         if (imageId.endsWith(".png")) {
             return MediaType.IMAGE_PNG;

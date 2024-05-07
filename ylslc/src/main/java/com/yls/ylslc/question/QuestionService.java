@@ -27,4 +27,6 @@ public interface QuestionService {
     byte[] getImage(Integer questionNumber, String imageId);
 
     QuestionEntity getQuestionById(UUID id);
+
+    long countQuestion();
 }

@@ -41,4 +41,5 @@ jobs:
             sudo docker run -d --name spring_app -p 8080:8080 \
               -e DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \
               -e DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
+              -e JWT_KEY="${{ secrets.JWT_KEY }}" \
               edisonyls/ylslc-spring:latest

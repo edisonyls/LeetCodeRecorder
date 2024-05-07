@@ -32,7 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionEntity> getQuestions(){
         List<QuestionEntity> questions = questionRepository.findAll();
-        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt));
+        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt).reversed());
         return questions;
     }
 
@@ -99,5 +99,11 @@ public class QuestionServiceImpl implements QuestionService {
             return questionRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
     }
+
+    @Override
+    public long countQuestion() {
+        return questionRepository.count();
+    }
+
 
 }
