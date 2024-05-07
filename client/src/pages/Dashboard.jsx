@@ -188,53 +188,51 @@ const Dashboard = () => {
                 mb: 2,
               }}
             >
-              <WhiteBackgroundButton
-                onClick={handleOpenDialog}
-                icon={<AddIcon />}
-                buttonText="New"
-              />
-              <GenericDialog
-                isOpen={openDialog}
-                onClose={handleCloseDialog}
-                onConfirm={handleConfirmDialog}
-                title="Create with Timer?"
-                content="Do you want to create a new question with a timer?"
-                extraButtonOption={true}
-                onExtraAction={() => setOpenDialog(false)}
-                showHint={true}
-                hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
-              />
-              <GenericDialog
-                isOpen={openDeleteDialog}
-                onClose={() => {
-                  setOpenDeleteDialog(false);
-                  setQuestionToDeleteId(null); // Optionally reset the ID here as well
-                }}
-                onConfirm={handleConfirmDelete}
-                title="Delete Question?"
-                content="Are you sure to delete this question?  This action cannot be undone."
-              />
+              <Box sx={{ width: "33.33%" }}>
+                <WhiteBackgroundButton
+                  onClick={handleOpenDialog}
+                  icon={<AddIcon />}
+                  buttonText="New"
+                />
+              </Box>
 
-              <GenericFormControl
-                label="Show questions as"
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                options={[
-                  { value: "default", label: "Default" },
-                  { value: "hardest", label: "Hardest" },
-                  { value: "easiest", label: "Easiest" },
-                  { value: "success", label: "Success" },
-                  { value: "failure", label: "Failure" },
-                  { value: "lowest attempts", label: "Lowest Attempts" },
-                  { value: "highest attempts", label: "Highest Attempts" },
-                  { value: "fastest", label: "Fastest" },
-                  { value: "slowest", label: "Slowest" },
-                ]}
-              />
-              <GenericSearchBox
-                label="Search..."
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <Box
+                sx={{
+                  width: "33.33%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <GenericFormControl
+                  label="Show questions as"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  options={[
+                    { value: "default", label: "Default" },
+                    { value: "hardest", label: "Hardest" },
+                    { value: "easiest", label: "Easiest" },
+                    { value: "success", label: "Success" },
+                    { value: "failure", label: "Failure" },
+                    { value: "lowest attempts", label: "Lowest Attempts" },
+                    { value: "highest attempts", label: "Highest Attempts" },
+                    { value: "fastest", label: "Fastest" },
+                    { value: "slowest", label: "Slowest" },
+                  ]}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  width: "33.33%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <GenericSearchBox
+                  label="Search..."
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </Box>
             </Box>
 
             <QuestionsTable questions={questions} onDelete={handleDelete} />
@@ -256,6 +254,28 @@ const Dashboard = () => {
           </Container>
         </Box>
         <Footer />
+
+        <GenericDialog
+          isOpen={openDialog}
+          onClose={handleCloseDialog}
+          onConfirm={handleConfirmDialog}
+          title="Create with Timer?"
+          content="Do you want to create a new question with a timer?"
+          extraButtonOption={true}
+          onExtraAction={() => setOpenDialog(false)}
+          showHint={true}
+          hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
+        />
+        <GenericDialog
+          isOpen={openDeleteDialog}
+          onClose={() => {
+            setOpenDeleteDialog(false);
+            setQuestionToDeleteId(null); // Optionally reset the ID here as well
+          }}
+          onConfirm={handleConfirmDelete}
+          title="Delete Question?"
+          content="Are you sure to delete this question?  This action cannot be undone."
+        />
       </Box>
     );
   }
