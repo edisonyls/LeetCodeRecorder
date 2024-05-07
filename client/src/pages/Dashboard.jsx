@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
+  const [searchQuery, setSearchQuery] = useState(""); // State to hold search query
 
   const navigate = useNavigate();
 
@@ -134,6 +135,19 @@ const Dashboard = () => {
     }
   }, [sortOption, originalQuestions]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const normalizeText = (text) => text.toLowerCase().replace(/\s+/g, "");
+
+  useEffect(() => {
+    const filteredQuestions = originalQuestions.filter(
+      (question) =>
+        normalizeText(question.title).includes(normalizeText(searchQuery)) ||
+        normalizeText(question.number.toString()).includes(
+          normalizeText(searchQuery)
+        )
+    );
+    setQuestions(filteredQuestions);
+  }, [searchQuery, originalQuestions]);
+
   if (isLoading) {
     return (
       <>
@@ -219,10 +233,12 @@ const Dashboard = () => {
               />
               <GenericSearchBox
                 label="Search..."
-                onChange={(e) => console.log(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </Box>
+
             <QuestionsTable questions={questions} onDelete={handleDelete} />
+
             {originalQuestions && originalQuestions.length === 0 && (
               <Box
                 sx={{
