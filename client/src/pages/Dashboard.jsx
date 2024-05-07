@@ -25,11 +25,37 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
+  const handleToggleStar = async (id, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsLoading(true);
+    try {
+      await axiosInstance.put(`question/toggleStar/${id}`);
+      const updatedQuestions = questions.map((question) => {
+        if (question.id === id) {
+          return {
+            ...question,
+            star: !question.star,
+          };
+        }
+        return question;
+      });
+      setQuestions(updatedQuestions);
+      setOriginalQuestions(updatedQuestions);
+    } catch (error) {
+      console.error("Error starring question:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDelete = (id, event) => {
     event.stopPropagation(); // Stop the event from propagating to the row click event
+    event.preventDefault();
     setQuestionToDeleteId(id); // Set the ID of the question to delete
     setOpenDeleteDialog(true); // Open the delete confirmation dialog
   };
+
   const handleConfirmDelete = async () => {
     setIsLoading(true);
     if (questionToDeleteId !== null) {
@@ -235,7 +261,11 @@ const Dashboard = () => {
               </Box>
             </Box>
 
-            <QuestionsTable questions={questions} onDelete={handleDelete} />
+            <QuestionsTable
+              questions={questions}
+              onDelete={handleDelete}
+              onToggleStar={handleToggleStar}
+            />
 
             {originalQuestions && originalQuestions.length === 0 && (
               <Box

@@ -13,8 +13,9 @@ import {
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Star, StarBorder } from "@mui/icons-material";
 
-function QuestionsTable({ questions, onDelete }) {
+function QuestionsTable({ questions, onDelete, onToggleStar }) {
   const navigate = useNavigate();
 
   return (
@@ -32,10 +33,11 @@ function QuestionsTable({ questions, onDelete }) {
           }}
         >
           <TableRow>
+            <TableCell align="center" sx={{ width: "3%" }} />
             <TableCell align="center" sx={{ width: "20%" }}>
               Date
             </TableCell>
-            <TableCell align="center" sx={{ width: "35%" }}>
+            <TableCell align="center" sx={{ width: "32%" }}>
               Question
             </TableCell>
             <TableCell align="center" sx={{ width: "10%" }}>
@@ -66,6 +68,17 @@ function QuestionsTable({ questions, onDelete }) {
                   })
                 }
               >
+                <TableCell align="center" component="th" scope="row">
+                  <IconButton
+                    onClick={(event) => onToggleStar(question.id, event)}
+                  >
+                    {question.star ? (
+                      <Star style={{ color: "#ffd250" }} />
+                    ) : (
+                      <StarBorder />
+                    )}
+                  </IconButton>
+                </TableCell>
                 <TableCell align="center" component="th" scope="row">
                   {question.dateOfCompletion}
                 </TableCell>
