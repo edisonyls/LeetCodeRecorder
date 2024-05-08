@@ -13,13 +13,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../config/axiosConfig";
 
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
 import { Star, StarBorder } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import GenericDialog from "../generic/GenericDialog";
+import { useQuestionHooks } from "../../hooks/questionHooks/useQuestionHooks";
 
 const NewQuestionForm = ({ timerValue }) => {
   const [question, setQuestion] = useState({
@@ -27,7 +27,7 @@ const NewQuestionForm = ({ timerValue }) => {
     title: "",
     difficulty: "",
     dateOfCompletion: null,
-    success: false,
+    success: null,
     attempts: "",
     timeOfCompletion: "",
     reasonOfFail: "",
@@ -43,10 +43,12 @@ const NewQuestionForm = ({ timerValue }) => {
       },
     ],
   });
+  const [deleteSolutionPopUp, setDeleteSolutionPopUp] = useState(false);
+  const [solutionDeleteId, setSolutionDeleteId] = useState(null);
+
+  const { handleSubmit } = useQuestionHooks(question, setQuestion);
 
   const difficultyOptions = ["Easy", "Medium", "Hard"];
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +68,6 @@ const NewQuestionForm = ({ timerValue }) => {
       }
       return;
     }
-
     setQuestion((prevState) => ({
       ...prevState,
       [name]: value,
@@ -145,13 +146,14 @@ const NewQuestionForm = ({ timerValue }) => {
     }));
   };
 
-  const handleDeleteSolution = (index) => {
+  const handleDeleteSolution = () => {
     setQuestion((prevQuestions) => {
       // Filter out the solution at the given index
       const updatedSolutions = prevQuestions.solutions.filter(
-        (_, solutionIndex) => solutionIndex !== index
+        (_, solutionIndex) => solutionIndex !== solutionDeleteId
       );
-
+      setSolutionDeleteId(null);
+      setDeleteSolutionPopUp(false);
       return { ...prevQuestions, solutions: updatedSolutions };
     });
   };
@@ -196,92 +198,6 @@ const NewQuestionForm = ({ timerValue }) => {
     });
   };
 
-  const validateData = () => {
-    if (question.dateOfCompletion === null) {
-      alert("Date of Completion is required.");
-      return false;
-    } else if (dayjs(question.dateOfCompletion).isAfter(dayjs())) {
-      alert("Date of Completion cannot be in the future.");
-      return false;
-    } else if (question.timeOfCompletion === null) {
-      alert("Time of Completion is required.");
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const isValidData = validateData();
-    if (!isValidData) {
-      return;
-    }
-    const uploadPromises = question.solutions.map(async (solution, index) => {
-      if (solution.file) {
-        const fileData = new FormData();
-        fileData.append("image", solution.file);
-        fileData.append("questionNumber", question.number);
-        try {
-          const response = await axiosInstance.post(
-            "question/upload-image",
-            fileData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          if (response.data.serverMessage === "SUCCESS") {
-            return { ...solution, imageId: response.data.data };
-          } else {
-            console.log("Image upload failed for solution", index);
-            return solution;
-          }
-        } catch (error) {
-          console.error(
-            "An error occurred during submission for solution",
-            index,
-            error
-          );
-          return solution;
-        }
-      } else {
-        return solution; // Return the original solution if there's no file to upload
-      }
-    });
-    try {
-      // Wait for all the image upload promises to complete
-      const updatedSolutions = await Promise.all(uploadPromises);
-      question.solutions = updatedSolutions;
-      submitRestData();
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("An error occurred during image uploads", error);
-    }
-  };
-
-  const submitRestData = async () => {
-    const formattedData = {
-      ...question,
-      dateOfCompletion: question.dateOfCompletion
-        ? question.dateOfCompletion.format("YYYY-MM-DD")
-        : "",
-      solutions: question.solutions.map((solution) => ({
-        thinkingProcess: solution.thinkingProcess,
-        codeSnippet: solution.codeSnippet,
-        imageId: solution.imageId,
-      })),
-    };
-    try {
-      const response = await axiosInstance.post("question", formattedData);
-      if (response.data.serverMessage === "SUCCESS") {
-        console.log("Form submission successful", response.data.data);
-      }
-    } catch (error) {
-      console.error("An error occurred during form submission", error);
-    }
-  };
-
   useEffect(() => {
     if (timerValue) {
       setQuestion((prevState) => ({
@@ -294,6 +210,9 @@ const NewQuestionForm = ({ timerValue }) => {
   return (
     <Container maxWidth="md" sx={{ marginBottom: 4 }}>
       <form onSubmit={handleSubmit}>
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          General Information
+        </Typography>
         <Box
           sx={{
             display: "flex",
@@ -435,6 +354,25 @@ const NewQuestionForm = ({ timerValue }) => {
           />
         </Box>
 
+        {question.success === false && (
+          <Box>
+            <Typography variant="h6" sx={{ marginTop: 2 }}>
+              Possible Obstacles
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                label="Enter your possible obstacles"
+                name="reasonOfFail"
+                multiline
+                value={question.reasonOfFail}
+                onChange={handleChange}
+                sx={{ marginBottom: 2 }}
+              />
+            </Box>
+          </Box>
+        )}
+
         <Typography variant="h6" sx={{ marginTop: 2 }}>
           Solutions
         </Typography>
@@ -443,7 +381,10 @@ const NewQuestionForm = ({ timerValue }) => {
             <Solution
               key={index}
               solutionId={index + 1}
-              deleteSolution={() => handleDeleteSolution(index)}
+              deleteSolution={() => {
+                setDeleteSolutionPopUp(true);
+                setSolutionDeleteId(index);
+              }}
               thinkingProcess={solution.thinkingProcess}
               codeSnippet={solution.codeSnippet}
               handleChange={(e) => handleSolutionChange(e, index)}
@@ -458,6 +399,16 @@ const NewQuestionForm = ({ timerValue }) => {
 
         <NewQuestionFooter onClick={addSolution} />
       </form>
+      <GenericDialog
+        isOpen={deleteSolutionPopUp}
+        onClose={() => {
+          setDeleteSolutionPopUp(false);
+          setSolutionDeleteId(null);
+        }}
+        onConfirm={handleDeleteSolution}
+        title={`Deleting Solution ${solutionDeleteId + 1}`}
+        content="Do you want to delete this solution?"
+      />
     </Container>
   );
 };

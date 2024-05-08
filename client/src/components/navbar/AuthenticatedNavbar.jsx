@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import FlutterDashIcon from "@mui/icons-material/FlutterDash";
 import ListIcon from "@mui/icons-material/List";
 import OptionDrawer from "../OptionDrawer";
@@ -13,7 +20,7 @@ const AuthenticatedNavbar = () => {
   const { user, token } = state;
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [questionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(null);
   const { logout } = UserHooks();
   const location = useLocation();
 
@@ -99,18 +106,38 @@ const AuthenticatedNavbar = () => {
           }}
         >
           <Typography variant="h8">Question Recorded :</Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              ml: 1,
-              padding: "4px 12px",
-              borderRadius: "4px",
-              backgroundColor: "white",
-              color: "black",
-            }}
-          >
-            {questionCount}
-          </Typography>
+          {questionCount === null ? (
+            <Box
+              sx={{
+                ml: 1,
+                padding: "4px 12px",
+                borderRadius: "4px",
+                backgroundColor: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CircularProgress
+                size={24}
+                thickness={5}
+                sx={{ color: "black" }}
+              />
+            </Box>
+          ) : (
+            <Typography
+              variant="h6"
+              sx={{
+                ml: 1,
+                padding: "4px 12px",
+                borderRadius: "4px",
+                backgroundColor: "white",
+                color: "black",
+              }}
+            >
+              {questionCount}
+            </Typography>
+          )}
         </Box>
 
         <Box

@@ -36,6 +36,8 @@ public class QuestionEntity {
     private Integer attempts;
     private String timeOfCompletion;
     private Boolean star;
+    @Column(columnDefinition = "TEXT")
+    private String reasonOfFail;
     private LocalDateTime createdAt;
 
     // Automatically set the current date and time before persisting
