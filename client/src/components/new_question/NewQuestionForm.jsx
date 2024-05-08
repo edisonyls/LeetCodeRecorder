@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import SuccessToggle from "./SuccessToggle";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,6 +18,8 @@ import { axiosInstance } from "../../config/axiosConfig";
 
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
+import { Star, StarBorder } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 const NewQuestionForm = ({ timerValue }) => {
   const [question, setQuestion] = useState({
@@ -27,6 +30,8 @@ const NewQuestionForm = ({ timerValue }) => {
     success: false,
     attempts: "",
     timeOfCompletion: "",
+    reasonOfFail: "",
+    star: false,
     solutions: [
       {
         thinkingProcess: "",
@@ -289,15 +294,40 @@ const NewQuestionForm = ({ timerValue }) => {
   return (
     <Container maxWidth="md" sx={{ marginBottom: 4 }}>
       <form onSubmit={handleSubmit}>
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Question Number"
-          name="number"
-          value={question.number}
-          onChange={handleChange}
-          required
-        />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <TextField
+            margin="normal"
+            label="Question Number"
+            name="number"
+            fullWidth
+            value={question.number}
+            onChange={handleChange}
+            required
+          />
+          <IconButton
+            onClick={() => {
+              setQuestion((prev) => ({ ...prev, star: !prev.star }));
+              if (question.star) {
+                toast("Unmarked Important");
+              } else {
+                toast("Marked Important");
+              }
+            }}
+            sx={{ marginRight: "10%", marginLeft: "10%" }}
+          >
+            {question.star ? (
+              <Star sx={{ color: "#ffd250", fontSize: "2rem" }} />
+            ) : (
+              <StarBorder sx={{ fontSize: "2rem" }} />
+            )}
+          </IconButton>
+        </Box>
         <TextField
           margin="normal"
           fullWidth
