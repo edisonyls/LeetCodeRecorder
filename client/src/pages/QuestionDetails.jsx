@@ -16,6 +16,7 @@ import {
   Paper,
   Modal,
   IconButton,
+  Divider,
 } from "@mui/material";
 import {
   Assignment,
@@ -25,6 +26,7 @@ import {
   QueryStats,
   ArrowBack,
   Close,
+  Terrain,
 } from "@mui/icons-material";
 import SyncIcon from "@mui/icons-material/Sync";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
@@ -111,7 +113,7 @@ const QuestionDetails = () => {
   return (
     <>
       <AuthenticatedNavbar />
-      <Container sx={{ padding: 2, minHeight: "81vh" }}>
+      <Container sx={{ padding: 2, minHeight: "81vh", marginBottom: 6 }}>
         <Box
           sx={{
             display: "flex",
@@ -158,118 +160,153 @@ const QuestionDetails = () => {
           />
           <CardContent>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1" component="div">
-                  Difficulty{" "}
-                  <Chip
-                    label={question.difficulty}
-                    style={{
-                      backgroundColor:
-                        question.difficulty === "Easy"
-                          ? "#4CAF50" // Green for Easy
-                          : question.difficulty === "Medium"
-                          ? "#FF9800" // Orange for Medium
-                          : "#F44336", // Red for Hard
-                      color: "white", // Ensures text color is white for better readability
-                    }}
-                    icon={<QueryStats />}
-                  />
+              <Grid item xs={12}>
+                <Typography variant="body1" component="div" gutterBottom>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <QueryStats sx={{ mr: 1 }} />
+                    Difficulty
+                    <Chip
+                      label={question.difficulty}
+                      sx={{
+                        backgroundColor:
+                          question.difficulty === "Easy"
+                            ? "#4CAF50"
+                            : question.difficulty === "Medium"
+                            ? "#FF9800"
+                            : "#F44336",
+                        color: "white",
+                        marginLeft: 2,
+                      }}
+                    />
+                  </Box>
                 </Typography>
               </Grid>
+
               <Grid item xs={12}>
                 <Typography variant="body1" component="div" gutterBottom>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Timer sx={{ mr: 1 }} /> Time of Completion:{" "}
-                    {question.timeOfCompletion}
+                    <Typography sx={{ marginLeft: 1 }}>
+                      {question.timeOfCompletion}
+                    </Typography>
                   </Box>
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="body1" component="div">
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Assignment sx={{ mr: 1 }} /> Attempts: {question.attempts}
+                    <Assignment sx={{ mr: 1 }} /> Attempts:{" "}
+                    <Typography sx={{ marginLeft: 1 }}>
+                      {question.attempts}
+                    </Typography>
                   </Box>
                 </Typography>
               </Grid>
+              {question.reasonOfFail !== null && (
+                <Grid item xs={12}>
+                  <Typography variant="body1" component="div">
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Terrain sx={{ mr: 1 }} /> Obstacles:
+                      <Typography sx={{ marginLeft: 1 }}>
+                        {question.reasonOfFail}
+                      </Typography>
+                    </Box>
+                  </Typography>
+                </Grid>
+              )}
             </Grid>
           </CardContent>
-          {question.solutions.map((solution, index) => (
-            <Box sx={{ mb: 2, ml: 2, mr: 2 }} key={index}>
-              <Typography variant="h4" sx={{ fontSize: "28px" }}>
-                Solution {index + 1}
-              </Typography>
-              <Box>
-                <Typography
-                  sx={{
-                    color: "#B9BBB6",
-                    fontSize: "20px",
-                    marginBottom: 1,
-                    marginTop: 1,
-                  }}
-                >
-                  Thinking Process:
+
+          <Divider
+            textAlign="center"
+            sx={{
+              marginTop: 2,
+              marginBottom: 2,
+              background: "black",
+            }}
+          />
+          <Box sx={{ padding: 2 }}>
+            {question.solutions.map((solution, index) => (
+              <Box sx={{ mb: 2, ml: 2, mr: 2 }} key={index}>
+                <Typography variant="h4" sx={{ fontSize: "28px" }}>
+                  Solution {index + 1}
                 </Typography>
 
-                <Box
-                  sx={{
-                    borderLeft: 2,
-                    borderColor: "primary.main",
-                    paddingLeft: 2,
-                    marginLeft: 1,
-                  }}
-                >
-                  <Typography
-                    sx={{ mb: 1, whiteSpace: "pre-wrap", fontSize: "15px" }}
-                  >
-                    {solution.thinkingProcess}
-                  </Typography>
-                </Box>
-              </Box>
-              {solution.codeSnippet && (
-                <Box>
-                  <Typography
-                    sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
-                  >
-                    Code Snippet
-                  </Typography>
-                  <CodeSnippet code={solution.codeSnippet} />
-                </Box>
-              )}
-              {solution.imageId && (
-                <Box onClick={() => handleOpen(images[solution.imageId])}>
-                  <Typography
-                    sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
-                  >
-                    Uploaded Image
-                  </Typography>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      mt: 2,
-                      width: "96%",
-                      padding: 2,
-                      minHeight: "300px",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src={images[solution.imageId]}
-                      alt="Preview"
-                      style={{
-                        width: "50%",
-                        maxHeight: "300px",
-                        objectFit: "contain",
-                        cursor: "zoom-in",
+                {solution.thinkingProcess !== "" && (
+                  <Box sx={{ marginBottom: 1, marginTop: 1 }}>
+                    <Typography
+                      sx={{
+                        color: "#B9BBB6",
+                        fontSize: "20px",
                       }}
-                    />
-                  </Paper>
-                </Box>
-              )}
-            </Box>
-          ))}
+                    >
+                      Thinking Process:
+                    </Typography>
+                    <Box
+                      sx={{
+                        borderLeft: 2,
+                        borderColor: "primary.main",
+                        paddingLeft: 2,
+                        marginLeft: 1,
+                        borderWidth: 4,
+                      }}
+                    >
+                      <Typography
+                        sx={{ mb: 1, whiteSpace: "pre-wrap", fontSize: "15px" }}
+                      >
+                        {solution.thinkingProcess}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                {solution.codeSnippet && (
+                  <Box sx={{ marginBottom: 1, marginTop: 1 }}>
+                    <Typography
+                      sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
+                    >
+                      Code Snippet
+                    </Typography>
+                    <CodeSnippet code={solution.codeSnippet} />
+                  </Box>
+                )}
+
+                {solution.imageId && (
+                  <Box onClick={() => handleOpen(images[solution.imageId])}>
+                    <Typography
+                      sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
+                    >
+                      Uploaded Image
+                    </Typography>
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        mt: 2,
+                        width: "96%",
+                        padding: 2,
+                        minHeight: "300px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img
+                        src={images[solution.imageId]}
+                        alt="Preview"
+                        style={{
+                          width: "50%",
+                          maxHeight: "300px",
+                          objectFit: "contain",
+                          cursor: "zoom-in",
+                        }}
+                      />
+                    </Paper>
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </Box>
           <Modal
             open={open}
             onClose={handleClose}
@@ -316,10 +353,9 @@ const QuestionDetails = () => {
               />
             </Box>
           </Modal>
-
-          <RandomQuote />
         </Card>
       </Container>
+      <RandomQuote />
       <Footer />
     </>
   );

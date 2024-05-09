@@ -143,6 +143,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       return false;
     } else if (question.success === "" || question.success === null) {
       alert("Did you solve the question?");
+      return false;
     }
     return true;
   };
