@@ -10,7 +10,6 @@ function GenericSearchBox({ label = "Search...", onChange }) {
       variant="outlined"
       size="small"
       sx={{
-        width: "240px",
         "& .MuiOutlinedInput-root": {
           "& fieldset": {
             borderColor: "black",

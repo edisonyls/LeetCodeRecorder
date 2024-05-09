@@ -26,5 +26,12 @@ public interface QuestionService {
 
     byte[] getImage(Integer questionNumber, String imageId);
 
+    void deleteImage(Integer questionNumber, String imageId);
+
     QuestionEntity getQuestionById(UUID id);
+
+    QuestionEntity updateStar(UUID id);
+
+    long countQuestion();
+
 }

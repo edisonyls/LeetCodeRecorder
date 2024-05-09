@@ -18,15 +18,11 @@ import java.util.UUID;
 
 @Service
 public class SolutionServiceImpl implements SolutionService{
-    private SolutionRepository solutionRepository;
-    private QuestionService questionService;
-    private UserService userService;
-    private S3Service s3Service;
-    private S3Buckets s3Buckets;
+    private final UserService userService;
+    private final S3Service s3Service;
+    private final S3Buckets s3Buckets;
 
-    public SolutionServiceImpl(SolutionRepository solutionRepository, QuestionService questionService, UserService userService, S3Service s3Service, S3Buckets s3Buckets) {
-        this.solutionRepository = solutionRepository;
-        this.questionService = questionService;
+    public SolutionServiceImpl( UserService userService, S3Service s3Service, S3Buckets s3Buckets) {
         this.userService = userService;
         this.s3Service = s3Service;
         this.s3Buckets = s3Buckets;
@@ -60,4 +56,30 @@ public class SolutionServiceImpl implements SolutionService{
             return "FAILED";
         }
     }
+
+    @Override
+    public void updateSolutions(QuestionEntity existingQuestion, List<SolutionEntity> newSolutions) {
+        // Remove solutions not present in the new list
+        existingQuestion.getSolutions().removeIf(solution ->
+                newSolutions.stream().noneMatch(newSol -> newSol.getId() != null && newSol.getId().equals(solution.getId()))
+        );
+
+        for (SolutionEntity newSolution : newSolutions) {
+            if (newSolution.getId() == null) {
+                // This is a new solution, just add it
+                existingQuestion.addSolution(newSolution);
+            } else {
+                // Update existing solution
+                existingQuestion.getSolutions().stream()
+                        .filter(s -> s.getId().equals(newSolution.getId()))
+                        .findFirst()
+                        .ifPresent(existingSolution -> {
+                            existingSolution.setThinkingProcess(newSolution.getThinkingProcess());
+                            existingSolution.setCodeSnippet(newSolution.getCodeSnippet());
+                            existingSolution.setImageId(newSolution.getImageId());
+                        });
+            }
+        }
+    }
+
 }

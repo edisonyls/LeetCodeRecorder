@@ -12,6 +12,7 @@ import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
 import { grey } from "@mui/material/colors";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -21,14 +22,41 @@ const Dashboard = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
+  const [searchQuery, setSearchQuery] = useState(""); // State to hold search query
 
   const navigate = useNavigate();
 
+  const handleToggleStar = async (id, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsLoading(true);
+    try {
+      await axiosInstance.put(`question/toggleStar/${id}`);
+      const updatedQuestions = questions.map((question) => {
+        if (question.id === id) {
+          return {
+            ...question,
+            star: !question.star,
+          };
+        }
+        return question;
+      });
+      setQuestions(updatedQuestions);
+      setOriginalQuestions(updatedQuestions);
+    } catch (error) {
+      console.error("Error starring question:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDelete = (id, event) => {
     event.stopPropagation(); // Stop the event from propagating to the row click event
+    event.preventDefault();
     setQuestionToDeleteId(id); // Set the ID of the question to delete
     setOpenDeleteDialog(true); // Open the delete confirmation dialog
   };
+
   const handleConfirmDelete = async () => {
     setIsLoading(true);
     if (questionToDeleteId !== null) {
@@ -39,6 +67,8 @@ const Dashboard = () => {
         );
         setQuestions(updatedQuestions);
         setOriginalQuestions(updatedQuestions);
+        setIsLoading(false);
+        toast("Question deleted successfully!");
       } catch (error) {
         console.error("Error deleting question:", error);
         setIsLoading(false);
@@ -46,7 +76,6 @@ const Dashboard = () => {
     }
     setOpenDeleteDialog(false);
     setQuestionToDeleteId(null);
-    setIsLoading(false);
   };
 
   const handleOpenDialog = (e) => {
@@ -68,7 +97,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axiosInstance.get("question/all");
+        const response = await axiosInstance.get("question");
         setQuestions(response.data.data);
         setOriginalQuestions(response.data.data);
       } catch (error) {
@@ -121,6 +150,11 @@ const Dashboard = () => {
           return b.timeOfCompletion.localeCompare(a.timeOfCompletion);
         });
         break;
+      case "star":
+        sortedQuestions.sort((a, b) =>
+          b.star === a.star ? 0 : b.star ? 1 : -1
+        );
+        break;
       case "default":
         break;
       default:
@@ -133,6 +167,19 @@ const Dashboard = () => {
       setQuestions(sortedQuestions);
     }
   }, [sortOption, originalQuestions]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const normalizeText = (text) => text.toLowerCase().replace(/\s+/g, "");
+
+  useEffect(() => {
+    const filteredQuestions = originalQuestions.filter(
+      (question) =>
+        normalizeText(question.title).includes(normalizeText(searchQuery)) ||
+        normalizeText(question.number.toString()).includes(
+          normalizeText(searchQuery)
+        )
+    );
+    setQuestions(filteredQuestions);
+  }, [searchQuery, originalQuestions]);
 
   if (isLoading) {
     return (
@@ -164,7 +211,7 @@ const Dashboard = () => {
         }}
       >
         <AuthenticatedNavbar />
-        <Box component="main" sx={{ flexGrow: 1, marginBottom: "4rem" }}>
+        <Box component="main" sx={{ marginBottom: "4rem" }}>
           <Container>
             <Box
               sx={{
@@ -174,55 +221,60 @@ const Dashboard = () => {
                 mb: 2,
               }}
             >
-              <WhiteBackgroundButton
-                onClick={handleOpenDialog}
-                icon={<AddIcon />}
-                buttonText="New"
-              />
-              <GenericDialog
-                isOpen={openDialog}
-                onClose={handleCloseDialog}
-                onConfirm={handleConfirmDialog}
-                title="Create with Timer?"
-                content="Do you want to create a new question with a timer?"
-                extraButtonOption={true}
-                onExtraAction={() => setOpenDialog(false)}
-                showHint={true}
-                hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
-              />
-              <GenericDialog
-                isOpen={openDeleteDialog}
-                onClose={() => {
-                  setOpenDeleteDialog(false);
-                  setQuestionToDeleteId(null); // Optionally reset the ID here as well
-                }}
-                onConfirm={handleConfirmDelete}
-                title="Delete Question?"
-                content="Are you sure to delete this question?  This action cannot be undone."
-              />
+              <Box sx={{ width: "33.33%" }}>
+                <WhiteBackgroundButton
+                  onClick={handleOpenDialog}
+                  icon={<AddIcon />}
+                  buttonText="New"
+                />
+              </Box>
 
-              <GenericFormControl
-                label="Show questions as"
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                options={[
-                  { value: "default", label: "Default" },
-                  { value: "hardest", label: "Hardest" },
-                  { value: "easiest", label: "Easiest" },
-                  { value: "success", label: "Success" },
-                  { value: "failure", label: "Failure" },
-                  { value: "lowest attempts", label: "Lowest Attempts" },
-                  { value: "highest attempts", label: "Highest Attempts" },
-                  { value: "fastest", label: "Fastest" },
-                  { value: "slowest", label: "Slowest" },
-                ]}
-              />
-              <GenericSearchBox
-                label="Search..."
-                onChange={(e) => console.log(e.target.value)}
-              />
+              <Box
+                sx={{
+                  width: "33.33%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <GenericFormControl
+                  label="Show questions as"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  options={[
+                    { value: "default", label: "Default" },
+                    { value: "hardest", label: "Hardest" },
+                    { value: "easiest", label: "Easiest" },
+                    { value: "success", label: "Success" },
+                    { value: "failure", label: "Failure" },
+                    { value: "lowest attempts", label: "Lowest Attempts" },
+                    { value: "highest attempts", label: "Highest Attempts" },
+                    { value: "fastest", label: "Fastest" },
+                    { value: "slowest", label: "Slowest" },
+                    { value: "star", label: "Star" },
+                  ]}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  width: "33.33%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <GenericSearchBox
+                  label="Search..."
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </Box>
             </Box>
-            <QuestionsTable questions={questions} onDelete={handleDelete} />
+
+            <QuestionsTable
+              questions={questions}
+              onDelete={handleDelete}
+              onToggleStar={handleToggleStar}
+            />
+
             {originalQuestions && originalQuestions.length === 0 && (
               <Box
                 sx={{
@@ -240,6 +292,28 @@ const Dashboard = () => {
           </Container>
         </Box>
         <Footer />
+
+        <GenericDialog
+          isOpen={openDialog}
+          onClose={handleCloseDialog}
+          onConfirm={handleConfirmDialog}
+          title="Create with Timer?"
+          content="Do you want to create a new question with a timer?"
+          extraButtonOption={true}
+          onExtraAction={() => setOpenDialog(false)}
+          showHint={true}
+          hint="The timer tracks the duration spent on solving a LeetCode problem, helping you manage and reflect on your problem-solving pace. The timer will be displayed on the top-right corner."
+        />
+        <GenericDialog
+          isOpen={openDeleteDialog}
+          onClose={() => {
+            setOpenDeleteDialog(false);
+            setQuestionToDeleteId(null); // Optionally reset the ID here as well
+          }}
+          onConfirm={handleConfirmDelete}
+          title="Delete Question?"
+          content="Are you sure to delete this question?  This action cannot be undone."
+        />
       </Box>
     );
   }

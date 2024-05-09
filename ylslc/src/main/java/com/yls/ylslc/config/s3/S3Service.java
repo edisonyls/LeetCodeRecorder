@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 
@@ -49,5 +46,22 @@ public class S3Service {
                 .build();
         s3.deleteObject(deleteObjectRequest);
     }
+
+    public void deleteObjectsInFolder(String bucketName, String folderKey) {
+        ListObjectsV2Request listObjects = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .prefix(folderKey)  // List all objects under this folder path
+                .build();
+
+        ListObjectsV2Response listObjectsResponse = s3.listObjectsV2(listObjects);
+        for (S3Object object : listObjectsResponse.contents()) {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(object.key())
+                    .build();
+            s3.deleteObject(deleteObjectRequest);
+        }
+    }
+
 
 }

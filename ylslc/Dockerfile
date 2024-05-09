@@ -16,8 +16,10 @@ EXPOSE 8080
 # Define environment variables (placeholders for default values or documentation)
 ENV DATABASE_USERNAME=placeholder_username
 ENV DATABASE_PASSWORD=placeholder_password
+ENV JWT_KEY=placeholder
 
 # Use an entrypoint shell script to handle environment variables
 CMD ["java", "-jar", "ylslc.jar", \
      "--spring.datasource.username=${DATABASE_USERNAME}", \
-     "--spring.datasource.password=${DATABASE_PASSWORD}"]
+     "--spring.datasource.password=${DATABASE_PASSWORD}", \
+     "--jwt.secret=${JWT_KEY}"]

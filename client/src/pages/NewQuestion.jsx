@@ -8,6 +8,7 @@ import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import Stopwatch from "../components/Stopwatch";
 import GenericDialog from "../components/generic/GenericDialog";
 import { ArrowBack } from "@mui/icons-material";
+import UpdateQuestionForm from "../components/new_question/UpdateQuestionForm";
 
 const NewQuestion = () => {
   const [timeOfCompletion, setTimeOfCompletion] = useState("");
@@ -15,6 +16,7 @@ const NewQuestion = () => {
 
   const location = useLocation();
   const withTimer = location.state?.withTimer || false;
+  const question = location.state?.question || null;
   const navigate = useNavigate();
 
   const handleTimeSubmit = (time) => {
@@ -29,7 +31,7 @@ const NewQuestion = () => {
         isOpen={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={() => navigate(-1)}
-        title="Return to Dashboard"
+        title={question === null ? "Return to Dashboard" : "Return to Question"}
         content="Are you sure? All unsaved data will be lost."
       />
       <Box
@@ -56,7 +58,7 @@ const NewQuestion = () => {
           variant="h5"
           gutterBottom
         >
-          Upload New Question
+          {question === null ? "Upload New Question" : "Modify Question"}
         </Typography>
 
         {withTimer && (
@@ -66,7 +68,12 @@ const NewQuestion = () => {
         )}
       </Box>
 
-      <NewQuestionForm timerValue={timeOfCompletion} />
+      {question === null ? (
+        <NewQuestionForm timerValue={timeOfCompletion} />
+      ) : (
+        <UpdateQuestionForm initialQuestion={question} />
+      )}
+
       <Footer />
     </Box>
   );

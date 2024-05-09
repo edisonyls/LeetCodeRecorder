@@ -26,7 +26,7 @@ const Solution = ({
   handleDeleteImage,
   showDeleteButton,
 }) => {
-  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [showCodeInput, setShowCodeInput] = useState(codeSnippet !== "");
 
   const handleOnClick = () => {
     deleteCodeSnippet();

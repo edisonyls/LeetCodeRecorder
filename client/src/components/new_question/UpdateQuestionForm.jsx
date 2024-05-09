@@ -13,42 +13,70 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
 import { Star, StarBorder } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import GenericDialog from "../generic/GenericDialog";
 import { useQuestionHooks } from "../../hooks/useQuestionHooks";
+import { axiosInstance } from "../../config/axiosConfig";
 
-const NewQuestionForm = ({ timerValue }) => {
-  const [question, setQuestion] = useState({
-    number: "",
-    title: "",
-    difficulty: "",
-    dateOfCompletion: null,
-    success: null,
-    attempts: "",
-    timeOfCompletion: "",
-    reasonOfFail: "",
-    star: false,
-    solutions: [
-      {
-        thinkingProcess: "",
-        codeSnippet: "",
-        showCodeInput: false,
-        imagePreviewUrl: "",
-        file: null,
-        imageId: "",
-      },
-    ],
-  });
+const UpdateQuestionForm = ({ initialQuestion }) => {
+  const [question, setQuestion] = useState(
+    initialQuestion
+      ? {
+          ...initialQuestion,
+          dateOfCompletion: initialQuestion.dateOfCompletion
+            ? dayjs(initialQuestion.dateOfCompletion)
+            : null,
+        }
+      : {}
+  );
+
   const [deleteSolutionPopUp, setDeleteSolutionPopUp] = useState(false);
   const [solutionDeleteId, setSolutionDeleteId] = useState(null);
 
-  const { handleSubmit } = useQuestionHooks(question);
+  const { handleUpdateSubmit } = useQuestionHooks(question, initialQuestion);
 
   const difficultyOptions = ["Easy", "Medium", "Hard"];
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const newSolutions = [...question.solutions];
+      let updatesMade = false;
+
+      for (const [index, solution] of newSolutions.entries()) {
+        if (solution.imageId && !solution.imagePreviewUrl) {
+          try {
+            const response = await axiosInstance.get(
+              `question/image/${question.id}/${solution.imageId}`,
+              {
+                responseType: "blob",
+              }
+            );
+            const imageBlob = response.data;
+            const imageObjectURL = URL.createObjectURL(imageBlob);
+            newSolutions[index].imagePreviewUrl = imageObjectURL;
+            updatesMade = true;
+          } catch (error) {
+            console.error(
+              "Failed to fetch image for solution",
+              solution.imageId,
+              error
+            );
+          }
+        }
+      }
+
+      if (updatesMade) {
+        setQuestion((prev) => ({ ...prev, solutions: newSolutions }));
+      }
+    };
+
+    if (question.solutions) {
+      fetchImages();
+    }
+  }, [question.id, question.solutions]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +105,7 @@ const NewQuestionForm = ({ timerValue }) => {
   const handleDateChange = (name, value) => {
     setQuestion((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: dayjs(value).format(),
     }));
   };
 
@@ -185,6 +213,7 @@ const NewQuestionForm = ({ timerValue }) => {
         ...updatedSolutions[index],
         imagePreviewUrl: "",
         file: null,
+        imageId: "",
       };
       return { ...prevQuestion, solutions: updatedSolutions };
     });
@@ -201,27 +230,28 @@ const NewQuestionForm = ({ timerValue }) => {
     });
   };
 
-  useEffect(() => {
-    if (timerValue) {
-      setQuestion((prevState) => ({
-        ...prevState,
-        timeOfCompletion: timerValue,
-      }));
-    }
-  }, [timerValue]);
-
   return (
     <Container maxWidth="md" sx={{ marginBottom: 4 }}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdateSubmit}>
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          General Information
+        </Typography>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            marginTop: -2,
-            marginBottom: -2,
+            justifyContent: "space-between",
           }}
         >
+          <TextField
+            margin="normal"
+            label="Question Number"
+            name="number"
+            fullWidth
+            value={question.number}
+            onChange={handleChange}
+            required
+          />
           <IconButton
             onClick={() => {
               setQuestion((prev) => ({ ...prev, star: !prev.star }));
@@ -231,6 +261,7 @@ const NewQuestionForm = ({ timerValue }) => {
                 toast("Marked Important");
               }
             }}
+            sx={{ marginRight: "10%", marginLeft: "10%" }}
           >
             {question.star ? (
               <Star sx={{ color: "#ffd250", fontSize: "2rem" }} />
@@ -239,20 +270,6 @@ const NewQuestionForm = ({ timerValue }) => {
             )}
           </IconButton>
         </Box>
-
-        <Typography variant="h6" sx={{ marginTop: 2 }}>
-          General Information
-        </Typography>
-
-        <TextField
-          margin="normal"
-          label="Question Number"
-          name="number"
-          fullWidth
-          value={question.number}
-          onChange={handleChange}
-          required
-        />
         <TextField
           margin="normal"
           fullWidth
@@ -351,6 +368,7 @@ const NewQuestionForm = ({ timerValue }) => {
             Did you solve this LeetCode problem? *
           </Typography>
           <SuccessToggle
+            success={question.success}
             onChange={(success) =>
               setQuestion((prevState) => ({
                 ...prevState,
@@ -419,4 +437,4 @@ const NewQuestionForm = ({ timerValue }) => {
   );
 };
 
-export default NewQuestionForm;
+export default UpdateQuestionForm;

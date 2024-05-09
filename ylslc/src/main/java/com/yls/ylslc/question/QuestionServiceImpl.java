@@ -2,6 +2,7 @@ package com.yls.ylslc.question;
 
 import com.yls.ylslc.config.s3.S3Buckets;
 import com.yls.ylslc.config.s3.S3Service;
+import com.yls.ylslc.question.solution.SolutionService;
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserRepository;
 import com.yls.ylslc.user.UserService;
@@ -19,20 +20,22 @@ public class QuestionServiceImpl implements QuestionService {
     private final UserService userService;
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
+    private final SolutionService solutionService;
 
     public QuestionServiceImpl(QuestionRepository theQuestionRepository,
                                UserService theUserService,
-                               S3Service s3Service, S3Buckets s3Buckets){
+                               S3Service s3Service, S3Buckets s3Buckets, SolutionService solutionService){
         this.questionRepository = theQuestionRepository;
         this.userService = theUserService;
         this.s3Service = s3Service;
         this.s3Buckets = s3Buckets;
+        this.solutionService = solutionService;
     }
 
     @Override
     public List<QuestionEntity> getQuestions(){
         List<QuestionEntity> questions = questionRepository.findAll();
-        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt));
+        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt).reversed());
         return questions;
     }
 
@@ -60,6 +63,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void delete(UUID id) {
+        // delete bucket if exist
+        String username = userService.getCurrentUser().getUsername();
+        QuestionEntity question = questionRepository.findById(id) .orElseThrow(()
+                -> new RuntimeException("Question not found with id: " + id));
+        s3Service.deleteObjectsInFolder(
+                s3Buckets.getStorageLocation(),
+                "ylslc-question-images/%s/%d".formatted(username, question.getNumber())
+        );
         questionRepository.deleteById(id);
     }
 
@@ -69,8 +80,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional
     public QuestionEntity partialUpdate(UUID id, QuestionEntity questionEntity) {
-        questionEntity.setId(id);
         return questionRepository.findById(id).map(existingQuestion -> {
             Optional.ofNullable(questionEntity.getNumber()).ifPresent(existingQuestion::setNumber);
             Optional.ofNullable(questionEntity.getTitle()).ifPresent(existingQuestion::setTitle);
@@ -79,14 +90,26 @@ public class QuestionServiceImpl implements QuestionService {
             Optional.ofNullable(questionEntity.getSuccess()).ifPresent(existingQuestion::setSuccess);
             Optional.ofNullable(questionEntity.getAttempts()).ifPresent(existingQuestion::setAttempts);
             Optional.ofNullable(questionEntity.getTimeOfCompletion()).ifPresent(existingQuestion::setTimeOfCompletion);
+            Optional.ofNullable(questionEntity.getStar()).ifPresent(existingQuestion::setStar);
+            Optional.ofNullable(questionEntity.getReasonOfFail()).ifPresent(existingQuestion::setReasonOfFail);
+            solutionService.updateSolutions(existingQuestion, questionEntity.getSolutions());
             return questionRepository.save(existingQuestion);
-        }).orElseThrow(() -> new RuntimeException("Question update failed"));
+        }).orElseThrow(() -> new RuntimeException("Question not found"));
     }
 
     @Override
     public byte[] getImage(Integer questionNumber, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(
+                s3Buckets.getStorageLocation(),
+                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
+        );
+    }
+
+    @Override
+    public void deleteImage(Integer questionNumber, String imageId){
+        String username = userService.getCurrentUser().getUsername();
+        s3Service.deleteObject(
                 s3Buckets.getStorageLocation(),
                 "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
         );
@@ -99,5 +122,26 @@ public class QuestionServiceImpl implements QuestionService {
             return questionRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
     }
+
+    @Override
+    public QuestionEntity updateStar(UUID id) {
+        return questionRepository.findById(id).map(question -> {
+            Boolean currentStar = question.getStar();
+            if (currentStar == null) {
+                question.setStar(true);  // Set to true if currently null
+            } else {
+                question.setStar(!currentStar);  // Toggle between true and false
+            }
+            return questionRepository.save(question);
+        }).orElseThrow(() -> new RuntimeException("Question not found"));
+    }
+
+
+
+    @Override
+    public long countQuestion() {
+        return questionRepository.count();
+    }
+
 
 }

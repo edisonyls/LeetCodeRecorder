@@ -84,6 +84,7 @@ public class QuestionController {
     public Response deleteQuestion(@PathVariable("id") UUID id){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
+
         return foundQuestion.map(questionEntity -> {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             questionService.delete(id);
@@ -93,17 +94,15 @@ public class QuestionController {
         );
     }
 
-    @PutMapping(path="/{id}")
-    public Response updateQuestion(
-            @PathVariable("id") UUID id,
-            @RequestBody QuestionDto questionDto
-    ){
-        if (!questionService.isExist(id)){
-            return Response.failed(HttpStatus.NOT_FOUND, "Question not found!");
+    @PutMapping("/{id}")
+    public Response updateQuestion(@PathVariable UUID id, @RequestBody QuestionEntity questionEntity) {
+        try {
+            QuestionEntity updatedEntity = questionService.partialUpdate(id, questionEntity);
+            QuestionDto updatedQuestion = questionMapper.mapTo(updatedEntity);
+            return Response.ok(updatedQuestion, "Question updated successfully");
+        } catch (RuntimeException e) {
+            return Response.failed(HttpStatus.BAD_REQUEST, "Question update failed.", e.toString());
         }
-        QuestionEntity questionEntity = questionMapper.mapFrom(questionDto);
-        QuestionEntity updatedQuestion = questionService.partialUpdate(id, questionEntity);
-        return Response.ok(questionMapper.mapTo(updatedQuestion), "Question update successfully!");
     }
 
     @GetMapping("image/{questionId}/{imageId}")
@@ -115,6 +114,28 @@ public class QuestionController {
         headers.setContentType(getMediaTypeForImageId(imageId));
 
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("image/{questionId}/{imageId}")
+    public void deleteQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
+        questionService.deleteImage(questionEntity.getNumber(), imageId);
+    }
+
+    @GetMapping("number")
+    public Response getNumberOfQuestions(){
+        return Response.ok(questionService.countQuestion(), "Count the number of questions successfully!");
+    }
+
+    @PutMapping("/toggleStar/{id}")
+    public Response toggleStar(@PathVariable UUID id){
+        try {
+            QuestionEntity question = questionService.updateStar(id);
+            QuestionDto updatedQuestion = questionMapper.mapTo(question);
+            return Response.ok(updatedQuestion,"Star updated!");
+        } catch (Exception e) {
+            return Response.failed(HttpStatus.INTERNAL_SERVER_ERROR, "Star update failed", e.toString());
+        }
     }
 
     private MediaType getMediaTypeForImageId(String imageId) {

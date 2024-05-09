@@ -2,8 +2,6 @@ package com.yls.ylslc.question;
 
 
 import com.yls.ylslc.question.solution.SolutionDto;
-import com.yls.ylslc.question.solution.SolutionEntity;
-import com.yls.ylslc.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +26,7 @@ public class QuestionDto {
     private Integer attempts;
     private String timeOfCompletion;
     private List<SolutionDto> solutions;
+    private Boolean star;
+    private String reasonOfFail;
     private LocalDateTime createdAt;
 }
