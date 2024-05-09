@@ -14,6 +14,8 @@ import {
   Avatar,
   Box,
   Paper,
+  Modal,
+  IconButton,
 } from "@mui/material";
 import {
   Assignment,
@@ -22,7 +24,9 @@ import {
   Timer,
   QueryStats,
   ArrowBack,
+  Close,
 } from "@mui/icons-material";
+import SyncIcon from "@mui/icons-material/Sync";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
 import Footer from "../components/Footer";
@@ -32,6 +36,8 @@ const QuestionDetails = () => {
   const [question, setQuestion] = useState();
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState({});
+  const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
@@ -80,6 +86,19 @@ const QuestionDetails = () => {
     fetchData();
   }, [id]);
 
+  const handleUpdate = () => {
+    navigate("/new", { state: { question: question } });
+  };
+
+  const handleOpen = (imgSrc) => {
+    setCurrentImage(imgSrc);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   if (!question || loading) {
     return (
       <>
@@ -92,17 +111,31 @@ const QuestionDetails = () => {
   return (
     <>
       <AuthenticatedNavbar />
-      <Container maxWidth="md" sx={{ padding: 2, minHeight: "81vh" }}>
-        <WhiteBackgroundButton
-          icon={<ArrowBack />}
-          onClick={() => {
-            navigate(-1);
+      <Container sx={{ padding: 2, minHeight: "81vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginLeft: 2,
+            marginRight: 2,
           }}
-          buttonText="Back"
-        />
+        >
+          <WhiteBackgroundButton
+            icon={<ArrowBack />}
+            onClick={() => {
+              navigate(-1);
+            }}
+            buttonText="Back"
+          />
+          <WhiteBackgroundButton
+            icon={<SyncIcon />}
+            onClick={handleUpdate}
+            buttonText="Modify"
+          />
+        </Box>
         <Card
           elevation={3}
-          sx={{ mt: 2, overflow: "visible", paddingBottom: 4 }}
+          sx={{ mt: 2, overflow: "visible", paddingBottom: 4, padding: 4 }}
         >
           <CardHeader
             avatar={
@@ -203,7 +236,7 @@ const QuestionDetails = () => {
                 </Box>
               )}
               {solution.imageId && (
-                <Box>
+                <Box onClick={() => handleOpen(images[solution.imageId])}>
                   <Typography
                     sx={{ mb: -1, color: "#B9BBB6", fontSize: "20px" }}
                   >
@@ -226,9 +259,10 @@ const QuestionDetails = () => {
                       src={images[solution.imageId]}
                       alt="Preview"
                       style={{
-                        width: "100%",
+                        width: "50%",
                         maxHeight: "300px",
                         objectFit: "contain",
+                        cursor: "zoom-in",
                       }}
                     />
                   </Paper>
@@ -236,6 +270,53 @@ const QuestionDetails = () => {
               )}
             </Box>
           ))}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                bgcolor: "background.paper",
+                boxShadow: 24,
+                p: 4,
+                width: "70vw",
+                height: "70vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              <IconButton
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  top: 20,
+                  left: 20,
+                  color: "black",
+                }}
+                aria-label="close"
+              >
+                <Close sx={{ fontSize: "2rem" }} />
+              </IconButton>
+              <img
+                src={currentImage}
+                alt="Enlarged preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+          </Modal>
+
           <RandomQuote />
         </Card>
       </Container>

@@ -148,6 +148,11 @@ const Dashboard = () => {
           return b.timeOfCompletion.localeCompare(a.timeOfCompletion);
         });
         break;
+      case "star":
+        sortedQuestions.sort((a, b) =>
+          b.star === a.star ? 0 : b.star ? 1 : -1
+        );
+        break;
       case "default":
         break;
       default:
@@ -204,7 +209,7 @@ const Dashboard = () => {
         }}
       >
         <AuthenticatedNavbar />
-        <Box component="main" sx={{ flexGrow: 1, marginBottom: "4rem" }}>
+        <Box component="main" sx={{ marginBottom: "4rem" }}>
           <Container>
             <Box
               sx={{
@@ -243,6 +248,7 @@ const Dashboard = () => {
                     { value: "highest attempts", label: "Highest Attempts" },
                     { value: "fastest", label: "Fastest" },
                     { value: "slowest", label: "Slowest" },
+                    { value: "star", label: "Star" },
                   ]}
                 />
               </Box>

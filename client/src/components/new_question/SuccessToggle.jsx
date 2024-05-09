@@ -3,9 +3,9 @@ import confetti from "canvas-confetti";
 import { useSpring, animated } from "react-spring";
 import { WhiteBackgroundButton } from "../generic/GenericButton";
 
-const SuccessAnimationToggle = ({ onChange }) => {
+const SuccessAnimationToggle = ({ onChange, success }) => {
   const [visibility, setVisibility] = useState("hidden"); // 'hidden', 'fadeIn', or 'fadeOut'
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(success);
 
   const messageAnimation = useSpring({
     opacity: visibility === "fadeIn" ? 1 : 0,
@@ -22,7 +22,7 @@ const SuccessAnimationToggle = ({ onChange }) => {
 
   const handleSuccessChange = (newSuccess) => {
     onChange(newSuccess);
-    setSelected(newSuccess ? "yes" : "no");
+    setSelected(newSuccess ? true : false);
     if (newSuccess) {
       makeCelebration();
       setVisibility("hidden");
@@ -45,14 +45,14 @@ const SuccessAnimationToggle = ({ onChange }) => {
         <WhiteBackgroundButton
           onClick={() => handleSuccessChange(true)}
           buttonText="Yes"
-          selected={selected === "yes"}
+          selected={selected === true}
         />
       </div>
       <div style={{ display: "inline-block", margin: "0 10px" }}>
         <WhiteBackgroundButton
           onClick={() => handleSuccessChange(false)}
           buttonText="No"
-          selected={selected === "no"}
+          selected={selected === false}
         />
       </div>
       {visibility !== "hidden" && (

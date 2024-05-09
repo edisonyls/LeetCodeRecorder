@@ -13,6 +13,7 @@ import DataStructurePage from "./pages/DataStructurePage";
 import AlgorithmPage from "./pages/AlgorithmPage";
 import { UserProvider } from "./context/userContext";
 import { DataStructureProvider } from "./context/dataStructureContext";
+import UpdateQuestionForm from "./components/new_question/UpdateQuestionForm";
 
 function App() {
   return (
@@ -27,14 +28,20 @@ function App() {
               <Route path="/dashboard" Component={Dashboard} exact />
               <Route path="/new" Component={NewQuestion} exact />
               <Route path="/question/:id" Component={QuestionDetails} exact />
-              <Route path="profile" Component={ProfilePage} exact />
+              <Route path="/profile" Component={ProfilePage} exact />
               <Route
-                path="data-structure"
+                path="/edit-question"
+                Component={UpdateQuestionForm}
+                exact
+              />
+
+              <Route
+                path="/data-structure"
                 Component={DataStructurePage}
                 exact
               />
-              <Route path="algorithm" Component={AlgorithmPage} exact />
-              <Route path="friends" Component={FriendPage} exact />
+              <Route path="/algorithm" Component={AlgorithmPage} exact />
+              <Route path="/friends" Component={FriendPage} exact />
             </Routes>
           </Router>
           <ToastContainer />
