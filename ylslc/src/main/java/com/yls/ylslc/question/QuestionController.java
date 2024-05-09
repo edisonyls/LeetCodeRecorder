@@ -84,6 +84,7 @@ public class QuestionController {
     public Response deleteQuestion(@PathVariable("id") UUID id){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<QuestionEntity> foundQuestion = questionService.findOne(id, username);
+
         return foundQuestion.map(questionEntity -> {
             QuestionDto questionDto = questionMapper.mapTo(questionEntity);
             questionService.delete(id);

@@ -33,4 +33,5 @@ public interface QuestionService {
     QuestionEntity updateStar(UUID id);
 
     long countQuestion();
+
 }

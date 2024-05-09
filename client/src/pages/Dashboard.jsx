@@ -12,6 +12,7 @@ import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
 import { grey } from "@mui/material/colors";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [questions, setQuestions] = useState([]);
@@ -66,6 +67,8 @@ const Dashboard = () => {
         );
         setQuestions(updatedQuestions);
         setOriginalQuestions(updatedQuestions);
+        setIsLoading(false);
+        toast("Question deleted successfully!");
       } catch (error) {
         console.error("Error deleting question:", error);
         setIsLoading(false);
@@ -73,7 +76,6 @@ const Dashboard = () => {
     }
     setOpenDeleteDialog(false);
     setQuestionToDeleteId(null);
-    setIsLoading(false);
   };
 
   const handleOpenDialog = (e) => {

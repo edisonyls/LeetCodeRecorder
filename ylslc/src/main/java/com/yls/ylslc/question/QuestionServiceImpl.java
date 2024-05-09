@@ -63,6 +63,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void delete(UUID id) {
+        // delete bucket if exist
+        String username = userService.getCurrentUser().getUsername();
+        QuestionEntity question = questionRepository.findById(id) .orElseThrow(()
+                -> new RuntimeException("Question not found with id: " + id));
+        s3Service.deleteObjectsInFolder(
+                s3Buckets.getStorageLocation(),
+                "ylslc-question-images/%s/%d".formatted(username, question.getNumber())
+        );
         questionRepository.deleteById(id);
     }
 
