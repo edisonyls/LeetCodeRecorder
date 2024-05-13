@@ -5,10 +5,10 @@ import { GreyBackgroundButton } from "../generic/GenericButton";
 import { axiosInstance } from "../../config/axiosConfig";
 import EditorWithMenuBar from "./EditorWithMenuBar";
 
-const fetchImage = async (imageId, subStructureId) => {
+const fetchImage = async (imageId, nodeId) => {
   try {
     const response = await axiosInstance.get(
-      `sub-structure/image/${subStructureId}/${imageId}`,
+      `node/image/${nodeId}/${imageId}`,
       { responseType: "blob" }
     );
     return URL.createObjectURL(response.data);
@@ -18,31 +18,29 @@ const fetchImage = async (imageId, subStructureId) => {
   }
 };
 
-const jsonToHtml = async (node, subStructureId) => {
+const jsonToHtml = async (node, nodeId) => {
   if (!node || typeof node !== "object" || !node.type) {
     return "";
   }
 
   switch (node.type) {
     case "doc":
+      if (!node.content || !Array.isArray(node.content)) {
+        return "";
+      }
       const docContent = await Promise.all(
-        node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureId)
-        )
+        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
       );
       return docContent.join("");
+
     case "paragraph":
       const paragraphContent = await Promise.all(
-        node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureId)
-        )
+        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
       );
       return `<p>${paragraphContent.join("")}</p>`;
     case "heading":
       const headingContent = await Promise.all(
-        node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureId)
-        )
+        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
       );
       return `<h${node.attrs.level}>${headingContent.join("")}</h${
         node.attrs.level
@@ -50,29 +48,25 @@ const jsonToHtml = async (node, subStructureId) => {
 
     case "bulletList":
       const bulletListItems = await Promise.all(
-        node.content.map((item) => jsonToHtml(item, subStructureId))
+        node.content.map((item) => jsonToHtml(item, nodeId))
       );
       return `<ul>${bulletListItems.join("")}</ul>`;
 
     case "orderedList":
       const orderedListItems = await Promise.all(
-        node.content.map((item) => jsonToHtml(item, subStructureId))
+        node.content.map((item) => jsonToHtml(item, nodeId))
       );
       return `<ol>${orderedListItems.join("")}</ol>`;
 
     case "listItem":
       const listItemContent = await Promise.all(
-        node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureId)
-        )
+        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
       );
       return `<li>${listItemContent.join("")}</li>`;
 
     case "blockquote":
       const blockquoteContent = await Promise.all(
-        node.content.map((contentNode) =>
-          jsonToHtml(contentNode, subStructureId)
-        )
+        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
       );
       return `<blockquote style="color: #fafafa; border-left: 4px solid #ccc; padding-left: 16px; margin-left: 0; font-style: italic;">${blockquoteContent.join(
         ""
@@ -81,9 +75,7 @@ const jsonToHtml = async (node, subStructureId) => {
     case "codeBlock":
       const codeBlockContent = node.content
         ? await Promise.all(
-            node.content.map((contentNode) =>
-              jsonToHtml(contentNode, subStructureId)
-            )
+            node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
           )
         : [node.text || ""];
       return `<pre style="background-color: black; color: #fafafa; padding: 16px; border-radius: 8px; font-family: 'Jet Brain', monospace;"><code>${codeBlockContent.join(
@@ -123,7 +115,7 @@ const jsonToHtml = async (node, subStructureId) => {
       }
       return text;
     case "image":
-      const imageSrc = await fetchImage(node.attrs.src, subStructureId);
+      const imageSrc = await fetchImage(node.attrs.src, nodeId);
       return `<img src="${imageSrc}" alt="image" title="image" style="width: 100%; max-height: 300px; object-fit: contain;"/>`;
     default:
       return "";
@@ -132,7 +124,7 @@ const jsonToHtml = async (node, subStructureId) => {
 
 const ContentDisplay = ({
   selectedStructure,
-  selectedSubStructure,
+  selectedNode,
   addClicked,
   setAddClicked,
   content,
@@ -142,15 +134,12 @@ const ContentDisplay = ({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!selectedSubStructure) return;
+    if (!selectedNode) return;
     setLoading(true);
     (async () => {
       try {
         const parsedContent = JSON.parse(content);
-        const generatedHtml = await jsonToHtml(
-          parsedContent,
-          selectedSubStructure.id
-        );
+        const generatedHtml = await jsonToHtml(parsedContent, selectedNode.id);
         setSafeHtml(generatedHtml);
       } catch (error) {
         console.error("Failed to process content", error);
@@ -158,32 +147,30 @@ const ContentDisplay = ({
         setLoading(false);
       }
     })();
-  }, [content, selectedSubStructure, addClicked]);
+  }, [content, selectedNode, addClicked]);
 
   if (!selectedStructure) {
     return <NoSelectionMessage message="Please select a data structure." />;
-  } else if (!selectedSubStructure) {
-    return (
-      <NoSelectionMessage message="Please select a variant or type of the data structure." />
-    );
+  } else if (!selectedNode) {
+    return <NoSelectionMessage message="Please select notes & extras." />;
   } else if (loading) {
-    return <LoadingState name={selectedSubStructure?.name} />;
+    return <LoadingState name={selectedNode?.name} />;
   } else if (addClicked) {
     return (
       <EditorArea
         onClose={() => setAddClicked(false)}
-        selectedSubStructure={selectedSubStructure}
+        selectedNode={selectedNode}
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructure.id}
         safeHtml={safeHtml}
         content={content}
       />
     );
-  } else if (selectedSubStructure.content !== null) {
+  } else if (selectedNode.content !== null) {
     return (
       <ContentArea
         safeHtml={safeHtml}
-        name={selectedSubStructure?.name}
+        name={selectedNode?.name}
         setAddClicked={setAddClicked}
       />
     );
@@ -191,7 +178,7 @@ const ContentDisplay = ({
     return (
       <NoContentMessage
         setAddClicked={setAddClicked}
-        name={selectedSubStructure?.name}
+        name={selectedNode?.name}
       />
     );
   }
@@ -251,7 +238,7 @@ const LoadingState = ({ name }) => (
 
 const EditorArea = ({
   onClose,
-  selectedSubStructure,
+  selectedNode,
   setAddClicked,
   selectedStructureId,
   safeHtml,
@@ -267,12 +254,12 @@ const EditorArea = ({
         mb: 4,
       }}
     >
-      {selectedSubStructure.name}
+      {selectedNode.name}
     </Typography>
     <Box sx={{ flexGrow: 1, overflow: "auto", marginTop: -3 }}>
       <EditorWithMenuBar
         onClose={onClose}
-        selectedSubStructure={selectedSubStructure}
+        selectedNode={selectedNode}
         setAddClicked={setAddClicked}
         selectedStructureId={selectedStructureId}
         safeHtml={safeHtml}

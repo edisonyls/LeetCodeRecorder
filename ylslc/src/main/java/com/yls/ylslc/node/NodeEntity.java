@@ -1,20 +1,21 @@
-package com.yls.ylslc.sub_structure;
+package com.yls.ylslc.node;
 
 import com.yls.ylslc.data_structure.DataStructureEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name="sub_structure")
-public class SubStructureEntity {
+@Table(name="node")
+public class NodeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "data_structure_id")
@@ -25,6 +26,13 @@ public class SubStructureEntity {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
 
 

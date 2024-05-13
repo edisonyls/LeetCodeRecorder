@@ -1,11 +1,12 @@
 package com.yls.ylslc.data_structure;
 
-import com.yls.ylslc.sub_structure.SubStructureEntity;
+import com.yls.ylslc.node.NodeEntity;
 import com.yls.ylslc.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,11 +27,19 @@ public class DataStructureEntity {
     private String name;
 
     @OneToMany(mappedBy = "dataStructure",  cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<SubStructureEntity> subStructures = new ArrayList<>();
+    private List<NodeEntity> nodes = new ArrayList<>();
 
-    public void addSubStructure(SubStructureEntity subStructure){
-        subStructures.add(subStructure);
-        subStructure.setDataStructure(this);
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+
+    public void addNode(NodeEntity node){
+        node.setDataStructure(this);
+        nodes.add(node);
     }
 
 }

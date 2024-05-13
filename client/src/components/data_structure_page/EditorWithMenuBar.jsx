@@ -19,7 +19,7 @@ const extensions = [
 
 const EditorWithMenuBar = ({
   onClose,
-  selectedSubStructure,
+  selectedNode,
   setAddClicked,
   selectedStructureId,
   safeHtml,
@@ -30,7 +30,7 @@ const EditorWithMenuBar = ({
       slotBefore={
         <MenuBar
           onClose={onClose}
-          selectedSubStructure={selectedSubStructure}
+          selectedNode={selectedNode}
           setAddClicked={setAddClicked}
           selectedStructureId={selectedStructureId}
           content={content}

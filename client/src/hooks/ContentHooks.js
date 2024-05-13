@@ -11,20 +11,16 @@ export const ContentHooks = () => {
     return new File([blob], "image.jpg", { type: "image/jpeg" }); // Customize filename and mimetype as needed
   }
 
-  const uploadImageToBackend = async (imageFile, subStructureId) => {
+  const uploadImageToBackend = async (imageFile, nodeId) => {
     const fileData = new FormData();
     fileData.append("image", imageFile);
-    fileData.append("subStructureId", subStructureId);
+    fileData.append("nodeId", nodeId);
     try {
-      const response = await axiosInstance.post(
-        "sub-structure/upload-image",
-        fileData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.post("nofr/upload-image", fileData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.data.serverMessage === "SUCCESS") {
         return response.data.data;
       } else {
@@ -35,31 +31,26 @@ export const ContentHooks = () => {
     }
   };
 
-  const deleteImage = async (subStructureId, imageId) => {
-    await axiosInstance.delete(
-      `sub-structure/image/${subStructureId}/${imageId}`
-    );
+  const deleteImage = async (nodeId, imageId) => {
+    await axiosInstance.delete(`node/image/${nodeId}/${imageId}`);
   };
 
   const handleSave = async (
-    subStructureId,
+    nodeId,
     stringContent,
     dataStructureId,
     imageSrcs
   ) => {
     dispatch({ type: actionTypes.PROCESS_START });
     try {
-      const response = await axiosInstance.patch(
-        `sub-structure/content/${subStructureId}`,
-        {
-          content: stringContent,
-        }
-      );
+      const response = await axiosInstance.patch(`node/content/${nodeId}`, {
+        content: stringContent,
+      });
 
       // Efficiently delete images and handle potential errors
       await Promise.all(
         imageSrcs.map((imageId) =>
-          deleteImage(subStructureId, imageId).catch((error) => {
+          deleteImage(nodeId, imageId).catch((error) => {
             console.error(`Failed to delete image ${imageId}:`, error);
             // Optionally handle this error in a more user-friendly way
           })
@@ -70,7 +61,7 @@ export const ContentHooks = () => {
         type: actionTypes.UPDATE_CONTENT,
         payload: {
           dataStructureId,
-          subStructure: response.data.data,
+          node: response.data.data,
         },
       });
     } catch (error) {
