@@ -6,10 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DataStructureServiceImpl implements DataStructureService{
@@ -29,9 +26,12 @@ public class DataStructureServiceImpl implements DataStructureService{
     public List<DataStructureEntity> getDataStructures() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UserEntity> currentUser = userService.findOneByUsername(username);
-        return currentUser
+        List<DataStructureEntity> dataStructures = currentUser
                 .map(dataStructureRepository::findByUser)
                 .orElse(Collections.emptyList());
+        dataStructures.sort(Comparator.comparing(DataStructureEntity::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())));
+        return dataStructures;
+
     }
 
     @Override

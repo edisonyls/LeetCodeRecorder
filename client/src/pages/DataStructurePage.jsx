@@ -10,7 +10,7 @@ import {
 import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import DataStructureList from "../components/data_structure_page/DataStructureList";
-import SubStructureList from "../components/data_structure_page/SubStructureList";
+import NodeList from "../components/data_structure_page/NodeList";
 import ContentDisplay from "../components/data_structure_page/ContentDisplay";
 import { DataStructureHooks } from "../hooks/DataStructureHooks";
 import { useDataStructure } from "../context/dataStructureContext";
@@ -19,18 +19,21 @@ const DataStructurePage = () => {
   const { state } = useDataStructure();
   const { dataStructures, loading } = state;
   const [selectedStructure, setSelectedStructure] = useState(null);
-  const [selectedSubStructure, setSelectedSubStructure] = useState("");
+  const [selectedNode, setSelectedNode] = useState("");
   const [addClicked, setAddClicked] = useState(false);
   const [content, setContent] = useState(null);
   const { fetchDataStructures } = DataStructureHooks();
 
+  // fetch the data structures when the component first mounts.
+  // It runs only once after the initial render
   useEffect(() => {
     fetchDataStructures();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // This hook listens for changes in dataStructures or selectedStructure.
   useEffect(() => {
     if (selectedStructure) {
-      // Find the updated structure in the global state
+      // Find the selected structure from the data structure
       const updatedStructure = dataStructures.find(
         (ds) => ds.id === selectedStructure.id
       );
@@ -44,55 +47,45 @@ const DataStructurePage = () => {
     }
   }, [dataStructures, selectedStructure]);
 
-  // Automatically select the first subStructure if available
+  // updated selectedNode
   useEffect(() => {
-    if (selectedStructure && selectedStructure.subStructures.length > 0) {
-      setSelectedSubStructure(selectedStructure.subStructures[0]);
-    } else {
-      setSelectedSubStructure(null);
-    }
-  }, [selectedStructure]);
-
-  // updated selectedSubStructure
-  useEffect(() => {
-    if (selectedStructure && selectedSubStructure) {
+    if (selectedStructure && selectedNode) {
       const updatedSelectedStructure = dataStructures.find(
         (ds) => ds.id === selectedStructure.id
       );
       if (updatedSelectedStructure) {
-        const updatedSelectedSubStructure =
-          updatedSelectedStructure.subStructures.find(
-            (ss) => ss.id === selectedSubStructure.id
-          );
+        const updatedSelectedNode = updatedSelectedStructure.nodes.find(
+          (ss) => ss.id === selectedNode.id
+        );
         if (
-          updatedSelectedSubStructure &&
-          JSON.stringify(updatedSelectedSubStructure) !==
-            JSON.stringify(selectedSubStructure)
+          updatedSelectedNode &&
+          JSON.stringify(updatedSelectedNode) !== JSON.stringify(selectedNode)
         ) {
-          setSelectedSubStructure(updatedSelectedSubStructure);
+          setSelectedNode(updatedSelectedNode);
         }
       }
     }
-  }, [dataStructures, selectedSubStructure, selectedStructure]);
+  }, [dataStructures, selectedNode, selectedStructure]);
 
   useEffect(() => {
-    // Check if the selectedSubStructure is not null and has content
-    if (selectedSubStructure && selectedSubStructure.content !== undefined) {
-      setContent(selectedSubStructure.content);
+    // Check if the selectedNode is not null and has content
+    if (selectedNode && selectedNode.content !== undefined) {
+      setContent(selectedNode.content);
     } else {
-      // Reset content if there's no selectedSubStructure or if it has no content
+      // Reset content if there's no selectedNode or if it has no content
       setContent(null);
     }
-  }, [selectedSubStructure]);
+  }, [selectedNode]);
 
-  const handleMainStructureClick = (structure) => {
+  const handleStructureClick = (structure) => {
     setSelectedStructure(structure);
+    setSelectedNode(null);
   };
 
-  const handleSubStructureClick = (subStructure) => {
-    setSelectedSubStructure(subStructure);
-    if (subStructure !== null && subStructure.content !== null) {
-      setContent(subStructure.content);
+  const handleNodeClick = (node) => {
+    setSelectedNode(node);
+    if (node !== null && node.content !== null) {
+      setContent(node.content);
     } else {
       setContent(null);
     }
@@ -135,15 +128,16 @@ const DataStructurePage = () => {
                 <DataStructureList
                   sx={{ flex: 1 }}
                   dataStructure={dataStructures}
-                  handleMainStructureClick={handleMainStructureClick}
+                  handleStructureClick={handleStructureClick}
                   addClicked={addClicked}
                 />
-                <SubStructureList
+                <NodeList
                   sx={{ flex: 1 }}
                   selectedStructure={selectedStructure}
                   dataStructure={dataStructures}
-                  handleSubStructureClick={handleSubStructureClick}
+                  handleNodeClick={handleNodeClick}
                   addClicked={addClicked}
+                  selectedNodeId={selectedNode ? selectedNode.id : null}
                 />
               </Box>
             </Grid>
@@ -161,7 +155,7 @@ const DataStructurePage = () => {
               >
                 <ContentDisplay
                   selectedStructure={selectedStructure}
-                  selectedSubStructure={selectedSubStructure}
+                  selectedNode={selectedNode}
                   addClicked={addClicked}
                   setAddClicked={setAddClicked}
                   content={content}

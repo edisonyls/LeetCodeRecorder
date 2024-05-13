@@ -1,18 +1,20 @@
-package com.yls.ylslc.sub_structure;
+package com.yls.ylslc.node;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SubStructureDto {
-    private UUID id;
+public class NodeDto {
+    private Long id;
     private String name;
     private String content;
+    private LocalDateTime createdAt;
 }

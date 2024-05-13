@@ -20,7 +20,7 @@ import { DataStructureHooks } from "../../hooks/DataStructureHooks";
 
 const DataStructureList = ({
   dataStructure,
-  handleMainStructureClick,
+  handleStructureClick,
   addClicked,
 }) => {
   const { addDataStructure, renameDataStructure, deleteDataStructure } =
@@ -64,7 +64,7 @@ const DataStructureList = ({
         break;
       case "Delete":
         deleteDataStructure(selectedId);
-        handleMainStructureClick(null);
+        handleStructureClick(null);
         setSelectedStructure(null);
         setSelectedId(null);
         setDialogOpen(false);
@@ -85,7 +85,7 @@ const DataStructureList = ({
       setWaringDialogOpen(true);
       return;
     }
-    handleMainStructureClick(structure);
+    handleStructureClick(structure);
     setSelectedStructure(structure);
     setSelectedId(structure.id);
   };

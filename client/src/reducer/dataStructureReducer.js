@@ -43,17 +43,14 @@ export function dataStructureReducer(state, action) {
         loading: false,
         error: null,
       };
-    case actionTypes.ADD_SUB_STRUCTURE:
+    case actionTypes.ADD_NODE:
       return {
         ...state,
         dataStructures: state.dataStructures.map((dataStructure) => {
           if (dataStructure.id === action.payload.dataStructureId) {
             return {
               ...dataStructure,
-              subStructures: [
-                ...dataStructure.subStructures,
-                action.payload.subStructure,
-              ],
+              nodes: [...dataStructure.nodes, action.payload.node],
             };
           }
           return dataStructure;
@@ -61,42 +58,39 @@ export function dataStructureReducer(state, action) {
         loading: false,
         error: null,
       };
-    case actionTypes.RENAME_SUB_STRUCTURE:
+    case actionTypes.RENAME_NODE:
       return {
         ...state,
         dataStructures: state.dataStructures.map((dataStructure) => {
           if (dataStructure.id === action.payload.dataStructureId) {
-            // Found the parent dataStructure, now find and update the subStructure
-            const updatedSubStructures = dataStructure.subStructures.map(
-              (subStructure) => {
-                if (subStructure.id === action.payload.subStructure.id) {
-                  return {
-                    ...subStructure,
-                    name: action.payload.subStructure.name,
-                  };
-                }
-                return subStructure;
+            // Found the parent dataStructure, now find and update the node
+            const updatedNodes = dataStructure.nodes.map((node) => {
+              if (node.id === action.payload.node.id) {
+                return {
+                  ...node,
+                  name: action.payload.node.name,
+                };
               }
-            );
-            return { ...dataStructure, subStructures: updatedSubStructures };
+              return node;
+            });
+            return { ...dataStructure, nodes: updatedNodes };
           }
           return dataStructure;
         }),
         loading: false,
         error: null,
       };
-    case actionTypes.DELETE_SUB_STRUCTURE:
+    case actionTypes.DELETE_NODE:
       return {
         ...state,
         dataStructures: state.dataStructures.map((dataStructure) => {
           if (dataStructure.id === action.payload.dataStructureId) {
-            const updatedSubStructures = dataStructure.subStructures.filter(
-              (subStructure) =>
-                subStructure.id !== action.payload.subStructure.id
+            const updatedNodes = dataStructure.nodes.filter(
+              (node) => node.id !== action.payload.node.id
             );
             return {
               ...dataStructure,
-              subStructures: updatedSubStructures,
+              nodes: updatedNodes,
             };
           }
           return dataStructure;
@@ -109,19 +103,17 @@ export function dataStructureReducer(state, action) {
         ...state,
         dataStructures: state.dataStructures.map((dataStructure) => {
           if (dataStructure.id === action.payload.dataStructureId) {
-            // Found the parent dataStructure, now find and update the subStructure
-            const updatedSubStructures = dataStructure.subStructures.map(
-              (subStructure) => {
-                if (subStructure.id === action.payload.subStructure.id) {
-                  return {
-                    ...subStructure,
-                    content: action.payload.subStructure.content,
-                  };
-                }
-                return subStructure;
+            // Found the parent dataStructure, now find and update the node
+            const updatedNodes = dataStructure.nodes.map((node) => {
+              if (node.id === action.payload.node.id) {
+                return {
+                  ...node,
+                  content: action.payload.node.content,
+                };
               }
-            );
-            return { ...dataStructure, subStructures: updatedSubStructures };
+              return node;
+            });
+            return { ...dataStructure, nodes: updatedNodes };
           }
           return dataStructure;
         }),

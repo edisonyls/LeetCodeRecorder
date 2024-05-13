@@ -27,7 +27,7 @@ export const DataStructureHooks = () => {
     try {
       const response = await axiosInstance.post("data-structure", {
         name,
-        subStructures: [],
+        nodes: [],
       });
       dispatch({
         type: actionTypes.ADD_DATA_STRUCTURE_SUCCESS,

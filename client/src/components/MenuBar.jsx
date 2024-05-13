@@ -27,10 +27,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { grey } from "@mui/material/colors";
 import { WarningDialog } from "./data_structure_page/DataStructureDialogs";
 import { ContentHooks } from "../hooks/ContentHooks";
+import DataArrayIcon from "@mui/icons-material/DataArray";
 
 const MenuBar = ({
   onClose,
-  selectedSubStructure,
+  selectedNode,
   setAddClicked,
   selectedStructureId,
   content,
@@ -49,7 +50,7 @@ const MenuBar = ({
   // TODO: DELETING THE EXISTING IMAGE AND RE-UPLOADING THE SAME IMAGES TO S3 IS VERY IN-EFFICIENT.
   // I IGNORED IT FOR NOW
   const UploadContent = async () => {
-    if (editor && selectedSubStructure) {
+    if (editor && selectedNode) {
       const contentJsonObject = editor.getJSON();
       // checking if user has entered anything
       const isEmpty = contentJsonObject.content.every((node) => {
@@ -78,7 +79,7 @@ const MenuBar = ({
             const imageFile = await convertBlobUrlToFile(blobUrl);
             const imageId = await uploadImageToBackend(
               imageFile,
-              selectedSubStructure.id
+              selectedNode.id
             );
             //   // Replace the src with the new imageId or URL from the backend
             node.attrs.src = imageId;
@@ -86,7 +87,7 @@ const MenuBar = ({
         }
         setLoading(false);
         handleSave(
-          selectedSubStructure.id,
+          selectedNode.id,
           JSON.stringify(contentJsonObject),
           selectedStructureId,
           imageSrcs
@@ -187,7 +188,7 @@ const MenuBar = ({
         {/* <Box sx={{ display: "flex", alignItems: "center" }}> */}
         {/* <Typography variant="body1">{getCurrentHeadingLevel()}</Typography> */}
         <IconButton aria-label="formatting-options" onClick={handleMenuClick}>
-          <KeyboardArrowDownIcon style={{ color: grey[50] }} />
+          <KeyboardArrowDownIcon style={{ color: grey[900] }} />
         </IconButton>
         {/* </Box> */}
 
@@ -219,7 +220,7 @@ const MenuBar = ({
           <IconButton
             onClick={openColorPicker}
             style={{
-              color: editor.getAttributes("textStyle")?.color || grey[50],
+              color: editor.getAttributes("textStyle")?.color || grey[900],
             }}
           >
             <PaletteIcon />
@@ -245,7 +246,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={!editor.can().chain().focus().toggleBold().run()}
-            style={{ color: editor.isActive("bold") ? grey[900] : grey[50] }}
+            style={{ color: editor.isActive("bold") ? grey[50] : grey[900] }}
           >
             <FormatBoldIcon />
           </IconButton>
@@ -254,7 +255,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={!editor.can().chain().focus().toggleItalic().run()}
-            style={{ color: editor.isActive("italic") ? grey[900] : grey[50] }}
+            style={{ color: editor.isActive("italic") ? grey[50] : grey[900] }}
           >
             <FormatItalicIcon />
           </IconButton>
@@ -264,7 +265,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleStrike().run()}
             disabled={!editor.can().chain().focus().toggleStrike().run()}
-            style={{ color: editor.isActive("strike") ? grey[900] : grey[50] }}
+            style={{ color: editor.isActive("strike") ? grey[50] : grey[900] }}
           >
             <StrikethroughSIcon />
           </IconButton>
@@ -274,7 +275,7 @@ const MenuBar = ({
           <IconButton
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editor.can().chain().focus().toggleCode().run()}
-            style={{ color: editor.isActive("code") ? grey[900] : grey[50] }}
+            style={{ color: editor.isActive("code") ? grey[50] : grey[900] }}
           >
             <CodeIcon />
           </IconButton>
@@ -285,7 +286,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             disabled={!editor.can().chain().focus().toggleBulletList().run()}
             style={{
-              color: editor.isActive("bulletList") ? grey[900] : grey[50],
+              color: editor.isActive("bulletList") ? grey[50] : grey[900],
             }}
           >
             <FormatListBulletedIcon />
@@ -297,7 +298,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             disabled={!editor.can().chain().focus().toggleOrderedList().run()}
             style={{
-              color: editor.isActive("orderedList") ? grey[900] : grey[50],
+              color: editor.isActive("orderedList") ? grey[50] : grey[900],
             }}
           >
             <FormatListNumberedIcon />
@@ -309,10 +310,10 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             disabled={!editor.can().chain().focus().toggleCodeBlock().run()}
             style={{
-              color: editor.isActive("codeBlock") ? grey[900] : grey[50],
+              color: editor.isActive("codeBlock") ? grey[50] : grey[900],
             }}
           >
-            <CodeIcon />
+            <DataArrayIcon />
           </IconButton>
         </Tooltip>
 
@@ -321,7 +322,7 @@ const MenuBar = ({
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             disabled={!editor.can().chain().focus().toggleBlockquote().run()}
             style={{
-              color: editor.isActive("blockquote") ? grey[900] : grey[50],
+              color: editor.isActive("blockquote") ? grey[50] : grey[900],
             }}
           >
             <FormatQuoteIcon />
