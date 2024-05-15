@@ -15,6 +15,7 @@ public class Response {
     private String serverMessage;
     private Object data;
     private String timeStamp;
+    private Long dataLength;
 
     public static Response ok(Object data, String message){
         return new Response(data, message);
@@ -22,6 +23,7 @@ public class Response {
     public static Response ok(String message){
         return new Response(message);
     }
+
 
     public static Response failed(HttpStatus status, String message){
         return new Response(status.value(), message);
@@ -51,6 +53,21 @@ public class Response {
         this.serverMessage = "SUCCESS";
     }
 
+    public Response(Object data, Long dataLength, String message){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        this.status = HttpStatus.OK.value();
+        this.message = message;
+        this.data = data;
+        this.timeStamp = df.format(new Date());
+        this.serverMessage = "SUCCESS";
+        this.dataLength = dataLength;
+    }
+
+    public static Response ok(Object data, Long dataLength, String message){
+        return new Response(data, dataLength, message);
+    }
+
     public Response(Integer status, String message) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -69,4 +86,5 @@ public class Response {
         this.serverMessage = serverMessage;
         this.timeStamp = df.format(new Date());
     }
+
 }

@@ -80,8 +80,8 @@ const Footer = () => {
 
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#141414",
-  paddingTop: "20px",
-  paddingBottom: "20px",
+  paddingTop: "10px",
+  paddingBottom: "10px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",

@@ -4,12 +4,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
-function GenericFormControl({ label, value, onChange, options }) {
+function GenericFormControl({ label, value, onChange, options, ...props }) {
   return (
     <FormControl
       sx={{
         m: 1,
-        width: "240px",
         "& .MuiOutlinedInput-root": {
           "& fieldset": {
             borderColor: "black",
@@ -21,7 +20,9 @@ function GenericFormControl({ label, value, onChange, options }) {
             borderColor: "black",
           },
         },
+        ...props.sx,
       }}
+      {...props}
     >
       <InputLabel id={`${label}-label`} sx={{ fontSize: "1rem" }}>
         {label}

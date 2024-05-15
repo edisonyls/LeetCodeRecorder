@@ -1,5 +1,8 @@
 package com.yls.ylslc.question;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.UUID;
 // this is a service component
 public interface QuestionService {
 
-    List<QuestionEntity> getQuestions();
+    Page<QuestionEntity> getQuestions(Pageable pageable, Sort sort);
 
     List<QuestionEntity> getQuestionsByUser();
 
@@ -31,6 +34,8 @@ public interface QuestionService {
     QuestionEntity getQuestionById(UUID id);
 
     QuestionEntity updateStar(UUID id);
+
+    Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable);
 
     long countQuestion();
 

@@ -7,6 +7,10 @@ import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserRepository;
 import com.yls.ylslc.user.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,11 +36,18 @@ public class QuestionServiceImpl implements QuestionService {
         this.solutionService = solutionService;
     }
 
-    @Override
-    public List<QuestionEntity> getQuestions(){
-        List<QuestionEntity> questions = questionRepository.findAll();
-        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt).reversed());
-        return questions;
+//    @Override
+//    public List<QuestionEntity> getQuestions(){
+//        List<QuestionEntity> questions = questionRepository.findAll();
+//        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt).reversed());
+//        return questions;
+//    }
+    public Page<QuestionEntity> getQuestions(Pageable pageable, Sort sort) {
+        return questionRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort));
+    }
+
+    public Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable) {
+        return questionRepository.searchByTitleOrNumber(searchQuery, pageable);
     }
 
     @Override

@@ -7,6 +7,10 @@ import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
 import com.yls.ylslc.question.solution.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,12 +42,53 @@ public class QuestionController {
         this.questionMapper = questionMapper;
     }
 
-    @GetMapping
-    public Response getQuestions(){
-        List<QuestionEntity> questions = questionService.getQuestions();
-        List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
-        return Response.ok(questionDtos, "Question retrieved successfully!");
+//    @GetMapping
+//    public Response getQuestions(){
+//        List<QuestionEntity> questions = questionService.getQuestions();
+//        List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
+//        return Response.ok(questionDtos, "Question retrieved successfully!");
+//    }
+@GetMapping
+public Response getQuestions(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "desc") String sortDir,
+        @RequestParam(defaultValue = "default") String sortOption,
+        @RequestParam(required = false) String search) {
+
+    // Adjust mapping based on the sortOption directly matching database fields
+    switch (sortOption) {
+        case "success":
+        case "attempts":
+        case "difficulty":
+        case "timeOfCompletion":
+        case "star":
+            sortBy = sortOption;
+            break;
+        default:
+            sortBy = "createdAt";
+            break;
     }
+
+    Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<QuestionEntity> questionPage;
+
+    if (search != null && !search.isEmpty()) {
+        questionPage = questionService.searchQuestions(search, pageable);
+    } else {
+        questionPage = questionService.getQuestions(pageable, sort);
+    }
+
+    List<QuestionDto> questionDtos = questionPage.stream()
+            .map(questionMapper::mapTo)
+            .collect(Collectors.toList());
+
+    return Response.ok(questionDtos, questionPage.getTotalElements(), "Questions retrieved successfully!");
+}
+
+
 
     @GetMapping("all")
     public Response getQuestionsPerUser(){

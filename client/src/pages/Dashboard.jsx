@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../config/axiosConfig";
 import AddIcon from "@mui/icons-material/Add";
-import { Container, Box, Typography } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Pagination,
+  LinearProgress,
+} from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import GenericSpinner from "../components/generic/GenericSpinner";
 import Footer from "../components/Footer";
 import GenericFormControl from "../components/generic/GenericFormControl";
-import GenericSearchBox from "../components/generic/GenericSearchBox";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
+import GenericSearchBox from "../components/generic/GenericSearchBox";
 import { grey } from "@mui/material/colors";
 import { toast } from "react-toastify";
 
@@ -23,6 +29,10 @@ const Dashboard = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
   const [searchQuery, setSearchQuery] = useState(""); // State to hold search query
+  const [page, setPage] = useState(1); // State for current page
+  const [pageSize, setPageSize] = useState(7); // State for page size
+  const [isFetching, setIsFetching] = useState(false);
+  const [totalQuestions, setTotalQuestions] = useState(0); // State for total number of questions
 
   const navigate = useNavigate();
 
@@ -93,93 +103,30 @@ const Dashboard = () => {
     navigate("/new", { state: { withTimer: true } });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axiosInstance.get("question");
-        setQuestions(response.data.data);
-        setOriginalQuestions(response.data.data);
-      } catch (error) {
-        console.error("Error fetching questions:", error);
-      } finally {
-        setIsLoading(false); // Ensure loading state is updated regardless of success or error
-      }
-    };
-    fetchData();
-  }, [navigate]);
-
-  useEffect(() => {
-    let sortedQuestions = [...originalQuestions];
-    switch (sortOption) {
-      case "success":
-        sortedQuestions.sort((a, b) => b.success - a.success);
-        break;
-      case "failure":
-        sortedQuestions.sort((a, b) => a.success - b.success);
-        break;
-      case "easiest":
-        sortedQuestions.sort((a, b) => {
-          const difficultyValues = { Easy: 1, Medium: 2, Hard: 3 };
-          return (
-            difficultyValues[a.difficulty] - difficultyValues[b.difficulty]
-          );
-        });
-        break;
-      case "hardest":
-        sortedQuestions.sort((a, b) => {
-          const difficultyValues = { Easy: 1, Medium: 2, Hard: 3 };
-          return (
-            difficultyValues[b.difficulty] - difficultyValues[a.difficulty]
-          );
-        });
-        break;
-      case "lowest attempts":
-        sortedQuestions.sort((a, b) => a.attempts - b.attempts);
-        break;
-      case "highest attempts":
-        sortedQuestions.sort((a, b) => b.attempts - a.attempts);
-        break;
-      case "fastest":
-        sortedQuestions.sort((a, b) => {
-          return a.timeOfCompletion.localeCompare(b.timeOfCompletion);
-        });
-        break;
-      case "slowest":
-        sortedQuestions.sort((a, b) => {
-          return b.timeOfCompletion.localeCompare(a.timeOfCompletion);
-        });
-        break;
-      case "star":
-        sortedQuestions.sort((a, b) =>
-          b.star === a.star ? 0 : b.star ? 1 : -1
-        );
-        break;
-      case "default":
-        break;
-      default:
-        break;
+  const fetchData = async (page, size, sortOption, searchQuery) => {
+    setIsFetching(true);
+    try {
+      const response = await axiosInstance.get("question", {
+        params: { page: page - 1, size, sortOption, search: searchQuery },
+      });
+      setQuestions(response.data.data);
+      setOriginalQuestions(response.data.data);
+      setTotalQuestions(response.data.dataLength);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+    } finally {
+      setIsFetching(false); // Ensure fetching state is updated regardless of success or error
     }
-    if (
-      sortOption !== "default" ||
-      JSON.stringify(sortedQuestions) !== JSON.stringify(questions)
-    ) {
-      setQuestions(sortedQuestions);
-    }
-  }, [sortOption, originalQuestions]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const normalizeText = (text) => text.toLowerCase().replace(/\s+/g, "");
+  };
 
   useEffect(() => {
-    const filteredQuestions = originalQuestions.filter(
-      (question) =>
-        normalizeText(question.title).includes(normalizeText(searchQuery)) ||
-        normalizeText(question.number.toString()).includes(
-          normalizeText(searchQuery)
-        )
-    );
-    setQuestions(filteredQuestions);
-  }, [searchQuery, originalQuestions]);
+    fetchData(page, pageSize, sortOption, searchQuery);
+  }, [page, pageSize, sortOption, searchQuery, navigate]);
+
+  const handleSearch = (query) => {
+    setPage(1);
+    setSearchQuery(query);
+  };
 
   if (isLoading) {
     return (
@@ -211,7 +158,26 @@ const Dashboard = () => {
         }}
       >
         <AuthenticatedNavbar />
-        <Box component="main" sx={{ marginBottom: "4rem" }}>
+        {isFetching && (
+          <Box
+            sx={{
+              width: "100%",
+              mt: -3,
+              mb: 1,
+            }}
+          >
+            <LinearProgress color="primary" />
+          </Box>
+        )}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            marginBottom: "4rem",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Container>
             <Box
               sx={{
@@ -242,16 +208,13 @@ const Dashboard = () => {
                   onChange={(e) => setSortOption(e.target.value)}
                   options={[
                     { value: "default", label: "Default" },
-                    { value: "hardest", label: "Hardest" },
-                    { value: "easiest", label: "Easiest" },
+                    { value: "difficulty", label: "Difficulty" },
                     { value: "success", label: "Success" },
-                    { value: "failure", label: "Failure" },
-                    { value: "lowest attempts", label: "Lowest Attempts" },
-                    { value: "highest attempts", label: "Highest Attempts" },
-                    { value: "fastest", label: "Fastest" },
-                    { value: "slowest", label: "Slowest" },
+                    { value: "attempts", label: "Attempts" },
+                    { value: "timeOfCompletion", label: "Time of Completion" },
                     { value: "star", label: "Star" },
                   ]}
+                  sx={{ width: "240px" }}
                 />
               </Box>
 
@@ -262,10 +225,7 @@ const Dashboard = () => {
                   justifyContent: "flex-end",
                 }}
               >
-                <GenericSearchBox
-                  label="Search..."
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <GenericSearchBox label="Search..." onSearch={handleSearch} />
               </Box>
             </Box>
 
@@ -273,6 +233,9 @@ const Dashboard = () => {
               questions={questions}
               onDelete={handleDelete}
               onToggleStar={handleToggleStar}
+              sx={{
+                flexGrow: 1,
+              }}
             />
 
             {originalQuestions && originalQuestions.length === 0 && (
@@ -281,7 +244,7 @@ const Dashboard = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  minHeight: "50vh", // Adjust height as needed
+                  flexGrow: 1,
                 }}
               >
                 <Typography variant="h5" sx={{ color: grey[600] }}>
@@ -289,6 +252,46 @@ const Dashboard = () => {
                 </Typography>
               </Box>
             )}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "2rem",
+                alignItems: "center",
+              }}
+            >
+              <Pagination
+                count={Math.ceil(totalQuestions / pageSize)} // Ensure the value is always a valid number
+                page={page}
+                onChange={(event, value) => setPage(value)}
+                color="primary"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    "&.Mui-selected": {
+                      backgroundColor: "black",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "black",
+                      },
+                    },
+                  },
+                }}
+              />
+              <Box sx={{ ml: 2 }}>
+                <GenericFormControl
+                  label="Items per page"
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  options={[
+                    { value: 7, label: "7" },
+                    { value: 15, label: "15" },
+                    { value: 20, label: "20" },
+                  ]}
+                  sx={{ width: "120px" }}
+                />
+              </Box>
+            </Box>
           </Container>
         </Box>
         <Footer />
@@ -312,7 +315,7 @@ const Dashboard = () => {
           }}
           onConfirm={handleConfirmDelete}
           title="Delete Question?"
-          content="Are you sure to delete this question?  This action cannot be undone."
+          content="Are you sure to delete this question? This action cannot be undone."
         />
       </Box>
     );
