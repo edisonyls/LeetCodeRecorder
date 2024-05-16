@@ -9,6 +9,11 @@ wouldn't be lost and to make it easily revisitable. Having recently graduated wi
 knowledge and learn new skills. This led to the creation of a comprehensive tool that not only helps in preserving my learning progress but also enhances my efficiency in revisiting and learning 
 from past challenges.
 
+### Demo
+https://github.com/edisonyls/LeetCodeRecorder/assets/89026659/c8b77f71-506f-433f-88f6-e19a78b06534
+
+
+
 ### Table of Contents
 - [Build With](###build-with)
 - [Getting Started](###getting-started)
