@@ -79,13 +79,14 @@ const Footer = () => {
 };
 
 const FooterContainer = styled(Box)(({ theme }) => ({
-  backgroundColor: "#141414",
+  backgroundColor: "black",
   paddingTop: "10px",
   paddingBottom: "10px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  height: "3vh",
 }));
 
 const SocialMediaBox = styled(Box)(({ theme }) => ({

@@ -16,6 +16,7 @@ import LogoutIcon from "@mui/icons-material/ExitToApp";
 import { BlackBackgroundButton } from "./generic/GenericButton";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DataStructureIcon from "@mui/icons-material/Storage";
+import CodeIcon from "@mui/icons-material/Code";
 
 const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
   const navigate = useNavigate();
@@ -27,11 +28,12 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       onClick: () => navigate("/dashboard"),
     },
     {
-      text: "Profile",
-      icon: <AccountCircleIcon />,
-      path: "/profile",
-      onClick: () => navigate("/profile"),
+      text: "LeetCode",
+      icon: <CodeIcon />,
+      path: "/table",
+      onClick: () => navigate("/table"),
     },
+
     // {
     //   text: "Friends",
     //   icon: <Group />,
@@ -43,6 +45,12 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       icon: <DataStructureIcon />,
       path: "/data-structure",
       onClick: () => navigate("/data-structure"),
+    },
+    {
+      text: "Profile",
+      icon: <AccountCircleIcon />,
+      path: "/profile",
+      onClick: () => navigate("/profile"),
     },
     // {
     //   text: "Algorithm",

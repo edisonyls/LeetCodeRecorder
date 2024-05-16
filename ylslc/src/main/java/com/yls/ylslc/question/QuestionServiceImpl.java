@@ -141,11 +141,15 @@ public class QuestionServiceImpl implements QuestionService {
         }).orElseThrow(() -> new RuntimeException("Question not found"));
     }
 
+    public List<Map<String, Object>> getDifficultyDistributionForUser(UUID userId) {
+        return questionRepository.findDifficultyDistributionByUserId(userId);
+    }
+
 
 
     @Override
-    public long countQuestion() {
-        return questionRepository.count();
+    public long countQuestion(UUID userId) {
+        return questionRepository.countQuestionsByUserId(userId);
     }
 
 

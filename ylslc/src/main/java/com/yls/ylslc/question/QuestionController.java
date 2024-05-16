@@ -20,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -157,9 +154,9 @@ public Response getQuestions(
         questionService.deleteImage(questionEntity.getNumber(), imageId);
     }
 
-    @GetMapping("number")
-    public Response getNumberOfQuestions(){
-        return Response.ok(questionService.countQuestion(), "Count the number of questions successfully!");
+    @GetMapping("number/{userId}")
+    public Response getNumberOfQuestions(@PathVariable UUID userId){
+        return Response.ok(questionService.countQuestion(userId), "Count the number of questions successfully!");
     }
 
     @PutMapping("/toggleStar/{id}")
@@ -171,6 +168,11 @@ public Response getQuestions(
         } catch (Exception e) {
             return Response.failed(HttpStatus.INTERNAL_SERVER_ERROR, "Star update failed", e.toString());
         }
+    }
+
+    @GetMapping("/difficulty-distribution/{userId}")
+    public Response getDifficultyDistribution(@PathVariable UUID userId) {
+        return Response.ok(questionService.getDifficultyDistributionForUser(userId), "Data retrieved successfully!");
     }
 
     private MediaType getMediaTypeForImageId(String imageId) {

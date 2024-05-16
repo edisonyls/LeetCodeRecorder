@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,5 +22,11 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, UUID> 
 
     @Query("SELECT q FROM QuestionEntity q WHERE q.id = :id AND q.user.username = :username")
     Optional<QuestionEntity> findByIdAndUsername(@Param("id") UUID id, @Param("username") String username);
+
+    @Query("SELECT q.difficulty AS difficulty, COUNT(q) AS count FROM QuestionEntity q WHERE q.user.id = :userId GROUP BY q.difficulty")
+    List<Map<String, Object>> findDifficultyDistributionByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT COUNT(q) FROM QuestionEntity q WHERE q.user.id = :userId")
+    long countQuestionsByUserId(@Param("userId") UUID userId);
 }
 

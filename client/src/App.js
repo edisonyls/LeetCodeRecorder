@@ -3,7 +3,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
-import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewQuestion from "./pages/NewQuestion";
 import QuestionDetails from "./pages/QuestionDetails";
@@ -14,6 +13,8 @@ import AlgorithmPage from "./pages/AlgorithmPage";
 import { UserProvider } from "./context/userContext";
 import { DataStructureProvider } from "./context/dataStructureContext";
 import UpdateQuestionForm from "./components/new_question/UpdateQuestionForm";
+import TablePage from "./pages/TablePage";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -25,10 +26,11 @@ function App() {
               <Route path="/" Component={Home} exact />
               <Route path="/signin" Component={SignInPage} exact />
               <Route path="/register" Component={RegisterPage} exact />
-              <Route path="/dashboard" Component={Dashboard} exact />
+              <Route path="/table" Component={TablePage} exact />
               <Route path="/new" Component={NewQuestion} exact />
               <Route path="/question/:id" Component={QuestionDetails} exact />
               <Route path="/profile" Component={ProfilePage} exact />
+              <Route path="/dashboard" Component={Dashboard} exact />
               <Route
                 path="/edit-question"
                 Component={UpdateQuestionForm}

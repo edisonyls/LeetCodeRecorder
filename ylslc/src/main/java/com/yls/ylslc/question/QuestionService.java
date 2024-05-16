@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +36,8 @@ public interface QuestionService {
 
     Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable);
 
-    long countQuestion();
+    public List<Map<String, Object>> getDifficultyDistributionForUser(UUID userId);
+
+    long countQuestion(UUID userId);
 
 }
