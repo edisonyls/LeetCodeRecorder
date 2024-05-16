@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "apexcharts": "^3.49.1",
-    "chart.js": "^4.4.2",
-    "react-apexcharts": "^1.4.1",
-    "react-chartjs-2": "^5.2.0",
-    "react-spring": "^9.7.3"
-  }
-}
