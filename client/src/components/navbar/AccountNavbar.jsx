@@ -13,7 +13,7 @@ const AccountNavbar = () => {
         <Typography
           variant="h6"
           component={Link}
-          to="/dashboard"
+          to="/"
           sx={{
             ml: 2,
             flexGrow: 1,

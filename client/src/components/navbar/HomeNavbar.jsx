@@ -52,7 +52,7 @@ const HomeNavbar = () => {
         <Typography
           variant="h6"
           component={Link}
-          to="/dashboard"
+          to="/"
           sx={{
             flexGrow: 1,
             ml: 2,

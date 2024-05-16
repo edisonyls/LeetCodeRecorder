@@ -38,7 +38,7 @@ const Dashboard = () => {
   const handleToggleStar = async (id, event) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsLoading(true);
+    setIsFetching(true);
     try {
       await axiosInstance.put(`question/toggleStar/${id}`);
       const updatedQuestions = questions.map((question) => {
@@ -55,7 +55,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error starring question:", error);
     } finally {
-      setIsLoading(false);
+      setIsFetching(false);
     }
   };
 
