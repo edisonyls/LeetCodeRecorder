@@ -13,9 +13,7 @@ import java.util.UUID;
 // this is a service component
 public interface QuestionService {
 
-    Page<QuestionEntity> getQuestions(Pageable pageable, Sort sort);
-
-    List<QuestionEntity> getQuestionsByUser();
+    Page<QuestionEntity> getQuestionsByUser(Pageable pageable, Sort sort);
 
     QuestionEntity createQuestion(QuestionEntity questionEntity);
 

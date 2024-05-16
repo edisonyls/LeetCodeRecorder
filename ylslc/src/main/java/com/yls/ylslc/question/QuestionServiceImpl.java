@@ -36,27 +36,21 @@ public class QuestionServiceImpl implements QuestionService {
         this.solutionService = solutionService;
     }
 
-//    @Override
-//    public List<QuestionEntity> getQuestions(){
-//        List<QuestionEntity> questions = questionRepository.findAll();
-//        questions.sort(Comparator.comparing(QuestionEntity::getCreatedAt).reversed());
-//        return questions;
-//    }
-    public Page<QuestionEntity> getQuestions(Pageable pageable, Sort sort) {
-        return questionRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort));
-    }
-
     public Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable) {
-        return questionRepository.searchByTitleOrNumber(searchQuery, pageable);
-    }
-
-    @Override
-    public List<QuestionEntity> getQuestionsByUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UserEntity> currentUser = userService.findOneByUsername(username);
         return currentUser
-                .map(questionRepository::findByUser)
-                .orElse(Collections.emptyList());
+                .map(user -> questionRepository.searchByTitleOrNumber(user, searchQuery, pageable))
+                .orElse(Page.empty());
+    }
+
+    @Override
+    public Page<QuestionEntity> getQuestionsByUser(Pageable pageable, Sort sort) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<UserEntity> currentUser = userService.findOneByUsername(username);
+        return currentUser
+                .map(user -> questionRepository.findByUser(user, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort)))
+                .orElse(Page.empty());
     }
 
 

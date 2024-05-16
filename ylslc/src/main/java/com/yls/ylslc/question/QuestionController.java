@@ -78,7 +78,7 @@ public Response getQuestions(
     if (search != null && !search.isEmpty()) {
         questionPage = questionService.searchQuestions(search, pageable);
     } else {
-        questionPage = questionService.getQuestions(pageable, sort);
+        questionPage = questionService.getQuestionsByUser(pageable, sort);
     }
 
     List<QuestionDto> questionDtos = questionPage.stream()
@@ -87,16 +87,6 @@ public Response getQuestions(
 
     return Response.ok(questionDtos, questionPage.getTotalElements(), "Questions retrieved successfully!");
 }
-
-
-
-    @GetMapping("all")
-    public Response getQuestionsPerUser(){
-        List<QuestionEntity> questions = questionService.getQuestionsByUser();
-        List<QuestionDto> questionDtos = questions.stream().map(questionMapper::mapTo).toList();
-        return Response.ok(questionDtos, "Question retrieved successfully!");
-    }
-
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
     public Response uploadImages(@RequestPart("image") MultipartFile image,

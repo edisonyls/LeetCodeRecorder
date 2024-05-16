@@ -17,7 +17,6 @@ import GenericFormControl from "../components/generic/GenericFormControl";
 import QuestionsTable from "../components/QuestionsTable";
 import GenericDialog from "../components/generic/GenericDialog";
 import GenericSearchBox from "../components/generic/GenericSearchBox";
-import { grey } from "@mui/material/colors";
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
@@ -30,7 +29,7 @@ const Dashboard = () => {
   const [questionToDeleteId, setQuestionToDeleteId] = useState(null); // Tracks the ID of the question to be deleted
   const [searchQuery, setSearchQuery] = useState(""); // State to hold search query
   const [page, setPage] = useState(1); // State for current page
-  const [pageSize, setPageSize] = useState(7); // State for page size
+  const [pageSize, setPageSize] = useState(6); // State for page size
   const [isFetching, setIsFetching] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState(0); // State for total number of questions
 
@@ -163,7 +162,7 @@ const Dashboard = () => {
             sx={{
               width: "100%",
               mt: -3,
-              mb: 1,
+              mb: 2,
             }}
           >
             <LinearProgress color="primary" />
@@ -238,21 +237,6 @@ const Dashboard = () => {
               }}
             />
 
-            {originalQuestions && originalQuestions.length === 0 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexGrow: 1,
-                }}
-              >
-                <Typography variant="h5" sx={{ color: grey[600] }}>
-                  No Data Available
-                </Typography>
-              </Box>
-            )}
-
             <Box
               sx={{
                 display: "flex",
@@ -284,7 +268,7 @@ const Dashboard = () => {
                   value={pageSize}
                   onChange={(e) => setPageSize(Number(e.target.value))}
                   options={[
-                    { value: 7, label: "7" },
+                    { value: 6, label: "6" },
                     { value: 15, label: "15" },
                     { value: 20, label: "20" },
                   ]}

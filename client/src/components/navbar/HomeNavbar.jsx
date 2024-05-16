@@ -48,17 +48,19 @@ const HomeNavbar = () => {
   return (
     <AppBar position="static" sx={{ background: "black" }}>
       <Toolbar>
-        <FlutterDashIcon
-          sx={{ marginLeft: "4rem", fontSize: { sm: "1rem", xl: "2rem" } }}
-        />
-        <Typography variant="h6" sx={{ flexGrow: 1, ml: 1 }}>
-          <Box
-            component={Link}
-            to="/"
-            sx={{ textDecoration: "none", color: "#fff", fontWeight: "bold" }}
-          >
-            YLSLC
-          </Box>
+        <FlutterDashIcon />
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/dashboard"
+          sx={{
+            flexGrow: 1,
+            ml: 2,
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          YLSLC
         </Typography>
 
         {isMobile ? (
