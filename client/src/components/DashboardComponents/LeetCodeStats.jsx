@@ -3,6 +3,9 @@ import { Typography, Box, Divider } from "@mui/material";
 import { useSpring, animated } from "react-spring";
 import Chart from "react-apexcharts";
 import { axiosInstance } from "../../config/axiosConfig";
+import { BlackBackgroundButton } from "../generic/GenericButton";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router-dom";
 
 const LeetCodeStats = ({ userId }) => {
   const [questionStats, setQuestionStats] = useState({
@@ -13,6 +16,8 @@ const LeetCodeStats = ({ userId }) => {
     questionCount: 0,
     averageTimeOfCompletion: [], // Ensure this field is included
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -296,9 +301,23 @@ const LeetCodeStats = ({ userId }) => {
 
   return (
     <animated.div style={containerSpring}>
-      <Typography variant="h5" sx={{ color: "white" }}>
-        LeetCode Stats
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography variant="h5">LeetCode Stats</Typography>
+        </Box>
+        <BlackBackgroundButton
+          buttonText="Enter"
+          icon={<ArrowForwardIcon />}
+          onClick={(e) => navigate("/table")}
+        />
+      </Box>
       <Box sx={{ textAlign: "left" }}>
         <Typography variant="body1" sx={{ color: "cyan" }}>
           Total Questions You Have Recorded:{" "}

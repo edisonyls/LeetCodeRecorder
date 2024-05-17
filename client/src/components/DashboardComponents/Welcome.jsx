@@ -31,7 +31,7 @@ const Welcome = ({ user }) => {
         alignItems: "start",
         marginLeft: "10%",
         marginRight: "10%",
-        marginTop: -5,
+        marginTop: -6,
       }}
     >
       <animated.div style={props}>

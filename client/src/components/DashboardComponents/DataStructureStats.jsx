@@ -3,9 +3,14 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useSpring, animated } from "react-spring";
 import { axiosInstance } from "../../config/axiosConfig";
+import { BlackBackgroundButton } from "../generic/GenericButton";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router-dom";
 
 const DataStructureStats = ({ userId }) => {
   const [dataStructureNumber, setDataStructureNumber] = useState(0);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,9 +40,23 @@ const DataStructureStats = ({ userId }) => {
 
   return (
     <animated.div style={props}>
-      <Typography variant="h6" sx={{ color: "white" }}>
-        Data Structure Stats
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        <Box sx={{ flexGrow: 1, textAlign: "center" }}>
+          <Typography variant="h5">Data Structure Stats</Typography>
+        </Box>
+        <BlackBackgroundButton
+          buttonText="Enter"
+          icon={<ArrowForwardIcon />}
+          onClick={(e) => navigate("/data-structure")}
+        />
+      </Box>
       <Box sx={{ textAlign: "left" }}>
         <Typography variant="body1" sx={{ color: "cyan" }}>
           Total Data Structure You Have Recorded:{" "}
