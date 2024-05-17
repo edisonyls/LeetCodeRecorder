@@ -6,6 +6,7 @@ export const initialState = {
   isAuthenticated: !!storedData,
   token: storedData ? storedData : null,
   user: {},
+  loading: false,
   error: null,
 };
 

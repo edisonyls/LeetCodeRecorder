@@ -56,6 +56,11 @@ public class DataStructureServiceImpl implements DataStructureService{
         return dataStructureEntity;
     }
 
+    @Override
+    public Long countDataStructure(UUID userId) {
+        return dataStructureRepository.countDataStructuresByUserId(userId);
+    }
+
     public DataStructureServiceImpl(DataStructureRepository dataStructureRepository, UserService userService) {
         this.dataStructureRepository = dataStructureRepository;
         this.userService = userService;

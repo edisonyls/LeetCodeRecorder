@@ -85,7 +85,7 @@ const AuthenticatedNavbar = () => {
             marginRight: 2,
           }}
         >
-          <Typography variant="h8" sx={{ marginRight: 2 }}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
             {getTimeOfDayGreeting()} {user.firstName} {user.lastName}
           </Typography>
           <IconButton

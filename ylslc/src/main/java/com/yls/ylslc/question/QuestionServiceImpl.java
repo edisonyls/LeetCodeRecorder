@@ -141,12 +141,15 @@ public class QuestionServiceImpl implements QuestionService {
         }).orElseThrow(() -> new RuntimeException("Question not found"));
     }
 
-
-
     @Override
-    public long countQuestion() {
-        return questionRepository.count();
+    public Map<String, Object> getQuestionStats(UUID userId) {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("difficultyDistribution", questionRepository.findDifficultyDistributionByUserId(userId));
+        stats.put("createdAtStats", questionRepository.findCreatedAtDistributionByUserId(userId));
+        stats.put("successDistribution", questionRepository.findSuccessDistributionByUserId(userId));
+        stats.put("starredCount", questionRepository.countStarredQuestionsByUserId(userId));
+        stats.put("questionCount", questionRepository.countQuestionsByUserId(userId));
+        stats.put("averageTimeOfCompletion", questionRepository.findAverageTimeOfCompletionByDifficulty(userId));
+        return stats;
     }
-
-
 }

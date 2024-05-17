@@ -12,4 +12,5 @@ public interface DataStructureService {
     DataStructureEntity updateName(UUID id, String name);
 
     DataStructureEntity delete(UUID id);
+    Long countDataStructure(UUID userId);
 }

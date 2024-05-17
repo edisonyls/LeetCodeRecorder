@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,5 +22,24 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, UUID> 
 
     @Query("SELECT q FROM QuestionEntity q WHERE q.id = :id AND q.user.username = :username")
     Optional<QuestionEntity> findByIdAndUsername(@Param("id") UUID id, @Param("username") String username);
+
+    @Query("SELECT COUNT(q) FROM QuestionEntity q WHERE q.user.id = :userId")
+    long countQuestionsByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT q.difficulty AS difficulty, COUNT(q) AS count FROM QuestionEntity q WHERE q.user.id = :userId GROUP BY q.difficulty")
+    List<Map<String, Object>> findDifficultyDistributionByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT q.success AS success, COUNT(q) AS count FROM QuestionEntity q WHERE q.user.id = :userId GROUP BY q.success")
+    List<Map<String, Object>> findSuccessDistributionByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT DATE(q.createdAt) AS createdAtDate, COUNT(q) AS count FROM QuestionEntity q WHERE q.user.id = :userId GROUP BY DATE(q.createdAt) ORDER BY DATE(q.createdAt) DESC")
+    List<Map<String, Object>> findCreatedAtDistributionByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT COUNT(q) FROM QuestionEntity q WHERE q.user.id = :userId AND q.star = true")
+    Long countStarredQuestionsByUserId(@Param("userId") UUID userId);
+
+    @Query("SELECT q.difficulty AS difficulty, ROUND(AVG(CAST(q.timeOfCompletion AS double)), 2) AS averageTime FROM QuestionEntity q WHERE q.user.id = :userId GROUP BY q.difficulty")
+    List<Map<String, Object>> findAverageTimeOfCompletionByDifficulty(@Param("userId") UUID userId);
+
 }
 

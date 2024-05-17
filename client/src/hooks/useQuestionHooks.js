@@ -75,7 +75,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
       submitRestData(question.id);
-      navigate("/dashboard");
+      navigate("/table");
     } catch (error) {
       console.error("An error occurred during image uploads", error);
     }
@@ -125,7 +125,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
       submitRestData();
-      navigate("/dashboard");
+      navigate("/table");
     } catch (error) {
       console.error("An error occurred during image uploads", error);
     }
