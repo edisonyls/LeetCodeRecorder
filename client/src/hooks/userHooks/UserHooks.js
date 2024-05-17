@@ -1,3 +1,4 @@
+// userHooks/UserHooks.js
 import { axiosInstance, axiosInstanceNoAuth } from "../../config/axiosConfig";
 import { useUser } from "../../context/userContext";
 import { userActionTypes } from "../../reducer/userActions";
@@ -17,7 +18,7 @@ export const UserHooks = () => {
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
-        error: error,
+        error: error.message || "Failed to fetch current user",
       });
       throw error;
     }
@@ -45,9 +46,9 @@ export const UserHooks = () => {
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
-        error: error,
+        error: error.message || "Failed to login",
       });
-      console.log("Failed to login: " + error);
+      console.log("Failed to login: " + error.message);
     }
   };
 
@@ -74,9 +75,9 @@ export const UserHooks = () => {
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
-        error: error,
+        error: error.message || "Failed to register",
       });
-      console.log("Failed to register: " + error);
+      console.log("Failed to register: " + error.message);
     }
   };
 
@@ -97,9 +98,9 @@ export const UserHooks = () => {
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
-        error: error,
+        error: error.message || "Failed to update user details",
       });
-      console.log("Failed to update user detail: " + error);
+      console.log("Failed to update user detail: " + error.message);
     }
   };
 

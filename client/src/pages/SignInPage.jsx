@@ -19,6 +19,7 @@ import AccountNavbar from "../components/navbar/AccountNavbar";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import { useUser } from "../context/userContext";
 import { UserHooks } from "../hooks/userHooks/UserHooks";
+import { userActionTypes } from "../reducer/userActions";
 
 function Copyright(props) {
   return (
@@ -35,7 +36,7 @@ function Copyright(props) {
 
 export default function SignInPage() {
   const navigate = useNavigate();
-  const { state } = useUser();
+  const { state, dispatch } = useUser();
   const { login, getCurrentUser } = UserHooks();
   const { isAuthenticated, token, user, error } = state;
 
@@ -43,7 +44,12 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error("Invalid login credentials. Try again!");
+
+      // Clear the error state after a delay
+      setTimeout(() => {
+        dispatch({ type: userActionTypes.CLEAR_ERROR });
+      }, 5000); // Adjust the delay as needed
     }
     if (token) {
       getCurrentUser(token);
@@ -51,11 +57,24 @@ export default function SignInPage() {
     if (isAuthenticated && user && Object.keys(user).length > 0) {
       navigate("/dashboard");
     }
-  }, [error, isAuthenticated, navigate, user, getCurrentUser, token]);
+  }, [error, isAuthenticated, navigate, user, getCurrentUser, token, dispatch]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData);
+
+    if (!data.username) {
+      toast.error("Please enter your email address!");
+      return;
+    }
+
+    if (!data.password) {
+      toast.error("Please enter your password!");
+      return;
+    }
+
+    // Proceed with login if validation passes
     login(data);
   };
 
@@ -140,7 +159,6 @@ export default function SignInPage() {
               <Grid container sx={{ marginTop: 2 }}>
                 <Grid item xs>
                   <Link href="#" variant="body2" onClick={handleOpenDialog}>
-                    {/* Change this line */}
                     Forgot password?
                   </Link>
                 </Grid>

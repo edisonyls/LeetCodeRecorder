@@ -6,4 +6,5 @@ export const userActionTypes = {
   LOGOUT: "LOGOUT",
   GET_CURRENT_USER: "GET_CURRENT_USER",
   UPDATE_USER: "UPDATE_USER",
+  CLEAR_ERROR: "CLEAR_ERROR",
 };
