@@ -154,11 +154,6 @@ public Response getQuestions(
         questionService.deleteImage(questionEntity.getNumber(), imageId);
     }
 
-    @GetMapping("number/{userId}")
-    public Response getNumberOfQuestions(@PathVariable UUID userId){
-        return Response.ok(questionService.countQuestion(userId), "Count the number of questions successfully!");
-    }
-
     @PutMapping("/toggleStar/{id}")
     public Response toggleStar(@PathVariable UUID id){
         try {
@@ -170,9 +165,9 @@ public Response getQuestions(
         }
     }
 
-    @GetMapping("/difficulty-distribution/{userId}")
+    @GetMapping("/stats/{userId}")
     public Response getDifficultyDistribution(@PathVariable UUID userId) {
-        return Response.ok(questionService.getDifficultyDistributionForUser(userId), "Data retrieved successfully!");
+        return Response.ok(questionService.getQuestionStats(userId), "Data retrieved successfully!");
     }
 
     private MediaType getMediaTypeForImageId(String imageId) {

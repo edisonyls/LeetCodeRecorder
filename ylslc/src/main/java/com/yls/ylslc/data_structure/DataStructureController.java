@@ -50,6 +50,11 @@ public class DataStructureController {
         return Response.ok(deletedDataStructure, deletedDataStructure.getName() + " deleted!");
     }
 
+    @GetMapping(path = "/count-data-structure/{id}")
+    public Response countDataStructure(@PathVariable("id") UUID id){
+        return Response.ok(dataStructureService.countDataStructure(id), "Count retrieved successfully!");
+    }
+
     public DataStructureController(DataStructureService dataStructureService, Mapper<DataStructureEntity, DataStructureDto> dataStructureMapper) {
         this.dataStructureService = dataStructureService;
         this.dataStructureMapper = dataStructureMapper;

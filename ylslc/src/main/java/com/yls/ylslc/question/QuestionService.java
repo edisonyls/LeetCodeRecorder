@@ -36,8 +36,5 @@ public interface QuestionService {
 
     Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable);
 
-    public List<Map<String, Object>> getDifficultyDistributionForUser(UUID userId);
-
-    long countQuestion(UUID userId);
-
+    public Map<String, Object> getQuestionStats(UUID userId);
 }

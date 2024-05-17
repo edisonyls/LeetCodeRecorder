@@ -11,7 +11,7 @@ import AlgorithmStats from "../components/DashboardComponents/AlgorithmStats";
 
 const Dashboard = () => {
   const { state } = useUser();
-  const { user, token, loading } = state;
+  const { user, token } = state;
   const { getCurrentUser } = UserHooks();
 
   useEffect(() => {
@@ -39,7 +39,6 @@ const Dashboard = () => {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        color: "limegreen",
       }}
     >
       <AuthenticatedNavbar />
@@ -52,28 +51,30 @@ const Dashboard = () => {
           mt: -4,
         }}
       >
-        <Welcome user={user} />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginLeft: "10%",
-            marginRight: "10%",
-            width: "80%",
-          }}
-        >
-          <LeetCodeStats userId={user.id} />
+        <Box sx={{ mb: 4 }}>
+          <Welcome user={user} />
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap", // Ensure boxes wrap if necessary
-              width: "100%",
+              flexDirection: "column",
+              alignItems: "center",
+              marginLeft: "10%",
+              marginRight: "10%",
+              width: "80%",
             }}
           >
-            <DataStructureStats />
-            <AlgorithmStats />
+            <LeetCodeStats userId={user.id} />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexWrap: "wrap", // Ensure boxes wrap if necessary
+                width: "100%",
+              }}
+            >
+              <DataStructureStats userId={user.id} />
+              <AlgorithmStats />
+            </Box>
           </Box>
         </Box>
       </Box>

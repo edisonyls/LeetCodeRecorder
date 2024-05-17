@@ -31,17 +31,22 @@ const Welcome = ({ user }) => {
         alignItems: "start",
         marginLeft: "10%",
         marginRight: "10%",
+        marginTop: -5,
       }}
     >
       <animated.div style={props}>
         <Typography
           variant="h4"
-          sx={{ marginBottom: 2, textShadow: "0 0 8px #00FF00" }}
+          sx={{
+            marginBottom: 1,
+            color: "#00FF00",
+            textShadow: "0 0 8px #00FF00",
+          }}
         >
           Welcome, {user?.firstName} {user?.lastName}!
         </Typography>
         {userCreatedAt && (
-          <Typography variant="body1" sx={{ marginBottom: 2, color: "cyan" }}>
+          <Typography variant="body1" sx={{ color: "cyan" }}>
             You have been with us for{" "}
             <animated.span
               style={{

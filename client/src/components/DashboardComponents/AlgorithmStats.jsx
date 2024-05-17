@@ -1,9 +1,9 @@
 // components/AlgorithmStats.js
 import React from "react";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useSpring, animated } from "react-spring";
 
-const AlgorithmStats = () => {
+const AlgorithmStats = ({ userId }) => {
   const props = useSpring({
     opacity: 1,
     from: { opacity: 0 },
@@ -13,14 +13,31 @@ const AlgorithmStats = () => {
     textAlign: "center",
     boxSizing: "border-box",
     margin: "10px",
-    delay: 2000,
+    delay: 1800,
     width: "48%", // Adjust width to half of the available space
   });
 
   return (
     <animated.div style={props}>
-      <Typography variant="h6">Algorithm Stats</Typography>
-      <Typography variant="body1">Value 3</Typography>
+      <Typography variant="h6" sx={{ color: "white" }}>
+        Algorithm Stats
+      </Typography>
+      <Box sx={{ textAlign: "left" }}>
+        <Typography variant="body1" sx={{ color: "cyan" }}>
+          Total Algorithm You Have Recorded:{" "}
+          <span
+            style={{
+              padding: "2px 5px",
+              borderRadius: "5px",
+              backgroundColor: "limegreen",
+              color: "black",
+              display: "inline-block",
+            }}
+          >
+            N/A
+          </span>
+        </Typography>
+      </Box>
     </animated.div>
   );
 };
