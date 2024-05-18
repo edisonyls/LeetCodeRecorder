@@ -14,6 +14,7 @@ import NodeList from "../components/data_structure_page/NodeList";
 import ContentDisplay from "../components/data_structure_page/ContentDisplay";
 import { DataStructureHooks } from "../hooks/DataStructureHooks";
 import { useDataStructure } from "../context/dataStructureContext";
+import Footer from "../components/Footer";
 
 const DataStructurePage = () => {
   const { state } = useDataStructure();
@@ -94,7 +95,7 @@ const DataStructurePage = () => {
   return (
     <div
       style={{
-        backgroundColor: grey[900],
+        backgroundColor: "#121212",
         color: grey[50],
         minHeight: "100vh",
       }}
@@ -106,65 +107,68 @@ const DataStructurePage = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      <>
-        <AuthenticatedNavbar />
-        <Container component="main" maxWidth="lg" sx={{ pt: 2, pb: 6 }}>
-          <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
-            Data Structures
-          </Typography>
+      <AuthenticatedNavbar />
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{ pt: 2, pb: 6, minHeight: "83vh" }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
+          Data Structures
+        </Typography>
 
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={4}>
-              <Box
-                sx={{
-                  display: "flex",
-                  bgcolor: grey[800],
-                  color: grey[50],
-                  borderRadius: 1,
-                  minHeight: 300,
-                  overflow: "auto",
-                }}
-              >
-                <DataStructureList
-                  sx={{ flex: 1 }}
-                  dataStructure={dataStructures}
-                  handleStructureClick={handleStructureClick}
-                  addClicked={addClicked}
-                />
-                <NodeList
-                  sx={{ flex: 1 }}
-                  selectedStructure={selectedStructure}
-                  dataStructure={dataStructures}
-                  handleNodeClick={handleNodeClick}
-                  addClicked={addClicked}
-                  selectedNodeId={selectedNode ? selectedNode.id : null}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={8}>
-              <Box
-                sx={{
-                  bgcolor: grey[800],
-                  color: grey[50],
-                  p: 2,
-                  borderRadius: 1,
-                  minHeight: 365,
-                  overflow: "auto",
-                }}
-              >
-                <ContentDisplay
-                  selectedStructure={selectedStructure}
-                  selectedNode={selectedNode}
-                  addClicked={addClicked}
-                  setAddClicked={setAddClicked}
-                  content={content}
-                />
-              </Box>
-            </Grid>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}>
+            <Box
+              sx={{
+                display: "flex",
+                bgcolor: grey[800],
+                color: grey[50],
+                borderRadius: 1,
+                minHeight: 300,
+                overflow: "auto",
+              }}
+            >
+              <DataStructureList
+                sx={{ flex: 1 }}
+                dataStructure={dataStructures}
+                handleStructureClick={handleStructureClick}
+                addClicked={addClicked}
+              />
+              <NodeList
+                sx={{ flex: 1 }}
+                selectedStructure={selectedStructure}
+                dataStructure={dataStructures}
+                handleNodeClick={handleNodeClick}
+                addClicked={addClicked}
+                selectedNodeId={selectedNode ? selectedNode.id : null}
+              />
+            </Box>
           </Grid>
-        </Container>
-      </>
+
+          <Grid item xs={12} md={8}>
+            <Box
+              sx={{
+                bgcolor: grey[800],
+                color: grey[50],
+                p: 2,
+                borderRadius: 1,
+                minHeight: 365,
+                overflow: "auto",
+              }}
+            >
+              <ContentDisplay
+                selectedStructure={selectedStructure}
+                selectedNode={selectedNode}
+                addClicked={addClicked}
+                setAddClicked={setAddClicked}
+                content={content}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+      <Footer />
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Divider } from "@mui/material";
+import { Typography, Box, Divider, IconButton } from "@mui/material";
 import { useSpring, animated } from "react-spring";
 import Chart from "react-apexcharts";
 import { axiosInstance } from "../../config/axiosConfig";
-import { BlackBackgroundButton } from "../generic/GenericButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
 
@@ -282,14 +281,30 @@ const LeetCodeStats = ({ userId }) => {
 
   const renderAverageTime = () => {
     const difficulties = ["Easy", "Medium", "Hard"];
+    const getColor = (difficulty) => {
+      switch (difficulty) {
+        case "Easy":
+          return "#4CAF50";
+        case "Medium":
+          return "#FF9800";
+        case "Hard":
+          return "#F44336";
+        default:
+          return "white";
+      }
+    };
+
     return difficulties.map((difficulty) => {
       const stat = questionStats.averageTimeOfCompletion.find(
         (item) => item.difficulty === difficulty
       );
       return (
         <animated.div key={difficulty} style={itemSpring}>
-          <Typography variant="body1" sx={{ color: "cyan", fontSize: "16px" }}>
-            {difficulty} Average Time
+          <Typography
+            variant="body1"
+            sx={{ color: getColor(difficulty), fontSize: "16px" }}
+          >
+            Average Time for {difficulty}
           </Typography>
           <Typography variant="body1" sx={{ color: "white", fontSize: "14px" }}>
             {stat ? `${stat.averageTime} mins` : "N/A"}
@@ -312,11 +327,19 @@ const LeetCodeStats = ({ userId }) => {
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
           <Typography variant="h5">LeetCode Stats</Typography>
         </Box>
-        <BlackBackgroundButton
-          buttonText="Enter"
-          icon={<ArrowForwardIcon />}
-          onClick={(e) => navigate("/table")}
-        />
+        <IconButton
+          sx={{
+            color: "white",
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black",
+            },
+            fontSize: "1.8rem",
+          }}
+          onClick={() => navigate("/table")}
+        >
+          <ArrowForwardIcon sx={{ fontSize: "inherit" }} />
+        </IconButton>
       </Box>
       <Box sx={{ textAlign: "left" }}>
         <Typography variant="body1" sx={{ color: "cyan" }}>

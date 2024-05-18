@@ -1,9 +1,8 @@
 // components/DataStructureStats.js
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { useSpring, animated } from "react-spring";
 import { axiosInstance } from "../../config/axiosConfig";
-import { BlackBackgroundButton } from "../generic/GenericButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
 
@@ -51,11 +50,19 @@ const DataStructureStats = ({ userId }) => {
         <Box sx={{ flexGrow: 1, textAlign: "center" }}>
           <Typography variant="h5">Data Structure Stats</Typography>
         </Box>
-        <BlackBackgroundButton
-          buttonText="Enter"
-          icon={<ArrowForwardIcon />}
-          onClick={(e) => navigate("/data-structure")}
-        />
+        <IconButton
+          sx={{
+            color: "white",
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black",
+            },
+            fontSize: "1.8rem",
+          }}
+          onClick={() => navigate("/data-structure")}
+        >
+          <ArrowForwardIcon sx={{ fontSize: "inherit" }} />
+        </IconButton>
       </Box>
       <Box sx={{ textAlign: "left" }}>
         <Typography variant="body1" sx={{ color: "cyan" }}>
