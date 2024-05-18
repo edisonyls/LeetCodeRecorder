@@ -10,7 +10,7 @@ knowledge and learn new skills. This led to the creation of a comprehensive tool
 from past challenges.
 
 ### Demo
-https://github.com/edisonyls/LeetCodeRecorder/assets/89026659/a394830b-b29e-416a-8652-1c0c42dad9e6
+https://github.com/edisonyls/LeetCodeRecorder/assets/89026659/c8b77f71-506f-433f-88f6-e19a78b06534
 
 
 
