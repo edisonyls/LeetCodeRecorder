@@ -5,6 +5,7 @@ import Chart from "react-apexcharts";
 import { axiosInstance } from "../../config/axiosConfig";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const LeetCodeStats = ({ userId }) => {
   const [questionStats, setQuestionStats] = useState({
@@ -13,7 +14,7 @@ const LeetCodeStats = ({ userId }) => {
     successDistribution: [],
     starredCount: 0,
     questionCount: 0,
-    averageTimeOfCompletion: [], // Ensure this field is included
+    averageTimeOfCompletion: [],
   });
 
   const navigate = useNavigate();
@@ -134,14 +135,20 @@ const LeetCodeStats = ({ userId }) => {
   const difficultyChartSeries =
     questionStats.difficultyDistribution.length > 0
       ? questionStats.difficultyDistribution.map((item) => item.count)
-      : [1];
+      : [0];
 
   const successChartOptions = {
     chart: {
       type: "donut",
     },
-    colors: ["#4CAF50", "#F44336"],
-    labels: ["Success", "Failure"],
+    colors:
+      questionStats.difficultyDistribution.length > 0
+        ? ["#4CAF50", "#F44336"]
+        : ["#8884d8"],
+    labels:
+      questionStats.successDistribution.length > 0
+        ? ["Success", "Failure"]
+        : ["No Data"],
     legend: {
       labels: {
         colors: "white",
@@ -174,18 +181,41 @@ const LeetCodeStats = ({ userId }) => {
   const successChartSeries =
     questionStats.successDistribution.length > 0
       ? questionStats.successDistribution.map((item) => item.count)
-      : [1, 1];
+      : [0];
 
-  // Filter to get only the last 10 days of createdAtStats
-  const createdAtStatsLast10Days = questionStats.createdAtStats
-    .slice(0, 10)
-    .reverse();
+  // Function to fill missing dates with count 0
+  const fillMissingDates = (stats) => {
+    if (stats.length === 0) return [];
+
+    const startDate = moment(stats[stats.length - 1].createdAtDate);
+    const endDate = moment(stats[0].createdAtDate);
+    const dateRange = [];
+
+    let currentDate = startDate;
+    while (currentDate <= endDate) {
+      dateRange.push(currentDate.format("YYYY-MM-DD"));
+      currentDate = currentDate.add(1, "days");
+    }
+
+    return dateRange.map((date) => {
+      const stat = stats.find((item) => item.createdAtDate === date);
+      return {
+        createdAtDate: date,
+        count: stat ? stat.count : 0,
+      };
+    });
+  };
+
+  // Filter to get only the last 10 days of createdAtStats and fill missing dates
+  const createdAtStatsLast10Days = fillMissingDates(
+    questionStats.createdAtStats
+  ).slice(-10);
 
   const createdAtChartOptions = {
     chart: {
       type: "line",
       toolbar: {
-        show: false, // Hide the extra toolbar
+        show: false,
       },
     },
     colors: ["#fff"],
@@ -214,37 +244,37 @@ const LeetCodeStats = ({ userId }) => {
           : ["No Data"],
       labels: {
         style: {
-          colors: "white", // Set the x-axis labels color to white
+          colors: "white",
         },
       },
       axisBorder: {
-        color: "white", // Set the x-axis border color to white
+        color: "white",
       },
       axisTicks: {
-        color: "white", // Set the x-axis ticks color to white
+        color: "white",
       },
     },
     yaxis: {
-      min: 0, // Set the y-axis minimum value to 0
+      min: 0,
       tickAmount: Math.max(
         ...createdAtStatsLast10Days.map((item) => item.count)
-      ), // Dynamically adjust the number of ticks
+      ),
       labels: {
         style: {
-          colors: "white", // Set the y-axis labels color to white
+          colors: "white",
         },
         formatter: function (value) {
-          return Math.ceil(value); // Ensure the y-axis labels are whole numbers
+          return Math.ceil(value);
         },
       },
     },
     markers: {
-      size: 4, // Size of the markers (small circles)
-      colors: ["#00ffff"], // Color of the markers
-      strokeColors: "white", // Color of the marker border
-      strokeWidth: 2, // Width of the marker border
+      size: 2,
+      colors: ["#00ffff"],
+      strokeColors: "white",
+      strokeWidth: 2,
       hover: {
-        size: 6, // Size of the marker on hover
+        size: 6,
       },
     },
     stroke: {
@@ -252,7 +282,7 @@ const LeetCodeStats = ({ userId }) => {
       curve: "smooth",
     },
     tooltip: {
-      enabled: true, // Enable tooltip
+      enabled: true,
     },
     responsive: [
       {
@@ -394,7 +424,7 @@ const LeetCodeStats = ({ userId }) => {
             options={createdAtChartOptions}
             series={createdAtChartSeries}
             type="line"
-            width="100%" // Make the line chart take full width
+            width="100%"
           />
         </animated.div>
         <animated.div style={chartSpring2}>
@@ -403,7 +433,7 @@ const LeetCodeStats = ({ userId }) => {
             series={difficultyChartSeries}
             type="donut"
             width="100%"
-            height="290" // Adjust the height for smaller size
+            height="290"
           />
         </animated.div>
         <animated.div style={chartSpring3}>
@@ -412,7 +442,7 @@ const LeetCodeStats = ({ userId }) => {
             series={successChartSeries}
             type="donut"
             width="100%"
-            height="290" // Adjust the height for smaller size
+            height="290"
           />
         </animated.div>
       </Box>

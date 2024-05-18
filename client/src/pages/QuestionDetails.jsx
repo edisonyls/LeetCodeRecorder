@@ -202,7 +202,8 @@ const QuestionDetails = () => {
                   </Box>
                 </Typography>
               </Grid>
-              {question.reasonOfFail !== null && (
+
+              {question.reasonOfFail !== "" && (
                 <Grid item xs={12}>
                   <Typography variant="body1" component="div">
                     <Box sx={{ display: "flex", alignItems: "center" }}>
