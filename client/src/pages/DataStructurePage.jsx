@@ -96,7 +96,6 @@ const DataStructurePage = () => {
     <div
       style={{
         backgroundColor: "#121212",
-        color: grey[50],
         minHeight: "100vh",
       }}
     >

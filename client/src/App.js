@@ -31,6 +31,7 @@ function App() {
               <Route path="/question/:id" Component={QuestionDetails} exact />
               <Route path="/profile" Component={ProfilePage} exact />
               <Route path="/dashboard" Component={Dashboard} exact />
+              <Route path="/algorithm" Component={AlgorithmPage} exact />
               <Route
                 path="/edit-question"
                 Component={UpdateQuestionForm}
