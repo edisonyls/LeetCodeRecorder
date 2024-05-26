@@ -44,7 +44,7 @@ export const BlackBackgroundButton = ({
   return (
     <Button
       sx={{
-        color: "inherit",
+        color: "white",
         borderColor: "white",
         borderWidth: "1px",
         borderStyle: "solid",
@@ -78,6 +78,7 @@ export const WarningButton = ({ buttonText, icon, selected, ...props }) => {
           backgroundColor: "red",
           color: "white",
         },
+        ...props.sx,
       }}
       {...props}
     >

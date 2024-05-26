@@ -20,7 +20,7 @@ export const UserHooks = () => {
         type: userActionTypes.PROCESS_FAILURE,
         error: error.message || "Failed to fetch current user",
       });
-      throw error;
+      console.log(error);
     }
   };
 
