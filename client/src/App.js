@@ -15,6 +15,7 @@ import { DataStructureProvider } from "./context/dataStructureContext";
 import UpdateQuestionForm from "./components/new_question/UpdateQuestionForm";
 import TablePage from "./pages/TablePage";
 import Dashboard from "./pages/Dashboard";
+import NewAlgorithmPage from "./pages/NewAlgorithmPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
               <Route path="/profile" Component={ProfilePage} exact />
               <Route path="/dashboard" Component={Dashboard} exact />
               <Route path="/algorithm" Component={AlgorithmPage} exact />
+              <Route path="/new-algorithm" Component={NewAlgorithmPage} exact />
               <Route
                 path="/edit-question"
                 Component={UpdateQuestionForm}

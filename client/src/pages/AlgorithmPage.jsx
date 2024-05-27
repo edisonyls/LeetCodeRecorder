@@ -18,10 +18,11 @@ import {
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
-import AlgorithmDialog from "../components/algorithm_page/AlgorithmDialog";
+import AlgorithmDialog from "../components/algorithm_page_components/AlgorithmDialog";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import AddIcon from "@mui/icons-material/Add";
 import algorithms from "./algorithms";
+import { useNavigate } from "react-router-dom";
 
 const truncateString = (str, num) => {
   if (str.length <= num) {
@@ -50,6 +51,8 @@ const AlgorithmPage = () => {
   const [sortOption, setSortOption] = useState("default");
   const [page, setPage] = useState(1);
   const pageSize = 6;
+
+  const navigate = useNavigate();
 
   const handleClickOpen = (algorithm) => {
     setSelectedAlgorithm(algorithm);
@@ -115,8 +118,8 @@ const AlgorithmPage = () => {
             Algorithms
           </Typography>
           <BlackBackgroundButton
-            buttonText="     New    "
-            onClick={() => console.log("Add new algorithm")}
+            buttonText="New Algorithm"
+            onClick={() => navigate("/new-algorithm")}
             startIcon={<AddIcon />}
           />
         </Box>
