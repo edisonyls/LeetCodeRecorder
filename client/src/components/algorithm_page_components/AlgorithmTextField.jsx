@@ -1,7 +1,13 @@
 import React from "react";
 import { TextField } from "@mui/material";
 
-const AlgorithmTextField = ({ label, value, onChange, multiline }) => {
+const AlgorithmTextField = ({
+  label,
+  value,
+  onChange,
+  multiline,
+  required,
+}) => {
   return (
     <TextField
       label={label}
@@ -11,6 +17,7 @@ const AlgorithmTextField = ({ label, value, onChange, multiline }) => {
       value={value}
       onChange={onChange}
       multiline={multiline}
+      required={required}
       sx={{
         backgroundColor: "#121212",
         borderRadius: 1,
