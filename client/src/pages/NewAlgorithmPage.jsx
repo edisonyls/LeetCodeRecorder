@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Container } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
@@ -7,6 +7,7 @@ import AlgorithmForm from "../components/algorithm_page_components/AlgorithmForm
 import NewAlgorithmHeader from "../components/algorithm_page_components/NewAlgorithmHeader";
 
 const NewAlgorithmPage = () => {
+  const [isDataEntered, setDataEntered] = useState(false);
   return (
     <Box
       sx={{
@@ -28,8 +29,8 @@ const NewAlgorithmPage = () => {
           flexGrow: 1,
         }}
       >
-        <NewAlgorithmHeader />
-        <AlgorithmForm />
+        <NewAlgorithmHeader isDataEntered={isDataEntered} />
+        <AlgorithmForm setDataEntered={setDataEntered} />
       </Container>
       <Footer />
     </Box>

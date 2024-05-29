@@ -4,13 +4,21 @@ import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { GreyBackgroundDialog } from "../generic/GenericDialog";
 
-const NewAlgorithmHeader = () => {
+const NewAlgorithmHeader = ({ isDataEntered }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const closeDialog = () => {
     setDialogOpen(false);
     navigate(-1);
+  };
+
+  const handleBack = () => {
+    if (isDataEntered) {
+      setDialogOpen(true);
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -22,11 +30,7 @@ const NewAlgorithmHeader = () => {
         alignItems: "center",
       }}
     >
-      <IconButton
-        color="inherit"
-        onClick={() => setDialogOpen(true)}
-        sx={{ color: "white" }}
-      >
+      <IconButton color="inherit" onClick={handleBack} sx={{ color: "white" }}>
         <ArrowBackIcon />
       </IconButton>
       <Typography variant="h4" gutterBottom>

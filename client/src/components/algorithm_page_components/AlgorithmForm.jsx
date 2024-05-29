@@ -9,15 +9,19 @@ import {
   MenuItem,
   Select,
   Typography,
-  Collapse,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AlgorithmTextField from "./AlgorithmTextField";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { grey } from "@mui/material/colors";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import NewAlgorithmDialog from "./NewAlgorithmDialog";
 import { toast } from "react-toastify";
+import { GreyBackgroundDialog } from "../generic/GenericDialog";
+import {
+  GreyBackgroundButtonWithInput,
+  WarningButton,
+} from "../generic/GenericButton";
 
 const predefinedTags = [
   "Sorting",
@@ -46,16 +50,46 @@ const predefinedSections = [
   "Edge Cases",
 ];
 
-const AlgorithmForm = () => {
+const AlgorithmForm = ({ setDataEntered }) => {
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
   const [summary, setSummary] = useState("");
   const [sections, setSections] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
   const [customSectionName, setCustomSectionName] = useState("");
   const [customSectionContent, setCustomSectionContent] = useState("");
   const [insertAfterSection, setInsertAfterSection] = useState("default");
+  const [recentlyAddedSection, setRecentlyAddedSection] = useState("");
+  const [sectionToDelete, setSectionToDelete] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+
+  const newSectionRef = useRef(null);
+
+  // This will check if any of the input fields are filled
+  useEffect(() => {
+    const isDataPresent = title || tag || summary || sections.length > 0;
+    setDataEntered(isDataPresent);
+  }, [title, tag, summary, sections, setDataEntered]);
+
+  useEffect(() => {
+    if (recentlyAddedSection) {
+      const timer = setTimeout(() => {
+        setRecentlyAddedSection("");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [recentlyAddedSection]);
+
+  useEffect(() => {
+    if (recentlyAddedSection && newSectionRef.current) {
+      newSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [recentlyAddedSection]);
 
   const handleSectionAdd = () => {
     let index = sections.length;
@@ -84,16 +118,13 @@ const AlgorithmForm = () => {
       toast.error("Please enter a name for the custom section.", {
         autoClose: 2000,
       });
-    } else if (selectedSection === "custom" && !sectionToAdd.content.trim()) {
-      toast.error("Please enter content for the custom section.", {
-        autoClose: 2000,
-      });
     } else if (sections.find((sec) => sec.name === sectionToAdd.name)) {
       toast.error("This section already exists.");
     } else {
       const newSections = [...sections];
       newSections.splice(index, 0, sectionToAdd);
       setSections(newSections);
+      setRecentlyAddedSection(sectionToAdd.name);
       setCustomSectionName("");
       setCustomSectionContent("");
       setSelectedSection("");
@@ -117,51 +148,6 @@ const AlgorithmForm = () => {
     setSections(updatedSections);
   };
 
-  //   const handleSectionAdd = () => {
-  //     const newSections = [...sections];
-  //     // default is to append the new section at the end of the current
-  //     // existing section list
-  //     let index = sections.length;
-
-  //     // if insert after short-summary
-  //     if (insertAfterSection === "short-summary") {
-  //       index = 0;
-  //     } else if (
-  //       // find the index of the section that the user wants to add after
-  //       insertAfterSection !== "default" &&
-  //       sections.includes(insertAfterSection)
-  //     ) {
-  //       index = sections.findIndex((sec) => sec === insertAfterSection) + 1;
-  //     }
-
-  //     // const sectionToAdd = {
-  //     //   name:
-  //     //     selectedSection === "custom"
-  //     //       ? customSectionName.trim()
-  //     //       : selectedSection,
-  //     //   content: selectedSection === "custom" ? customSectionContent : "",
-  //     // };
-
-  //     // !sections.includes(sectionToAdd.name)
-  //     if (!sections.includes(selectedSection)) {
-  //       console.log(!sections.includes(selectedSection));
-  //       //   newSections.splice(index, 0, sectionToAdd.name);
-  //       //   const newSectionInputs = [...sectionInputs];
-  //       //   newSectionInputs.splice(index, 0, sectionToAdd);
-  //       newSections.splice(index, 0, selectedSection);
-
-  //       setSections(newSections);
-  //       //   setSectionInputs(newSectionInputs);
-  //       setCustomSectionName("");
-  //       setCustomSectionContent("");
-  //       setSelectedSection("");
-  //       setInsertAfterSection("default");
-  //       handleClose();
-  //     } else {
-  //       toast.error("This section already exists.");
-  //     }
-  //   };
-
   const handleDeleteSection = (sectionName) => {
     const filteredSections = sections.filter(
       (section) => section.name !== sectionName
@@ -170,11 +156,62 @@ const AlgorithmForm = () => {
     toast.info("Section " + sectionName + " deleted successfully.", {
       autoClose: 2000,
     });
+    setDeleteDialogOpen(false); // Close the dialog after deletion
+  };
+
+  const openDeleteDialog = (sectionName) => {
+    setSectionToDelete(sectionName);
+    setDeleteDialogOpen(true);
   };
 
   const handleClose = () => {
     setDialogOpen(false);
     setSelectedSection("");
+  };
+
+  const handleFileChange = (e, sectionName) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      // Check if the file is an image
+      const sectionIndex = sections.findIndex(
+        (sec) => sec.name === sectionName
+      );
+      if (sectionIndex !== -1 && sections[sectionIndex].imagePreviewUrl) {
+        URL.revokeObjectURL(sections[sectionIndex].imagePreviewUrl);
+      }
+
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreviewUrl(imageUrl);
+      setSections((prevSections) => {
+        const newSections = [...prevSections];
+        newSections[sectionIndex] = {
+          ...newSections[sectionIndex],
+          content: imageUrl,
+          file: file,
+        };
+        return newSections;
+      });
+    } else {
+      // Handle error for non-image files
+      toast.error("Please upload a valid image file.");
+    }
+  };
+
+  const handleDeleteImage = (sectionName) => {
+    setSections((prevSections) => {
+      return prevSections.map((section) => {
+        if (section.name === sectionName) {
+          // Revoke URL if it exists
+          if (section.imagePreviewUrl) {
+            URL.revokeObjectURL(section.imagePreviewUrl);
+          }
+          const { imagePreviewUrl, file, ...restOfSection } = section;
+          return { ...restOfSection, content: "" };
+        }
+        return section;
+      });
+    });
+    setImagePreviewUrl(null);
   };
 
   const handleSubmit = (event) => {
@@ -236,12 +273,15 @@ const AlgorithmForm = () => {
       {sections.map((section) => (
         <Card
           key={section.name}
+          ref={recentlyAddedSection === section.name ? newSectionRef : null}
           sx={{
-            backgroundColor: grey[800],
+            backgroundColor:
+              section.name === recentlyAddedSection ? grey[600] : grey[800],
             color: "white",
             marginTop: 2,
             padding: 2,
             borderRadius: 1,
+            transition: "background-color 0.5s ease",
           }}
         >
           <CardContent>
@@ -257,7 +297,7 @@ const AlgorithmForm = () => {
               </Typography>
               <IconButton
                 edge="end"
-                onClick={() => handleDeleteSection(section.name)}
+                onClick={() => openDeleteDialog(section.name)}
               >
                 <DeleteForeverIcon style={{ color: grey[50] }} />
               </IconButton>
@@ -279,6 +319,47 @@ const AlgorithmForm = () => {
                     handleComplexityChange("space", e.target.value)
                   }
                 />
+              </>
+            )}
+
+            {section.name === "Visual Representation" && (
+              <>
+                {imagePreviewUrl ? (
+                  <>
+                    <Typography variant="body2" sx={{ marginBottom: "8px" }}>
+                      Image Preview:
+                    </Typography>
+                    <img
+                      src={imagePreviewUrl}
+                      alt="Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: "300px",
+                        objectFit: "contain",
+                        marginBottom: "1rem",
+                      }}
+                    />
+                    <WarningButton
+                      buttonText="Delete Image"
+                      onClick={() => handleDeleteImage(section.name)}
+                    />
+                  </>
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: 2,
+                    }}
+                  >
+                    <GreyBackgroundButtonWithInput
+                      buttonText="Upload Image"
+                      inputType="file"
+                      inputId={`fileInput-${section.name}`}
+                      inputOnChange={(e) => handleFileChange(e, section.name)}
+                    />
+                  </Box>
+                )}
               </>
             )}
 
@@ -357,6 +438,14 @@ const AlgorithmForm = () => {
         setInsertAfterSection={setInsertAfterSection}
         handleSectionAdd={handleSectionAdd}
         formControlStyles={formControlStyles}
+      />
+
+      <GreyBackgroundDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={() => handleDeleteSection(sectionToDelete)}
+        title="Are you sure to delete?"
+        content="This action can not be reversed."
       />
     </Box>
   );
