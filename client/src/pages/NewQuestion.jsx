@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { WhiteBackgroundButton } from "../components/generic/GenericButton";
 import Stopwatch from "../components/Stopwatch";
-import GenericDialog from "../components/generic/GenericDialog";
+import { GenericDialog } from "../components/generic/GenericDialog";
 import { ArrowBack } from "@mui/icons-material";
 import UpdateQuestionForm from "../components/new_question/UpdateQuestionForm";
 

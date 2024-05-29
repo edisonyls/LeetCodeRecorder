@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IconButton, Box, Typography, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import GenericDialog from "./generic/GenericDialog";
+import { GenericDialog } from "./generic/GenericDialog";
 import ReplayIcon from "@mui/icons-material/Replay";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 

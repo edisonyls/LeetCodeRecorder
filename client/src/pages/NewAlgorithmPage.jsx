@@ -1,19 +1,18 @@
 import React from "react";
-import { Box, Typography, Container, IconButton } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
 import AlgorithmForm from "../components/algorithm_page_components/AlgorithmForm";
+import NewAlgorithmHeader from "../components/algorithm_page_components/NewAlgorithmHeader";
 
 const NewAlgorithmPage = () => {
-  const navigate = useNavigate();
-
   return (
     <Box
       sx={{
         minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
         background: "#121212",
       }}
     >
@@ -25,29 +24,11 @@ const NewAlgorithmPage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: "2rem",
           color: grey[50],
+          flexGrow: 1,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <IconButton
-            color="inherit"
-            onClick={() => navigate(-1)}
-            sx={{ color: "white" }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" gutterBottom>
-            New Algorithm
-          </Typography>
-        </Box>
+        <NewAlgorithmHeader />
         <AlgorithmForm />
       </Container>
       <Footer />

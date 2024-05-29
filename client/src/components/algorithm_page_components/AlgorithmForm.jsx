@@ -1,28 +1,25 @@
-import React, { useState } from "react";
 import {
   Box,
   Button,
-  Typography,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
   Card,
   CardContent,
+  FormControl,
   IconButton,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Dialog,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+  Collapse,
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
-import { GreyBackgroundButton } from "../generic/GenericButton";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import React, { useState } from "react";
 import AlgorithmTextField from "./AlgorithmTextField";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { grey } from "@mui/material/colors";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import NewAlgorithmDialog from "./NewAlgorithmDialog";
 import { toast } from "react-toastify";
 
-const categories = [
+const predefinedTags = [
   "Sorting",
   "Searching",
   "Graph",
@@ -35,7 +32,7 @@ const categories = [
   "Machine Learning",
 ];
 
-const sectionOptions = [
+const predefinedSections = [
   "Description",
   "Complexity",
   "Advantages",
@@ -51,81 +48,138 @@ const sectionOptions = [
 
 const AlgorithmForm = () => {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+  const [tag, setTag] = useState("");
   const [summary, setSummary] = useState("");
   const [sections, setSections] = useState([]);
-  const [sectionInputs, setSectionInputs] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
   const [customSectionName, setCustomSectionName] = useState("");
   const [customSectionContent, setCustomSectionContent] = useState("");
   const [insertAfterSection, setInsertAfterSection] = useState("default");
-  const [open, setOpen] = useState(false);
-
-  const handleDeleteSection = (sectionToDelete) => {
-    setSections(sections.filter((section) => section !== sectionToDelete));
-    const newSectionInputs = { ...sectionInputs };
-    delete newSectionInputs[sectionToDelete];
-    setSectionInputs(newSectionInputs);
-  };
 
   const handleSectionAdd = () => {
-    const newSections = [...sections];
-    let index = sections.length; // Default to append at the end
-
+    let index = sections.length;
     if (insertAfterSection === "short-summary") {
-      index = sections.indexOf("Short Summary") + 1; // Find index of Short Summary section
+      index = 0;
     } else if (
       insertAfterSection !== "default" &&
-      sections.includes(insertAfterSection)
+      sections.some((sec) => sec.name === insertAfterSection)
     ) {
-      index = sections.indexOf(insertAfterSection) + 1;
+      index = sections.findIndex((sec) => sec.name === insertAfterSection) + 1;
     }
 
-    if (selectedSection === "custom") {
-      if (!customSectionName.trim() || !customSectionContent.trim()) {
-        toast.error("Custom Section Name and Content are required.");
-        return;
-      }
-      const newSectionName = customSectionName.trim();
-      if (!sections.includes(newSectionName)) {
-        newSections.splice(index, 0, newSectionName);
-        setSectionInputs({
-          ...sectionInputs,
-          [newSectionName]: customSectionContent,
-        });
-        setCustomSectionName("");
-        setCustomSectionContent("");
-      }
-    } else if (selectedSection && !sections.includes(selectedSection)) {
-      newSections.splice(index, 0, selectedSection);
-      setSectionInputs({ ...sectionInputs, [selectedSection]: "" });
+    const sectionToAdd = {
+      name:
+        selectedSection === "custom"
+          ? customSectionName.trim()
+          : selectedSection,
+      content: selectedSection === "custom" ? customSectionContent : "",
+    };
+
+    if (selectedSection === "") {
+      toast.error("Please select a section.", {
+        autoClose: 2000,
+      });
+    } else if (selectedSection === "custom" && !sectionToAdd.name) {
+      toast.error("Please enter a name for the custom section.", {
+        autoClose: 2000,
+      });
+    } else if (selectedSection === "custom" && !sectionToAdd.content.trim()) {
+      toast.error("Please enter content for the custom section.", {
+        autoClose: 2000,
+      });
+    } else if (sections.find((sec) => sec.name === sectionToAdd.name)) {
+      toast.error("This section already exists.");
+    } else {
+      const newSections = [...sections];
+      newSections.splice(index, 0, sectionToAdd);
+      setSections(newSections);
+      setCustomSectionName("");
+      setCustomSectionContent("");
+      setSelectedSection("");
+      setInsertAfterSection("default");
+      handleClose();
     }
-
-    setSections(newSections);
-    setInsertAfterSection("default"); // Reset to default after adding
-    handleClose();
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleComplexityChange = (name, value) => {
+    const updatedSections = sections.map((sec) =>
+      sec.name === "Complexity"
+        ? {
+            ...sec,
+            content: {
+              ...sec.content,
+              [name]: value,
+            },
+          }
+        : sec
+    );
+    setSections(updatedSections);
   };
 
-  const handleInputChange = (section, value) => {
-    setSectionInputs({ ...sectionInputs, [section]: value });
+  //   const handleSectionAdd = () => {
+  //     const newSections = [...sections];
+  //     // default is to append the new section at the end of the current
+  //     // existing section list
+  //     let index = sections.length;
+
+  //     // if insert after short-summary
+  //     if (insertAfterSection === "short-summary") {
+  //       index = 0;
+  //     } else if (
+  //       // find the index of the section that the user wants to add after
+  //       insertAfterSection !== "default" &&
+  //       sections.includes(insertAfterSection)
+  //     ) {
+  //       index = sections.findIndex((sec) => sec === insertAfterSection) + 1;
+  //     }
+
+  //     // const sectionToAdd = {
+  //     //   name:
+  //     //     selectedSection === "custom"
+  //     //       ? customSectionName.trim()
+  //     //       : selectedSection,
+  //     //   content: selectedSection === "custom" ? customSectionContent : "",
+  //     // };
+
+  //     // !sections.includes(sectionToAdd.name)
+  //     if (!sections.includes(selectedSection)) {
+  //       console.log(!sections.includes(selectedSection));
+  //       //   newSections.splice(index, 0, sectionToAdd.name);
+  //       //   const newSectionInputs = [...sectionInputs];
+  //       //   newSectionInputs.splice(index, 0, sectionToAdd);
+  //       newSections.splice(index, 0, selectedSection);
+
+  //       setSections(newSections);
+  //       //   setSectionInputs(newSectionInputs);
+  //       setCustomSectionName("");
+  //       setCustomSectionContent("");
+  //       setSelectedSection("");
+  //       setInsertAfterSection("default");
+  //       handleClose();
+  //     } else {
+  //       toast.error("This section already exists.");
+  //     }
+  //   };
+
+  const handleDeleteSection = (sectionName) => {
+    const filteredSections = sections.filter(
+      (section) => section.name !== sectionName
+    );
+    setSections(filteredSections);
+    toast.info("Section " + sectionName + " deleted successfully.", {
+      autoClose: 2000,
+    });
   };
 
-  const handleFileChange = (section, file) => {
-    setSectionInputs({ ...sectionInputs, [section]: file });
+  const handleClose = () => {
+    setDialogOpen(false);
+    setSelectedSection("");
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log({ title, category, summary, sections: sectionInputs });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedSection("");
+    console.log(sections);
   };
 
   return (
@@ -137,56 +191,40 @@ const AlgorithmForm = () => {
         width: "100%",
       }}
     >
+      {/* Algorithm Name Field */}
       <AlgorithmTextField
         label="Algorithm Name"
         required
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
+
+      {/* Tag Field */}
       <FormControl
         variant="outlined"
         fullWidth
         required
         margin="normal"
-        sx={{
-          backgroundColor: "#121212",
-          borderRadius: 1,
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "white",
-            },
-            "&:hover fieldset": {
-              borderColor: "white",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "white",
-            },
-          },
-          "& .MuiInputLabel-root": {
-            color: "white",
-          },
-          "& .MuiOutlinedInput-input": {
-            color: "white",
-          },
-        }}
+        sx={formControlStyles}
       >
-        <InputLabel>Category</InputLabel>
+        <InputLabel>Tag</InputLabel>
         <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          label="Category"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          label="Tag"
           IconComponent={() => (
             <ArrowDropDownIcon style={{ color: grey[50] }} />
           )}
         >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
+          {predefinedTags.map((preTag) => (
+            <MenuItem key={preTag} value={preTag}>
+              {preTag}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
+      {/* Short Summary Field */}
       <AlgorithmTextField
         label="Short Summary (in a few words)"
         required
@@ -194,9 +232,10 @@ const AlgorithmForm = () => {
         onChange={(e) => setSummary(e.target.value)}
       />
 
+      {/* Sections */}
       {sections.map((section) => (
         <Card
-          key={section}
+          key={section.name}
           sx={{
             backgroundColor: grey[800],
             color: "white",
@@ -211,250 +250,138 @@ const AlgorithmForm = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: 2,
               }}
             >
               <Typography variant="h6" gutterBottom>
-                {section}
+                {section.name}
               </Typography>
               <IconButton
                 edge="end"
-                onClick={() => handleDeleteSection(section)}
+                onClick={() => handleDeleteSection(section.name)}
               >
                 <DeleteForeverIcon style={{ color: grey[50] }} />
               </IconButton>
             </Box>
-            {section === "Complexity" && (
+
+            {section.name === "Complexity" && (
               <>
                 <AlgorithmTextField
                   label="Time Complexity"
-                  value={sectionInputs[section]?.time || ""}
+                  value={section.content?.time || ""}
                   onChange={(e) =>
-                    handleInputChange(section, {
-                      ...sectionInputs[section],
-                      time: e.target.value,
-                    })
+                    handleComplexityChange("time", e.target.value)
                   }
                 />
                 <AlgorithmTextField
                   label="Space Complexity"
-                  value={sectionInputs[section]?.space || ""}
+                  value={section.content?.space || ""}
                   onChange={(e) =>
-                    handleInputChange(section, {
-                      ...sectionInputs[section],
-                      space: e.target.value,
-                    })
+                    handleComplexityChange("space", e.target.value)
                   }
                 />
               </>
             )}
-            {section === "Visual Representation" && (
-              <Button
-                variant="contained"
-                component="label"
-                fullWidth
-                sx={{
-                  backgroundColor: "white",
-                  color: "black",
-                  "&:hover": {
-                    backgroundColor: "#8884d8",
-                    color: "white",
-                  },
-                }}
-              >
-                Upload Image
-                <input
-                  type="file"
-                  hidden
-                  onChange={(e) => handleFileChange(section, e.target.files[0])}
-                />
-              </Button>
-            )}
-            {section !== "Complexity" &&
-              section !== "Visual Representation" && (
+
+            {section.name !== "Complexity" &&
+              section.name !== "Visual Representation" && (
                 <AlgorithmTextField
                   multiline
-                  value={sectionInputs[section] || ""}
-                  onChange={(e) => handleInputChange(section, e.target.value)}
+                  value={section.content || ""}
+                  onChange={(e) => {
+                    const updatedSections = sections.map((sec) =>
+                      sec.name === section.name
+                        ? { ...sec, content: e.target.value }
+                        : sec
+                    );
+                    setSections(updatedSections);
+                  }}
                 />
               )}
           </CardContent>
         </Card>
       ))}
 
-      <Button
-        variant="outlined"
-        fullWidth
-        color="inherit"
-        sx={{
-          mt: 3,
-          mb: 2,
-          borderRadius: "20px",
-          borderColor: grey[50],
-          "&:hover": {
-            backgroundColor: grey[50],
+      {/* Form Footer */}
+      <Box sx={{ mt: 4 }}>
+        <Button
+          variant="outlined"
+          fullWidth
+          color="inherit"
+          sx={{
+            mt: 3,
+            mb: 2,
+            borderRadius: "20px",
+            borderColor: grey[50],
+            "&:hover": {
+              backgroundColor: grey[50],
+              color: "black",
+            },
+          }}
+          onClick={() => setDialogOpen(true)}
+        >
+          Add New Section
+        </Button>
+
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            mt: 3,
+            mb: 2,
+            borderRadius: "20px",
+            backgroundColor: "white",
             color: "black",
-          },
-        }}
-        onClick={handleClickOpen}
-      >
-        Add New Section
-      </Button>
+            "&:hover": {
+              backgroundColor: "#00FF00",
+            },
+          }}
+        >
+          Save Algorithm
+        </Button>
+      </Box>
 
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        sx={{
-          mt: 3,
-          mb: 2,
-          borderRadius: "20px",
-          backgroundColor: "white",
-          color: "black",
-          "&:hover": {
-            backgroundColor: grey[800],
-            color: "white",
-          },
-        }}
-      >
-        Save Algorithm
-      </Button>
-      <Dialog
-        sx={{
-          "& .MuiDialog-paper": {
-            backgroundColor: grey[800],
-            color: "#fff",
-            width: "60%", // Set the width of the dialog
-            maxWidth: "60%", // Ensure the dialog does not exceed this width
-          },
-          "& .MuiDialogContentText-root, & .MuiDialogTitle-root": {
-            color: "#fff",
-          },
-        }}
-        open={open}
+      {/* Pop Up Dialog Field */}
+      <NewAlgorithmDialog
+        open={dialogOpen}
         onClose={handleClose}
-      >
-        <DialogTitle>Select a Section to Add</DialogTitle>
-        <DialogContent>
-          <FormControl
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{
-              backgroundColor: grey[800],
-              borderRadius: 1,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiOutlinedInput-input": {
-                color: "white",
-              },
-            }}
-          >
-            <InputLabel>Sections</InputLabel>
-            <Select
-              label="Sections"
-              value={selectedSection}
-              onChange={(e) => setSelectedSection(e.target.value)}
-              IconComponent={() => (
-                <ArrowDropDownIcon style={{ color: grey[50] }} />
-              )}
-            >
-              {sectionOptions
-                .filter((option) => !sections.includes(option))
-                .map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              <MenuItem value="custom">Customize</MenuItem>
-            </Select>
-          </FormControl>
-
-          {selectedSection === "custom" && (
-            <>
-              <AlgorithmTextField
-                label="Custom Section Name"
-                required
-                value={customSectionName}
-                onChange={(e) => setCustomSectionName(e.target.value)}
-              />
-              <AlgorithmTextField
-                label="Custom Section Content"
-                required
-                multiline
-                value={customSectionContent}
-                onChange={(e) => setCustomSectionContent(e.target.value)}
-              />
-            </>
-          )}
-
-          <Typography variant="body2" sx={{ color: "white", mt: 2 }}>
-            Insert after
-          </Typography>
-          <FormControl
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{
-              backgroundColor: grey[800],
-              borderRadius: 1,
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white",
-                },
-                "&:hover fieldset": {
-                  borderColor: "white",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "white",
-              },
-              "& .MuiOutlinedInput-input": {
-                color: "white",
-              },
-            }}
-          >
-            <InputLabel>Sections</InputLabel>
-            <Select
-              label="Insert after"
-              value={insertAfterSection}
-              onChange={(e) => setInsertAfterSection(e.target.value)}
-              IconComponent={() => (
-                <ArrowDropDownIcon style={{ color: grey[50] }} />
-              )}
-            >
-              <MenuItem value="default">Default (End of List)</MenuItem>
-              <MenuItem value="short-summary">Short Summary</MenuItem>
-              {sections.map((section) => (
-                <MenuItem key={section} value={section}>
-                  {section}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <GreyBackgroundButton onClick={handleClose} buttonText="Cancel" />
-          <GreyBackgroundButton onClick={handleSectionAdd} buttonText="Add" />
-        </DialogActions>
-      </Dialog>
+        predefinedSections={predefinedSections}
+        sections={sections}
+        selectedSection={selectedSection}
+        setSelectedSection={setSelectedSection}
+        customSectionName={customSectionName}
+        setCustomSectionName={setCustomSectionName}
+        customSectionContent={customSectionContent}
+        setCustomSectionContent={setCustomSectionContent}
+        insertAfterSection={insertAfterSection}
+        setInsertAfterSection={setInsertAfterSection}
+        handleSectionAdd={handleSectionAdd}
+        formControlStyles={formControlStyles}
+      />
     </Box>
   );
+};
+
+const formControlStyles = {
+  backgroundColor: "#121212",
+  borderRadius: 1,
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "white",
+    },
+    "&:hover fieldset": {
+      borderColor: "white",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "white",
+    },
+  },
+  "& .MuiInputLabel-root": {
+    color: "white",
+  },
+  "& .MuiOutlinedInput-input": {
+    color: "white",
+  },
 };
 
 export default AlgorithmForm;

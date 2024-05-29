@@ -17,7 +17,7 @@ import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
 import { Star, StarBorder } from "@mui/icons-material";
 import { toast } from "react-toastify";
-import GenericDialog from "../generic/GenericDialog";
+import { GenericDialog } from "../generic/GenericDialog";
 import { useQuestionHooks } from "../../hooks/useQuestionHooks";
 import { axiosInstance } from "../../config/axiosConfig";
 
