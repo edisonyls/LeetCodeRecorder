@@ -22,6 +22,8 @@ import {
   GreyBackgroundButtonWithInput,
   WarningButton,
 } from "../generic/GenericButton";
+import { axiosInstance } from "../../config/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 const predefinedTags = [
   "Sorting",
@@ -66,8 +68,9 @@ const AlgorithmForm = ({ setDataEntered }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const newSectionRef = useRef(null);
+  const navigate = useNavigate();
 
-  // This will check if any of the input fields are filled
+  // Checks if the user has input anything already
   useEffect(() => {
     const isDataPresent = title || tag || summary || sections.length > 0;
     setDataEntered(isDataPresent);
@@ -214,9 +217,50 @@ const AlgorithmForm = ({ setDataEntered }) => {
     setImagePreviewUrl(null);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(sections);
+
+    // transform "Complexity" section into separate ones
+    const transformedSections = sections.flatMap((section) => {
+      if (section.name === "Complexity" && section.content) {
+        return [
+          { name: "Time Complexity", content: section.content.time || "" },
+          { name: "Space Complexity", content: section.content.space || "" },
+        ];
+      }
+      return section;
+    });
+
+    //   filter out sections with empty content
+    const filteredSections = transformedSections.filter((section) => {
+      if (typeof section.content === "string") {
+        return section.content.trim() !== "";
+      } else if (typeof section.content === "object") {
+        return Object.values(section.content).some(
+          (value) => value && value.trim() !== ""
+        );
+      }
+      return false;
+    });
+
+    const algorithmData = {
+      title,
+      tag,
+      summary,
+      sections: filteredSections,
+    };
+    console.log(algorithmData);
+
+    try {
+      await axiosInstance.post("algorithm", algorithmData);
+      toast.success("New algorithm saved successfully!", {
+        autoClose: 2000,
+      });
+      navigate("/algorithm");
+    } catch (e) {
+      toast.error("Failed to save algorithm. Contact admin.");
+      console.log("Error while saving a new algorithm");
+    }
   };
 
   return (
