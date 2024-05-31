@@ -1,0 +1,20 @@
+import { algorithmActionTypes } from "./algoirthmActions";
+
+export const initialState = {
+  algorithms: [],
+  loading: false,
+  error: null,
+};
+
+export function algorithmReducer(state, action) {
+  switch (action.type) {
+    case algorithmActionTypes.PROCESS_START:
+      return { ...state, loading: true, error: null };
+    case algorithmActionTypes.PROCESS_FAILURE:
+      return { ...state, loading: false, error: action.error };
+    case algorithmActionTypes.FETCH_ALGORITHMS_SUCCESS:
+      return { ...state, algorithms: action.payload, loading: false };
+    default:
+      return state;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Card,
@@ -8,7 +8,6 @@ import {
   Box,
   Typography,
   Chip,
-  Pagination,
   MenuItem,
   Select,
   InputLabel,
@@ -21,8 +20,9 @@ import Footer from "../components/Footer";
 import AlgorithmDialog from "../components/algorithm_page_components/AlgorithmDialog";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import AddIcon from "@mui/icons-material/Add";
-import algorithms from "./algorithms";
 import { useNavigate } from "react-router-dom";
+import { useAlgorithm } from "../context/AlgorithmContext";
+import { AlgorithmHooks } from "../hooks/AlgorithmHooks";
 
 const truncateString = (str, num) => {
   if (str.length <= num) {
@@ -31,7 +31,7 @@ const truncateString = (str, num) => {
   return str.slice(0, num) + "...";
 };
 
-const categoryColors = {
+const tagColors = {
   Sorting: "#2196f3",
   Searching: "#8bc34a",
   Graph: "#f44336",
@@ -49,8 +49,16 @@ const AlgorithmPage = () => {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("default");
-  const [page, setPage] = useState(1);
-  const pageSize = 6;
+
+  const { state } = useAlgorithm();
+  const { algorithms, loading, error } = state;
+  const { fetchAlgorithms } = AlgorithmHooks();
+
+  useEffect(() => {
+    fetchAlgorithms();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  console.log(algorithms);
 
   const navigate = useNavigate();
 
@@ -71,22 +79,6 @@ const AlgorithmPage = () => {
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
   };
-
-  const filteredAlgorithms = algorithms
-    .filter((algorithm) =>
-      algorithm.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortOption === "category") {
-        return a.category.localeCompare(b.category);
-      }
-      return 0;
-    });
-
-  const paginatedAlgorithms = filteredAlgorithms.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
 
   return (
     <Box
@@ -206,7 +198,7 @@ const AlgorithmPage = () => {
           spacing={3}
           sx={{ padding: "20px", width: "80%", marginBottom: "1rem" }}
         >
-          {paginatedAlgorithms.map((algorithm, index) => (
+          {algorithms.map((algorithm, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
                 sx={{
@@ -247,9 +239,9 @@ const AlgorithmPage = () => {
                 </Box>
                 <CardContent>
                   <Chip
-                    label={algorithm.category}
+                    label={algorithm.tag}
                     sx={{
-                      backgroundColor: categoryColors[algorithm.category],
+                      backgroundColor: tagColors[algorithm.tag],
                       color: "black",
                       marginBottom: "10px",
                     }}
@@ -261,7 +253,7 @@ const AlgorithmPage = () => {
                       color: "white",
                     }}
                   >
-                    {truncateString(algorithm.description, 140)}{" "}
+                    {truncateString(algorithm.summary, 140)}{" "}
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: "flex-end" }}>
@@ -274,8 +266,11 @@ const AlgorithmPage = () => {
                       backgroundColor: "white",
                       "&:hover": {
                         color: "black",
-                        borderColor: "#8884d8",
-                        backgroundColor: "#8884d8",
+                        borderColor: "#00FF00",
+                        backgroundColor: "#00FF00",
+                        boxShadow:
+                          "0px 0px 8px #00FF00, 0px 0px 10px #00FF00 inset", // Outer and inner glow
+                        textShadow: "0px 0px 8px #00FF00", // Neon-like text glow
                       },
                     }}
                     onClick={() => handleClickOpen(algorithm)}
@@ -287,24 +282,6 @@ const AlgorithmPage = () => {
             </Grid>
           ))}
         </Grid>
-
-        <Pagination
-          count={Math.ceil(filteredAlgorithms.length / pageSize)}
-          page={page}
-          onChange={(event, value) => setPage(value)}
-          color="primary"
-          sx={{
-            "& .MuiPaginationItem-root": {
-              "&.Mui-selected": {
-                backgroundColor: "white",
-                color: "black",
-                "&:hover": {
-                  backgroundColor: "white",
-                },
-              },
-            },
-          }}
-        />
       </Box>
 
       <Footer />
