@@ -21,6 +21,13 @@ export function algorithmReducer(state, action) {
         loading: false,
         error: null,
       };
+    case algorithmActionTypes.DELETE_ALGORITHM:
+      return {
+        ...state,
+        algorithms: state.algorithms.filter((a) => a.id !== action.payload),
+        loading: false,
+        error: null,
+      };
     default:
       return state;
   }

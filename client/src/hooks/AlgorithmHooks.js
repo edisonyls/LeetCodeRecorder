@@ -36,35 +36,8 @@ export const AlgorithmHooks = () => {
     const filteredSections = handleEmptySections(transformedSections);
 
     const uploadPromises = filteredSections.map(async (section, index) => {
-      console.log(section.file);
       if (section.name === "Visual Representation") {
-        const fileData = new FormData();
-        fileData.append("image", section.file);
-        fileData.append("algorithmName", title);
-        try {
-          const response = await axiosInstance.post(
-            "algorithm/upload-image",
-            fileData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          if (response.data.serverMessage === "SUCCESS") {
-            return { ...section, content: response.data.data };
-          } else {
-            console.log("Image upload failed.");
-            return section;
-          }
-        } catch (error) {
-          console.error(
-            "An error occurred during submission for an image",
-            index,
-            error
-          );
-          return section;
-        }
+        return uploadImage(section, index, title);
       } else {
         return section; // Return the original section if there's no file to upload
       }
@@ -78,22 +51,35 @@ export const AlgorithmHooks = () => {
         summary,
         sections: updatedSections,
       };
-      const response = await axiosInstance.post("algorithm", finalData);
-      dispatch({
-        type: algorithmActionTypes.ADD_ALGORITHM_SUCCESS,
-        payload: response.data.data,
-      });
-      toast.success("New algorithm saved successfully!", {
-        autoClose: 2000,
-      });
-      navigate("/algorithm");
+
+      await submitAlgorithmData(finalData);
+    } catch (error) {
+      console.error(
+        "Failed during the final preparation of submission data",
+        error
+      );
+    }
+  };
+
+  const deleteAlgorithm = async (id) => {
+    dispatch({ type: algorithmActionTypes.PROCESS_START });
+    try {
+      const response = await axiosInstance.delete(`algorithm/${id}`);
+      if (response.data.status === 200) {
+        dispatch({
+          type: algorithmActionTypes.DELETE_ALGORITHM,
+          payload: id,
+        });
+        toast.success(response.data.message);
+      } else {
+        throw new Error("Failed to delete algorithm");
+      }
     } catch (error) {
       dispatch({
         type: algorithmActionTypes.PROCESS_FAILURE,
-        error: error,
+        error: error.toString(),
       });
-      toast.error("Failed to save algorithm. Contact admin.");
-      console.error("Error while saving a new algorithm", error);
+      toast.error("Failed to delete algorithm.");
     }
   };
 
@@ -122,8 +108,61 @@ export const AlgorithmHooks = () => {
     });
   };
 
+  const uploadImage = async (section, index, title) => {
+    const fileData = new FormData();
+    fileData.append("image", section.file);
+    fileData.append("algorithmName", title);
+
+    try {
+      const response = await axiosInstance.post(
+        "algorithm/upload-image",
+        fileData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.data.serverMessage === "SUCCESS") {
+        return { ...section, content: response.data.data };
+      } else {
+        console.log("Image upload failed.");
+        return section;
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred during submission for an image",
+        index,
+        error
+      );
+      return section;
+    }
+  };
+
+  const submitAlgorithmData = async (finalData) => {
+    try {
+      const response = await axiosInstance.post("algorithm", finalData);
+      dispatch({
+        type: algorithmActionTypes.ADD_ALGORITHM_SUCCESS,
+        payload: response.data.data,
+      });
+      toast.success("New algorithm saved successfully!", {
+        autoClose: 2000,
+      });
+      navigate("/algorithm");
+    } catch (error) {
+      dispatch({
+        type: algorithmActionTypes.PROCESS_FAILURE,
+        error: error,
+      });
+      toast.error("Failed to save algorithm. Contact admin.");
+      console.error("Error while saving a new algorithm", error);
+    }
+  };
+
   return {
     fetchAlgorithms,
     submitAlgorithm,
+    deleteAlgorithm,
   };
 };

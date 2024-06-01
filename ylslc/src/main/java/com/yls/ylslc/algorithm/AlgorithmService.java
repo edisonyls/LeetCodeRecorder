@@ -7,6 +7,9 @@ import java.util.UUID;
 
 public interface AlgorithmService {
     List<AlgorithmEntity> getAlgorithms();
+
+    AlgorithmEntity getAlgorithmById(UUID id);
+
     AlgorithmEntity createAlgorithm(AlgorithmEntity algorithm);
 
     String uploadImages(MultipartFile image, String algorithmName);
@@ -14,4 +17,8 @@ public interface AlgorithmService {
     void delete(UUID id);
 
     AlgorithmEntity updateAlgorithm(UUID id, AlgorithmEntity algorithmEntity);
+
+    void deleteImage(String algorithmTitle, String imageId);
+
+
 }

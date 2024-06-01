@@ -2,6 +2,7 @@ package com.yls.ylslc.algorithm;
 
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
+import com.yls.ylslc.question.QuestionEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,12 @@ public class AlgorithmController {
         } catch (RuntimeException e){
             return Response.failed(HttpStatus.BAD_REQUEST, "Failed to update algorithm.", e.toString());
         }
+    }
+
+    @DeleteMapping("image/{algorithmId}/{imageId}")
+    public void deleteQuestionImage(@PathVariable UUID algorithmId, @PathVariable String imageId) {
+        AlgorithmEntity algorithmEntity = algorithmService.getAlgorithmById(algorithmId);
+        algorithmService.deleteImage(algorithmEntity.getTitle(), imageId);
     }
 
 

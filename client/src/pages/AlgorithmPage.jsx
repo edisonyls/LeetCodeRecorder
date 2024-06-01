@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Grid,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
   Box,
   Typography,
-  Chip,
   MenuItem,
   Select,
   InputLabel,
@@ -24,26 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { useAlgorithm } from "../context/AlgorithmContext";
 import { AlgorithmHooks } from "../hooks/AlgorithmHooks";
-
-const truncateString = (str, num) => {
-  if (str.length <= num) {
-    return str;
-  }
-  return str.slice(0, num) + "...";
-};
-
-const tagColors = {
-  Sorting: "#2196f3",
-  Searching: "#8bc34a",
-  Graph: "#f44336",
-  "Dynamic Programming": "#ff9800",
-  Greedy: "#673ab7",
-  Backtracking: "#e91e63",
-  "Divide and Conquer": "#009688",
-  String: "#cddc39",
-  Mathematical: "#795548",
-  "Machine Learning": "#ffeb3b",
-};
+import AlgorithmCard from "../components/algorithm_page_components/AlgorithmCard";
 
 const AlgorithmPage = () => {
   const [open, setOpen] = useState(false);
@@ -53,7 +29,7 @@ const AlgorithmPage = () => {
 
   const { state } = useAlgorithm();
   const { algorithms, loading } = state;
-  const { fetchAlgorithms } = AlgorithmHooks();
+  const { fetchAlgorithms, deleteAlgorithm } = AlgorithmHooks();
 
   useEffect(() => {
     fetchAlgorithms();
@@ -212,85 +188,11 @@ const AlgorithmPage = () => {
         >
           {algorithms.map((algorithm, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
-                sx={{
-                  minHeight: "300px",
-                  background: grey[800],
-                  color: "white",
-                  boxShadow: 5,
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                    boxShadow: 10,
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    height: 140,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "white",
-                    borderTopLeftRadius: 3,
-                    borderTopRightRadius: 3,
-                  }}
-                >
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      color: "black",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {truncateString(algorithm.title, 30)}
-                  </Typography>
-                </Box>
-                <CardContent>
-                  <Chip
-                    label={algorithm.tag}
-                    sx={{
-                      backgroundColor: tagColors[algorithm.tag],
-                      color: "black",
-                      marginBottom: "10px",
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      fontSize: "1em",
-                      marginBottom: "10px",
-                      color: "white",
-                    }}
-                  >
-                    {truncateString(algorithm.summary, 140)}{" "}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "flex-end" }}>
-                  <Button
-                    size="small"
-                    sx={{
-                      color: "black",
-                      borderRadius: 2,
-                      border: `1px solid white`,
-                      backgroundColor: "white",
-                      "&:hover": {
-                        color: "black",
-                        borderColor: "#00FF00",
-                        backgroundColor: "#00FF00",
-                        boxShadow:
-                          "0px 0px 8px #00FF00, 0px 0px 10px #00FF00 inset", // Outer and inner glow
-                        textShadow: "0px 0px 8px #00FF00", // Neon-like text glow
-                      },
-                    }}
-                    onClick={() => handleClickOpen(algorithm)}
-                  >
-                    View Details
-                  </Button>
-                </CardActions>
-              </Card>
+              <AlgorithmCard
+                algorithm={algorithm}
+                onOpen={handleClickOpen}
+                onDelete={deleteAlgorithm}
+              />
             </Grid>
           ))}
         </Grid>

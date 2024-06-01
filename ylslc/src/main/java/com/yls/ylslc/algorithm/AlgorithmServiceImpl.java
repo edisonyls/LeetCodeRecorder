@@ -5,6 +5,7 @@ import com.yls.ylslc.algorithm.section.SectionEntity;
 import com.yls.ylslc.algorithm.section.SectionService;
 import com.yls.ylslc.config.s3.S3Buckets;
 import com.yls.ylslc.config.s3.S3Service;
+import com.yls.ylslc.question.QuestionEntity;
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,12 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         return currentUser
                 .map(algorithmRepository::findByUser)
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public AlgorithmEntity getAlgorithmById(UUID id) {
+        return algorithmRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Algorithm not found with id: " + id));
     }
 
     @Override
@@ -70,8 +77,17 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 
     @Override
     public void delete(UUID id) {
+        String username = userService.getCurrentUser().getUsername();
+        AlgorithmEntity algorithmToDelete = algorithmRepository.findById(id) .orElseThrow(()
+                -> new RuntimeException("Algorithm not found with id: " + id));
+        s3Service.deleteObjectsInFolder(
+                s3Buckets.getStorageLocation(),
+                "ylslc-algorithm-images/%s/%s".formatted(username, algorithmToDelete.getTitle())
+        );
         algorithmRepository.deleteById(id);
     }
+
+
 
     @Override
     public AlgorithmEntity updateAlgorithm(UUID id, AlgorithmEntity algorithm) {
@@ -87,6 +103,15 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 
         // Save the updated algorithm
         return algorithmRepository.save(existingAlgorithm);
+    }
+
+    @Override
+    public void deleteImage(String algorithmTitle, String imageId) {
+        String username = userService.getCurrentUser().getUsername();
+        s3Service.deleteObject(
+                s3Buckets.getStorageLocation(),
+                "ylslc-question-images/%s/%s/%s".formatted(username, algorithmTitle, imageId)
+        );
     }
 
 
