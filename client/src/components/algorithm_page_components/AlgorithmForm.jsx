@@ -22,8 +22,7 @@ import {
   GreyBackgroundButtonWithInput,
   WarningButton,
 } from "../generic/GenericButton";
-import { axiosInstance } from "../../config/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { AlgorithmHooks } from "../../hooks/AlgorithmHooks";
 
 const predefinedTags = [
   "Sorting",
@@ -68,7 +67,8 @@ const AlgorithmForm = ({ setDataEntered }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const newSectionRef = useRef(null);
-  const navigate = useNavigate();
+
+  const { submitAlgorithm } = AlgorithmHooks();
 
   // Checks if the user has input anything already
   useEffect(() => {
@@ -219,48 +219,14 @@ const AlgorithmForm = ({ setDataEntered }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // transform "Complexity" section into separate ones
-    const transformedSections = sections.flatMap((section) => {
-      if (section.name === "Complexity" && section.content) {
-        return [
-          { name: "Time Complexity", content: section.content.time || "" },
-          { name: "Space Complexity", content: section.content.space || "" },
-        ];
-      }
-      return section;
-    });
-
-    //   filter out sections with empty content
-    const filteredSections = transformedSections.filter((section) => {
-      if (typeof section.content === "string") {
-        return section.content.trim() !== "";
-      } else if (typeof section.content === "object") {
-        return Object.values(section.content).some(
-          (value) => value && value.trim() !== ""
-        );
-      }
-      return false;
-    });
-
     const algorithmData = {
       title,
       tag,
       summary,
-      sections: filteredSections,
+      sections,
     };
-    console.log(algorithmData);
 
-    try {
-      await axiosInstance.post("algorithm", algorithmData);
-      toast.success("New algorithm saved successfully!", {
-        autoClose: 2000,
-      });
-      navigate("/algorithm");
-    } catch (e) {
-      toast.error("Failed to save algorithm. Contact admin.");
-      console.log("Error while saving a new algorithm");
-    }
+    await submitAlgorithm(algorithmData);
   };
 
   return (

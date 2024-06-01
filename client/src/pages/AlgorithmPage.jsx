@@ -15,6 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
+import GenericSpinner from "../components/generic/GenericSpinner";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
 import AlgorithmDialog from "../components/algorithm_page_components/AlgorithmDialog";
@@ -51,14 +52,12 @@ const AlgorithmPage = () => {
   const [sortOption, setSortOption] = useState("default");
 
   const { state } = useAlgorithm();
-  const { algorithms, loading, error } = state;
+  const { algorithms, loading } = state;
   const { fetchAlgorithms } = AlgorithmHooks();
 
   useEffect(() => {
     fetchAlgorithms();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  console.log(algorithms);
 
   const navigate = useNavigate();
 
@@ -79,6 +78,19 @@ const AlgorithmPage = () => {
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          background: "#121212",
+        }}
+      >
+        <GenericSpinner color="white" />
+      </Box>
+    );
+  }
 
   return (
     <Box
