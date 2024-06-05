@@ -37,6 +37,10 @@ const AlgorithmPage = () => {
 
   const navigate = useNavigate();
 
+  const handleUpdate = (algorithm) => {
+    navigate("/new-algorithm", { state: { algorithm: algorithm } });
+  };
+
   const handleClickOpen = (algorithm) => {
     setSelectedAlgorithm(algorithm);
     setOpen(true);
@@ -99,7 +103,9 @@ const AlgorithmPage = () => {
           </Typography>
           <BlackBackgroundButton
             buttonText="New Algorithm"
-            onClick={() => navigate("/new-algorithm")}
+            onClick={() =>
+              navigate("/new-algorithm", { state: { algorithm: null } })
+            }
             startIcon={<AddIcon />}
           />
         </Box>
@@ -192,6 +198,7 @@ const AlgorithmPage = () => {
                 algorithm={algorithm}
                 onOpen={handleClickOpen}
                 onDelete={deleteAlgorithm}
+                onEdit={() => handleUpdate(algorithm)}
               />
             </Grid>
           ))}

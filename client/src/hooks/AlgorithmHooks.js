@@ -61,6 +61,39 @@ export const AlgorithmHooks = () => {
     }
   };
 
+  // TODO: UPDATE THE TITLE LEAD TO UNABLE TO FIND THE ALGORITHM IMAGE!
+  const updateAlgorithm = async (id, algorithm, imageChanged) => {
+    dispatch({ type: algorithmActionTypes.PROCESS_START });
+    const { sections, title, tag, summary } = algorithm;
+    const transformedSections = handleComplexitySection(sections);
+    const filteredSections = handleEmptySections(transformedSections);
+    const uploadPromises = filteredSections.map(async (section, index) => {
+      const { id, ...sectionWithoutId } = section;
+      if (section.name === "Visual Representation" && imageChanged) {
+        return uploadImage(sectionWithoutId, index, title);
+      } else {
+        return sectionWithoutId; // Return the original section if there's no file to upload
+      }
+    });
+    try {
+      const updatedSections = await Promise.all(uploadPromises);
+      const finalData = {
+        title,
+        tag,
+        summary,
+        sections: updatedSections,
+      };
+      console.log(finalData);
+
+      await updateAlgorithmData(id, finalData);
+    } catch (error) {
+      console.error(
+        "Failed during the final preparation of submission data",
+        error
+      );
+    }
+  };
+
   const deleteAlgorithm = async (id) => {
     dispatch({ type: algorithmActionTypes.PROCESS_START });
     try {
@@ -160,9 +193,33 @@ export const AlgorithmHooks = () => {
     }
   };
 
+  const updateAlgorithmData = async (id, finalData) => {
+    try {
+      const response = await axiosInstance.put(`algorithm/${id}`, finalData);
+      console.log(response.data.data);
+      console.log(finalData);
+      dispatch({
+        type: algorithmActionTypes.UPDATE_ALGORITHM,
+        payload: response.data.data,
+      });
+      toast.success("Update successfully!", {
+        autoClose: 2000,
+      });
+      navigate("/algorithm");
+    } catch (error) {
+      dispatch({
+        type: algorithmActionTypes.PROCESS_FAILURE,
+        error: error,
+      });
+      toast.error("Failed to update algorithm. Contact admin.");
+      console.error("Error while updating a new algorithm", error);
+    }
+  };
+
   return {
     fetchAlgorithms,
     submitAlgorithm,
     deleteAlgorithm,
+    updateAlgorithm,
   };
 };

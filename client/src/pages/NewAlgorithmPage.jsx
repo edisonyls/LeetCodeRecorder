@@ -4,10 +4,16 @@ import { grey } from "@mui/material/colors";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import Footer from "../components/Footer";
 import AlgorithmForm from "../components/algorithm_page_components/AlgorithmForm";
-import NewAlgorithmHeader from "../components/algorithm_page_components/NewAlgorithmHeader";
+import AlgorithmHeader from "../components/algorithm_page_components/AlgorithmHeader";
+import { useLocation } from "react-router-dom";
+import UpdateAlgorithmForm from "../components/algorithm_page_components/UpdateAlgorithmForm";
 
 const NewAlgorithmPage = () => {
   const [isDataEntered, setDataEntered] = useState(false);
+
+  const location = useLocation();
+  const algorithm = location.state?.algorithm || null;
+
   return (
     <Box
       sx={{
@@ -29,8 +35,23 @@ const NewAlgorithmPage = () => {
           flexGrow: 1,
         }}
       >
-        <NewAlgorithmHeader isDataEntered={isDataEntered} />
-        <AlgorithmForm setDataEntered={setDataEntered} />
+        {algorithm === null ? (
+          <>
+            <AlgorithmHeader isDataEntered={isDataEntered} />
+            <AlgorithmForm setDataEntered={setDataEntered} />
+          </>
+        ) : (
+          <>
+            <AlgorithmHeader
+              isDataEntered={isDataEntered}
+              algorithm={algorithm}
+            />
+            <UpdateAlgorithmForm
+              setDataEntered={setDataEntered}
+              algorithm={algorithm}
+            />
+          </>
+        )}
       </Container>
       <Footer />
     </Box>

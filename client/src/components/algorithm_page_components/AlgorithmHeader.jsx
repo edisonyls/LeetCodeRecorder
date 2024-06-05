@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { GreyBackgroundDialog } from "../generic/GenericDialog";
 
-const NewAlgorithmHeader = ({ isDataEntered }) => {
+const AlgorithmHeader = ({ isDataEntered, algorithm }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -33,9 +33,16 @@ const NewAlgorithmHeader = ({ isDataEntered }) => {
       <IconButton color="inherit" onClick={handleBack} sx={{ color: "white" }}>
         <ArrowBackIcon />
       </IconButton>
-      <Typography variant="h4" gutterBottom>
-        New Algorithm
-      </Typography>
+      {algorithm === undefined ? (
+        <Typography variant="h4" gutterBottom>
+          New Algorithm
+        </Typography>
+      ) : (
+        <Typography variant="h4" gutterBottom>
+          {algorithm.title}
+        </Typography>
+      )}
+
       <Box />
       <GreyBackgroundDialog
         isOpen={dialogOpen}
@@ -48,4 +55,4 @@ const NewAlgorithmHeader = ({ isDataEntered }) => {
   );
 };
 
-export default NewAlgorithmHeader;
+export default AlgorithmHeader;

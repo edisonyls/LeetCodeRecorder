@@ -21,6 +21,13 @@ export function algorithmReducer(state, action) {
         loading: false,
         error: null,
       };
+    case algorithmActionTypes.UPDATE_ALGORITHM:
+      return {
+        ...state,
+        algorithms: [...state.algorithms, action.payload],
+        loading: false,
+        error: null,
+      };
     case algorithmActionTypes.DELETE_ALGORITHM:
       return {
         ...state,

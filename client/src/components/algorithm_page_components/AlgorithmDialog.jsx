@@ -44,7 +44,6 @@ const AlgorithmDialog = ({ open, onClose, algorithm }) => {
   const formatContent = (sectionName, content) => {
     if (sectionName === "Visual Representation") {
       const imageSrc = images[content];
-      console.log(imageSrc);
       if (imageSrc) {
         return (
           <Box

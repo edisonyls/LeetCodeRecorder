@@ -27,13 +27,6 @@ const NewQuestion = () => {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <AuthenticatedNavbar />
-      <GenericDialog
-        isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onConfirm={() => navigate(-1)}
-        title={question === null ? "Return to Dashboard" : "Return to Question"}
-        content="Are you sure? All unsaved data will be lost."
-      />
       <Box
         sx={{
           mt: 2,
@@ -75,6 +68,13 @@ const NewQuestion = () => {
       )}
 
       <Footer />
+      <GenericDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={() => navigate(-1)}
+        title={question === null ? "Return to Dashboard" : "Return to Question"}
+        content="Are you sure? All unsaved data will be lost."
+      />
     </Box>
   );
 };
