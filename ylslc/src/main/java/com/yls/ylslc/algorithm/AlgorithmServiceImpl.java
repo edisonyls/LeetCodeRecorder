@@ -114,6 +114,15 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         );
     }
 
+    @Override
+    public byte[] getImage(String algorithmTitle, String imageId) {
+        String username = userService.getCurrentUser().getUsername();
+        return s3Service.getObject(
+                s3Buckets.getStorageLocation(),
+                "ylslc-algorithm-images/%s/%s/%s".formatted(username, algorithmTitle, imageId)
+        );
+    }
+
 
     public AlgorithmServiceImpl(UserService userService, AlgorithmRepository algorithmRepository, S3Service s3Service, S3Buckets s3Buckets, SectionService sectionService) {
         this.userService = userService;

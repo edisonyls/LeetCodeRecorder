@@ -3,8 +3,10 @@ package com.yls.ylslc.algorithm;
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
 import com.yls.ylslc.question.QuestionEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +63,28 @@ public class AlgorithmController {
     public void deleteQuestionImage(@PathVariable UUID algorithmId, @PathVariable String imageId) {
         AlgorithmEntity algorithmEntity = algorithmService.getAlgorithmById(algorithmId);
         algorithmService.deleteImage(algorithmEntity.getTitle(), imageId);
+    }
+
+    @GetMapping("image/{algorithmId}/{imageId}")
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable UUID algorithmId, @PathVariable String imageId) {
+        AlgorithmEntity algorithmEntity = algorithmService.getAlgorithmById(algorithmId);
+        byte[] imageData = algorithmService.getImage(algorithmEntity.getTitle(), imageId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(getMediaTypeForImageId(imageId));
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    private MediaType getMediaTypeForImageId(String imageId) {
+        if (imageId.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
+            return MediaType.IMAGE_JPEG;
+        } else {
+            // Default or fallback content type
+            return MediaType.APPLICATION_OCTET_STREAM;
+        }
     }
 
 

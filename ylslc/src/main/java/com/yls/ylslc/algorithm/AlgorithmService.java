@@ -20,5 +20,6 @@ public interface AlgorithmService {
 
     void deleteImage(String algorithmTitle, String imageId);
 
+    byte[] getImage(String algorithmTitle, String imageId);
 
 }
