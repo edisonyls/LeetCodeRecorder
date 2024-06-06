@@ -47,7 +47,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     }
 
     @Override
-    public String uploadImages(MultipartFile image, String algorithmName) {
+    public String uploadImages(MultipartFile image, String algorithmId) {
         String originalImageName = image.getOriginalFilename();
         String fileExtension = "";
 
@@ -65,7 +65,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         try {
             s3Service.putObject(
                     s3Buckets.getStorageLocation(),
-                    String.format("ylslc-algorithm-images/%s/%s/%s", username, algorithmName, imageId),
+                    String.format("ylslc-algorithm-images/%s/%s/%s", username, algorithmId, imageId),
                     image.getBytes(),
                     contentType // Pass the content type here
             );
@@ -82,7 +82,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
                 -> new RuntimeException("Algorithm not found with id: " + id));
         s3Service.deleteObjectsInFolder(
                 s3Buckets.getStorageLocation(),
-                "ylslc-algorithm-images/%s/%s".formatted(username, algorithmToDelete.getTitle())
+                "ylslc-algorithm-images/%s/%s".formatted(username, algorithmToDelete.getId())
         );
         algorithmRepository.deleteById(id);
     }
@@ -106,20 +106,20 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     }
 
     @Override
-    public void deleteImage(String algorithmTitle, String imageId) {
+    public void deleteImage(String algorithmId, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         s3Service.deleteObject(
                 s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%s/%s".formatted(username, algorithmTitle, imageId)
+                "ylslc-question-images/%s/%s/%s".formatted(username, algorithmId, imageId)
         );
     }
 
     @Override
-    public byte[] getImage(String algorithmTitle, String imageId) {
+    public byte[] getImage(String algorithmId, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(
                 s3Buckets.getStorageLocation(),
-                "ylslc-algorithm-images/%s/%s/%s".formatted(username, algorithmTitle, imageId)
+                "ylslc-algorithm-images/%s/%s/%s".formatted(username, algorithmId, imageId)
         );
     }
 

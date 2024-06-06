@@ -12,14 +12,14 @@ public interface AlgorithmService {
 
     AlgorithmEntity createAlgorithm(AlgorithmEntity algorithm);
 
-    String uploadImages(MultipartFile image, String algorithmName);
+    String uploadImages(MultipartFile image, String algorithmId);
 
     void delete(UUID id);
 
     AlgorithmEntity updateAlgorithm(UUID id, AlgorithmEntity algorithmEntity);
 
-    void deleteImage(String algorithmTitle, String imageId);
+    void deleteImage(String algorithmId, String imageId);
 
-    byte[] getImage(String algorithmTitle, String imageId);
+    byte[] getImage(String algorithmId, String imageId);
 
 }
