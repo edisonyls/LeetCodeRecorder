@@ -15,7 +15,7 @@ import GenericSpinner from "../components/generic/GenericSpinner";
 import Footer from "../components/Footer";
 import GenericFormControl from "../components/generic/GenericFormControl";
 import QuestionsTable from "../components/QuestionsTable";
-import GenericDialog from "../components/generic/GenericDialog";
+import { GenericDialog } from "../components/generic/GenericDialog";
 import GenericSearchBox from "../components/generic/GenericSearchBox";
 import { toast } from "react-toastify";
 

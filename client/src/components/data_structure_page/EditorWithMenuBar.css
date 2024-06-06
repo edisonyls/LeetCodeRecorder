@@ -6,7 +6,6 @@
   padding: 8px; /* Optional: To match MUI TextField padding */
   border: 1px solid #ced4da; /* Optional: To match MUI TextField border */
   border-radius: 4px; /* Optional: To match MUI TextField border radius */
-  caret-color: #fafafa;
 }
 
 .tiptap:focus {
@@ -29,8 +28,9 @@
 }
 
 .tiptap code {
-  background-color: #eeeeee;
+  background-color: #fff;
   color: black;
+  padding: 2px 4px; /* Add padding to the code element */
 }
 
 .tiptap pre {

@@ -17,6 +17,7 @@ import { BlackBackgroundButton } from "./generic/GenericButton";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DataStructureIcon from "@mui/icons-material/Storage";
 import CodeIcon from "@mui/icons-material/Code";
+import PolylineIcon from "@mui/icons-material/Polyline";
 
 const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
   const navigate = useNavigate();
@@ -47,17 +48,17 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       onClick: () => navigate("/data-structure"),
     },
     {
+      text: "Algorithm",
+      icon: <PolylineIcon />,
+      path: "/algorithm",
+      onClick: () => navigate("/algorithm"),
+    },
+    {
       text: "Profile",
       icon: <AccountCircleIcon />,
       path: "/profile",
       onClick: () => navigate("/profile"),
     },
-    // {
-    //   text: "Algorithm",
-    //   icon: <AlgorithmIcon />,
-    //   path: "/algorithm",
-    //   onClick: () => navigate("/algorithm"),
-    // },
   ];
 
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const GenericSpinner = () => {
+const GenericSpinner = ({ color }) => {
   return (
     <Box
       sx={{
@@ -27,7 +27,7 @@ const GenericSpinner = () => {
         size={60}
         thickness={5}
         sx={{
-          color: "black",
+          color: { color },
         }}
       />
     </Box>

@@ -9,10 +9,7 @@ export const actionTypes = {
   ADD_NODE: "ADD_NODE",
   RENAME_NODE: "RENAME_NODE",
   DELETE_NODE: "DELETE_NODE",
-  // TODO
   ADD_CONTENT: "ADD_CONTENT",
   DELETE_CONTENT: "DELETE_CONTENT",
   UPDATE_CONTENT: "UPDATE_CONTENT",
-
-  // TODO: add more action types for node and content CRUD operations
 };

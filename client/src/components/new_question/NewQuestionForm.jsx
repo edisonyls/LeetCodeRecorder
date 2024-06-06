@@ -13,12 +13,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-
 import Solution from "./Solution";
 import NewQuestionFooter from "./NewQuestionFooter";
 import { Star, StarBorder } from "@mui/icons-material";
 import { toast } from "react-toastify";
-import GenericDialog from "../generic/GenericDialog";
+import { GenericDialog } from "../generic/GenericDialog";
 import { useQuestionHooks } from "../../hooks/useQuestionHooks";
 
 const NewQuestionForm = ({ timerValue }) => {

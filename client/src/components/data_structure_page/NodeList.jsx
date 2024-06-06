@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   List,
@@ -35,12 +35,6 @@ const NodeList = ({
   const [selectedNode, setSelectedNode] = useState(null);
 
   const open = Boolean(anchorEl); // To check if menu is open
-
-  useEffect(() => {
-    setSelectedNode(null);
-    setDialogOpen(false);
-    setSelectedId(selectedNodeId);
-  }, [selectedStructure, selectedNodeId]);
 
   const handleDialogOpen = (type) => {
     setActionType(type);

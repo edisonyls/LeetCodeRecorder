@@ -4,10 +4,10 @@ import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import Footer from "../components/Footer";
 import { useUser } from "../context/userContext";
 import { UserHooks } from "../hooks/userHooks/UserHooks";
-import Welcome from "../components/DashboardComponents/Welcome";
-import LeetCodeStats from "../components/DashboardComponents/LeetCodeStats";
-import DataStructureStats from "../components/DashboardComponents/DataStructureStats";
-import AlgorithmStats from "../components/DashboardComponents/AlgorithmStats";
+import Welcome from "../components/dashboard_page/Welcome";
+import LeetCodeStats from "../components/dashboard_page/LeetCodeStats";
+import DataStructureStats from "../components/dashboard_page/DataStructureStats";
+import AlgorithmStats from "../components/dashboard_page/AlgorithmStats";
 
 const Dashboard = () => {
   const { state } = useUser();

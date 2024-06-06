@@ -23,6 +23,7 @@ public class DataStructureMapperImpl implements Mapper<DataStructureEntity, Data
     @Override
     public DataStructureDto mapTo(DataStructureEntity dataStructureEntity) {
         DataStructureDto dataStructureDto = modelMapper.map(dataStructureEntity, DataStructureDto.class);
+
         if (dataStructureEntity.getNodes() != null && !dataStructureEntity.getNodes().isEmpty()){
             List<NodeDto> nodeDtos = dataStructureEntity.getNodes().stream()
                     .map(node -> modelMapper.map(node, NodeDto.class))

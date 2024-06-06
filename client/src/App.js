@@ -12,41 +12,51 @@ import DataStructurePage from "./pages/DataStructurePage";
 import AlgorithmPage from "./pages/AlgorithmPage";
 import { UserProvider } from "./context/userContext";
 import { DataStructureProvider } from "./context/dataStructureContext";
+import { AlgorithmProvider } from "./context/AlgorithmContext";
 import UpdateQuestionForm from "./components/new_question/UpdateQuestionForm";
 import TablePage from "./pages/TablePage";
 import Dashboard from "./pages/Dashboard";
+import NewAlgorithmPage from "./pages/NewAlgorithmPage";
 
 function App() {
   return (
     <>
       <UserProvider>
         <DataStructureProvider>
-          <Router>
-            <Routes>
-              <Route path="/" Component={Home} exact />
-              <Route path="/signin" Component={SignInPage} exact />
-              <Route path="/register" Component={RegisterPage} exact />
-              <Route path="/table" Component={TablePage} exact />
-              <Route path="/new" Component={NewQuestion} exact />
-              <Route path="/question/:id" Component={QuestionDetails} exact />
-              <Route path="/profile" Component={ProfilePage} exact />
-              <Route path="/dashboard" Component={Dashboard} exact />
-              <Route
-                path="/edit-question"
-                Component={UpdateQuestionForm}
-                exact
-              />
+          <AlgorithmProvider>
+            <Router>
+              <Routes>
+                <Route path="/" Component={Home} exact />
+                <Route path="/signin" Component={SignInPage} exact />
+                <Route path="/register" Component={RegisterPage} exact />
+                <Route path="/table" Component={TablePage} exact />
+                <Route path="/new" Component={NewQuestion} exact />
+                <Route path="/question/:id" Component={QuestionDetails} exact />
+                <Route path="/profile" Component={ProfilePage} exact />
+                <Route path="/dashboard" Component={Dashboard} exact />
+                <Route path="/algorithm" Component={AlgorithmPage} exact />
+                <Route
+                  path="/new-algorithm"
+                  Component={NewAlgorithmPage}
+                  exact
+                />
+                <Route
+                  path="/edit-question"
+                  Component={UpdateQuestionForm}
+                  exact
+                />
 
-              <Route
-                path="/data-structure"
-                Component={DataStructurePage}
-                exact
-              />
-              <Route path="/algorithm" Component={AlgorithmPage} exact />
-              <Route path="/friends" Component={FriendPage} exact />
-            </Routes>
-          </Router>
-          <ToastContainer />
+                <Route
+                  path="/data-structure"
+                  Component={DataStructurePage}
+                  exact
+                />
+                <Route path="/algorithm" Component={AlgorithmPage} exact />
+                <Route path="/friends" Component={FriendPage} exact />
+              </Routes>
+            </Router>
+            <ToastContainer />
+          </AlgorithmProvider>
         </DataStructureProvider>
       </UserProvider>
     </>
