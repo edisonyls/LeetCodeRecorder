@@ -115,6 +115,11 @@ public class AlgorithmServiceImpl implements AlgorithmService {
     }
 
     @Override
+    public Long countAlgorithm(UUID userId) {
+        return algorithmRepository.countAlgorithmByUserId(userId);
+    }
+
+    @Override
     public byte[] getImage(String algorithmId, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(

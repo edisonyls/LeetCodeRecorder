@@ -20,6 +20,8 @@ public interface AlgorithmService {
 
     void deleteImage(String algorithmId, String imageId);
 
+    Long countAlgorithm(UUID userId);
+
     byte[] getImage(String algorithmId, String imageId);
 
 }

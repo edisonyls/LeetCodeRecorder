@@ -74,6 +74,12 @@ public class AlgorithmController {
         return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/count-algorithm/{id}")
+    public Response countAlgorithm(@PathVariable("id") UUID id){
+        return Response.ok(algorithmService.countAlgorithm(id), "Count retrieved successfully!");
+    }
+
+
     private MediaType getMediaTypeForImageId(String imageId) {
         if (imageId.endsWith(".png")) {
             return MediaType.IMAGE_PNG;
