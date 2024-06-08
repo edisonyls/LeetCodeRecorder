@@ -75,15 +75,15 @@ const UpdateAlgorithmForm = ({ setDataEntered, algorithm }) => {
   useEffect(() => {
     algorithm.sections.forEach((section) => {
       if (section.name === "Visual Representation") {
-        fetchImage(algorithm.id, section);
+        fetchImage(section);
       }
     });
   }, [algorithm]);
 
-  const fetchImage = async (algorithmId, section) => {
+  const fetchImage = async (section) => {
     try {
       const response = await axiosInstance.get(
-        `algorithm/image/${algorithmId}/${section.content}`,
+        `algorithm/image/${section.content}`,
         {
           responseType: "blob",
         }

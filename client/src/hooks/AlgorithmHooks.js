@@ -29,6 +29,8 @@ export const AlgorithmHooks = () => {
     dispatch({ type: algorithmActionTypes.PROCESS_START });
     const { sections, title, tag, summary } = algorithmData;
 
+    let imageId = null;
+
     // Transform "Complexity" section into separate ones
     const transformedSections = handleComplexitySection(sections);
 
@@ -37,7 +39,11 @@ export const AlgorithmHooks = () => {
 
     const uploadPromises = filteredSections.map(async (section, index) => {
       if (section.name === "Visual Representation") {
-        return uploadImage(section, index, algorithmData.id);
+        const result = await uploadImage(section, index);
+        if (result.content) {
+          imageId = result.content;
+        }
+        return result;
       } else {
         return section; // Return the original section if there's no file to upload
       }
@@ -51,6 +57,10 @@ export const AlgorithmHooks = () => {
         summary,
         sections: updatedSections,
       };
+
+      if (imageId) {
+        finalData.imageId = imageId;
+      }
 
       await submitAlgorithmData(finalData);
     } catch (error) {
@@ -66,11 +76,18 @@ export const AlgorithmHooks = () => {
     dispatch({ type: algorithmActionTypes.PROCESS_START });
     const { title, tag, summary, sections } = algorithmData;
     const transformedSections = handleComplexitySection(sections);
+    let imageId = null;
     const filteredSections = handleEmptySections(transformedSections);
     const uploadPromises = filteredSections.map(async (section, index) => {
+      // the reason we need to filter out id is for maintaining the order of the section
       const { id, ...sectionWithoutId } = section;
+
       if (section.name === "Visual Representation" && imageChanged) {
-        return uploadImage(sectionWithoutId, index, algorithmId);
+        const result = await uploadImage(section, index);
+        if (result.content) {
+          imageId = result.content;
+        }
+        return result;
       } else {
         return sectionWithoutId; // Return the original section if there's no file to upload
       }
@@ -83,7 +100,10 @@ export const AlgorithmHooks = () => {
         summary,
         sections: updatedSections,
       };
-      console.log(finalData);
+
+      if (imageId) {
+        finalData.imageId = imageId;
+      }
 
       await updateAlgorithmData(algorithmId, finalData);
     } catch (error) {
@@ -141,10 +161,9 @@ export const AlgorithmHooks = () => {
     });
   };
 
-  const uploadImage = async (section, index, algorithmId) => {
+  const uploadImage = async (section, index) => {
     const fileData = new FormData();
     fileData.append("image", section.file);
-    fileData.append("algorithmId", algorithmId);
     try {
       const response = await axiosInstance.post(
         "algorithm/upload-image",

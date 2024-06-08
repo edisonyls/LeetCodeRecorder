@@ -28,6 +28,7 @@ public class AlgorithmEntity {
     private String title;
     private String tag;
     private String summary;
+    private String imageId;
 
     @OneToMany(mappedBy = "algorithm", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SectionEntity> sections = new ArrayList<>();

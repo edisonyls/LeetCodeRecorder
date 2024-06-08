@@ -19,6 +19,7 @@ public class AlgorithmDto {
     private String title;
     private String tag;
     private String summary;
+    private String imageId;
     private List<SectionDto> sections;
     private LocalDateTime createdAt;
 }

@@ -12,7 +12,7 @@ public interface AlgorithmService {
 
     AlgorithmEntity createAlgorithm(AlgorithmEntity algorithm);
 
-    String uploadImages(MultipartFile image, String algorithmId);
+    String uploadImages(MultipartFile image);
 
     void delete(UUID id);
 
@@ -22,6 +22,6 @@ public interface AlgorithmService {
 
     Long countAlgorithm(UUID userId);
 
-    byte[] getImage(String algorithmId, String imageId);
+    byte[] getImage( String imageId);
 
 }

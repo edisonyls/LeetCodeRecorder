@@ -35,9 +35,8 @@ public class AlgorithmController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
-    public Response uploadImages(@RequestPart("image") MultipartFile image,
-                                 @RequestPart("algorithmId") String algorithmId){
-        String imageId = algorithmService.uploadImages(image, algorithmId);
+    public Response uploadImages(@RequestPart("image") MultipartFile image){
+        String imageId = algorithmService.uploadImages(image);
         return Response.ok(imageId, "Image saved successfully!");
     }
 
@@ -64,9 +63,9 @@ public class AlgorithmController {
         algorithmService.deleteImage(algorithmId, imageId);
     }
 
-    @GetMapping("image/{algorithmId}/{imageId}")
-    public ResponseEntity<byte[]> getQuestionImage(@PathVariable String algorithmId, @PathVariable String imageId) {
-        byte[] imageData = algorithmService.getImage(algorithmId, imageId);
+    @GetMapping("image/{imageId}")
+    public ResponseEntity<byte[]> getQuestionImage( @PathVariable String imageId) {
+        byte[] imageData = algorithmService.getImage(imageId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(getMediaTypeForImageId(imageId));
