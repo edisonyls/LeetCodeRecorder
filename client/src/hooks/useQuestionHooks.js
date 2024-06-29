@@ -126,7 +126,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       question.solutions = updatedSolutions;
       console.log(question);
       submitRestData();
-      // navigate("/table");
+      navigate("/table");
     } catch (error) {
       console.error("An error occurred during image uploads", error);
     }
