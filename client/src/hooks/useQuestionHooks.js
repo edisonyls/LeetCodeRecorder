@@ -124,8 +124,9 @@ export const useQuestionHooks = (question, initialQuestion) => {
       // Wait for all the image upload promises to complete
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
+      console.log(question);
       submitRestData();
-      navigate("/table");
+      // navigate("/table");
     } catch (error) {
       console.error("An error occurred during image uploads", error);
     }
@@ -154,6 +155,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       dateOfCompletion: question.dateOfCompletion
         ? question.dateOfCompletion.format("YYYY-MM-DD")
         : "",
+      timeOfCompletion: formatTime(question.timeOfCompletion), // Apply the format here
       solutions: question.solutions.map((solution) => ({
         thinkingProcess: solution.thinkingProcess,
         codeSnippet: solution.codeSnippet,
@@ -163,8 +165,9 @@ export const useQuestionHooks = (question, initialQuestion) => {
     if (formattedData.success === true) {
       formattedData.reasonOfFail = "";
     }
+    // console.log(formattedData);
     try {
-      var response = null;
+      let response = null;
       if (id) {
         response = await axiosInstance.put(`question/${id}`, formattedData);
       } else {
@@ -178,6 +181,13 @@ export const useQuestionHooks = (question, initialQuestion) => {
     } catch (error) {
       console.error("An error occurred during form submission", error);
     }
+  };
+
+  const formatTime = (time) => {
+    const [minutes, seconds] = time.split(":").map(Number);
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+    return `${formattedMinutes}:${formattedSeconds}`;
   };
 
   return { handleSubmit, handleUpdateSubmit };

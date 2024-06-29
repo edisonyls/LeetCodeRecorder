@@ -2,32 +2,41 @@ import React, { useState, useEffect } from "react";
 import { IconButton, Box, Typography, Tooltip } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { GenericDialog } from "./generic/GenericDialog";
 import ReplayIcon from "@mui/icons-material/Replay";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { GenericDialog } from "./generic/GenericDialog";
+
+const MAX_TIME = 59999; // Maximum time in seconds (999 minutes and 59 seconds)
 
 const Stopwatch = ({ onTimeSubmit }) => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
   const [openFinishDialog, setOpenFinishDialog] = useState(false);
   const [openResetDialog, setOpenResetDialog] = useState(false);
+  const [startTime, setStartTime] = useState(Date.now());
 
   useEffect(() => {
     let interval = null;
-    let startTime = Date.now() - time * 1000;
 
     if (isRunning) {
       interval = setInterval(() => {
         const now = Date.now();
         const deltaTime = now - startTime;
-        setTime(Math.floor(deltaTime / 1000));
+        const newTime = Math.floor(deltaTime / 1000);
+        if (newTime >= MAX_TIME) {
+          setTime(MAX_TIME);
+          setIsRunning(false);
+          clearInterval(interval);
+        } else {
+          setTime(newTime);
+        }
       }, 1000);
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
-  }, [isRunning]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isRunning, startTime]);
 
   const formatTime = () => {
     const minutes = Math.floor(time / 60);
@@ -53,6 +62,8 @@ const Stopwatch = ({ onTimeSubmit }) => {
 
   const handleReset = () => {
     setTime(0);
+    setStartTime(Date.now());
+    setIsRunning(true); // Optionally reset the timer to start running immediately
     setOpenResetDialog(false);
   };
 
