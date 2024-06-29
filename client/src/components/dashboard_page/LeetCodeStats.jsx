@@ -311,18 +311,6 @@ const LeetCodeStats = ({ userId }) => {
 
   const renderAverageTime = () => {
     const difficulties = ["Easy", "Medium", "Hard"];
-    const getColor = (difficulty) => {
-      switch (difficulty) {
-        case "Easy":
-          return "#4CAF50";
-        case "Medium":
-          return "#FF9800";
-        case "Hard":
-          return "#F44336";
-        default:
-          return "white";
-      }
-    };
 
     return difficulties.map((difficulty) => {
       const stat = questionStats.averageTimeOfCompletion.find(
@@ -330,11 +318,8 @@ const LeetCodeStats = ({ userId }) => {
       );
       return (
         <animated.div key={difficulty} style={itemSpring}>
-          <Typography
-            variant="body1"
-            sx={{ color: getColor(difficulty), fontSize: "16px" }}
-          >
-            Average Time for {difficulty}
+          <Typography variant="body1" sx={{ color: "#fff", fontSize: "16px" }}>
+            Average Time for {difficulty} Questions
           </Typography>
           <Typography variant="body1" sx={{ color: "white", fontSize: "14px" }}>
             {stat ? `${stat.averageTime} mins` : "N/A"}

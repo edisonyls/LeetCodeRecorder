@@ -23,60 +23,53 @@ const jsonToHtml = async (node, nodeId) => {
     return "";
   }
 
+  const mapContent = async (content) => {
+    if (!content || !Array.isArray(content)) {
+      return [];
+    }
+    const results = await Promise.all(
+      content.map((contentNode) => jsonToHtml(contentNode, nodeId))
+    );
+    // Ensure all results are strings
+    return results.map((result) => (typeof result === "string" ? result : ""));
+  };
+
   switch (node.type) {
     case "doc":
-      if (!node.content || !Array.isArray(node.content)) {
-        return "";
-      }
-      const docContent = await Promise.all(
-        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-      );
+      const docContent = await mapContent(node.content);
       return docContent.join("");
 
     case "paragraph":
-      const paragraphContent = await Promise.all(
-        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-      );
+      const paragraphContent = await mapContent(node.content);
       return `<p>${paragraphContent.join("")}</p>`;
+
     case "heading":
-      const headingContent = await Promise.all(
-        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-      );
+      const headingContent = await mapContent(node.content);
       return `<h${node.attrs.level}>${headingContent.join("")}</h${
         node.attrs.level
       }>`;
 
     case "bulletList":
-      const bulletListItems = await Promise.all(
-        node.content.map((item) => jsonToHtml(item, nodeId))
-      );
+      const bulletListItems = await mapContent(node.content);
       return `<ul>${bulletListItems.join("")}</ul>`;
 
     case "orderedList":
-      const orderedListItems = await Promise.all(
-        node.content.map((item) => jsonToHtml(item, nodeId))
-      );
+      const orderedListItems = await mapContent(node.content);
       return `<ol>${orderedListItems.join("")}</ol>`;
 
     case "listItem":
-      const listItemContent = await Promise.all(
-        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-      );
+      const listItemContent = await mapContent(node.content);
       return `<li>${listItemContent.join("")}</li>`;
 
     case "blockquote":
-      const blockquoteContent = await Promise.all(
-        node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-      );
+      const blockquoteContent = await mapContent(node.content);
       return `<blockquote style="color: #fafafa; border-left: 4px solid #ccc; padding-left: 16px; margin-left: 0; font-style: italic;">${blockquoteContent.join(
         ""
       )}</blockquote>`;
 
     case "codeBlock":
       const codeBlockContent = node.content
-        ? await Promise.all(
-            node.content.map((contentNode) => jsonToHtml(contentNode, nodeId))
-          )
+        ? await mapContent(node.content)
         : [node.text || ""];
       return `<pre style="background-color: black; color: #fafafa; padding: 16px; border-radius: 8px; font-family: 'Jet Brain', monospace;"><code>${codeBlockContent.join(
         ""

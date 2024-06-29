@@ -46,7 +46,7 @@ const Welcome = ({ user }) => {
           Welcome, {user?.firstName} {user?.lastName}!
         </Typography>
         {userCreatedAt && (
-          <Typography variant="body1" sx={{ color: "cyan" }}>
+          <Typography variant="body1" sx={{ color: "#fff" }}>
             You have been with us for{" "}
             <animated.span
               style={{
