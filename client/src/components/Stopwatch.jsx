@@ -15,22 +15,29 @@ const Stopwatch = ({ onTimeSubmit }) => {
   const [openResetDialog, setOpenResetDialog] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
 
+  const [pausedTime, setPausedTime] = useState(0);
+
   useEffect(() => {
     let interval = null;
+    let lastSecond = 0; // Track the last full second that was displayed
 
     if (isRunning) {
       interval = setInterval(() => {
         const now = Date.now();
         const deltaTime = now - startTime;
         const newTime = Math.floor(deltaTime / 1000);
-        if (newTime >= MAX_TIME) {
-          setTime(MAX_TIME);
-          setIsRunning(false);
-          clearInterval(interval);
-        } else {
-          setTime(newTime);
+
+        if (newTime > lastSecond) {
+          lastSecond = newTime;
+          if (newTime >= MAX_TIME) {
+            setTime(MAX_TIME);
+            setIsRunning(false);
+            clearInterval(interval);
+          } else {
+            setTime(newTime);
+          }
         }
-      }, 1000);
+      }, 100);
     } else {
       clearInterval(interval);
     }
@@ -47,11 +54,19 @@ const Stopwatch = ({ onTimeSubmit }) => {
   };
 
   const handlePauseResume = () => {
-    setIsRunning(!isRunning);
+    if (isRunning) {
+      setIsRunning(false);
+      setPausedTime(Date.now() - startTime);
+    } else {
+      setStartTime(Date.now() - pausedTime);
+      setIsRunning(true);
+      setPausedTime(0);
+    }
   };
 
   const handleFinish = () => {
     setIsRunning(false);
+    setPausedTime(Date.now() - startTime);
     setOpenFinishDialog(true);
   };
 

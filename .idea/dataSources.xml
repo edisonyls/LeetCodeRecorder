@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="ylslc@localhost" uuid="c1c7bde1-50a6-4487-85d6-3c8eba612a84">
+    <data-source source="LOCAL" name="ylslc@ylslc-db.crgos40mytxr.ap-southeast-2.rds.amazonaws.com" uuid="05a3759b-30ac-49ea-a170-8ddada68c974">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>$PROJECT_DIR$/ylslc/src/main/resources/application.properties</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/ylslc</jdbc-url>
+      <jdbc-url>jdbc:mysql://ylslc-db.crgos40mytxr.ap-southeast-2.rds.amazonaws.com:3306/ylslc</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

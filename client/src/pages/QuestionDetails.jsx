@@ -208,7 +208,20 @@ const QuestionDetails = () => {
                   <Typography variant="body1" component="div">
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <Terrain sx={{ mr: 1 }} /> Obstacles:
-                      <Typography sx={{ marginLeft: 1 }}>
+                    </Box>
+                    <Box
+                      sx={{
+                        borderLeft: 2,
+                        borderColor: "primary.main",
+                        paddingLeft: 2,
+                        marginLeft: 3,
+                        borderWidth: 4,
+                        marginTop: 2,
+                      }}
+                    >
+                      <Typography
+                        sx={{ marginLeft: 1, whiteSpace: "pre-wrap" }}
+                      >
                         {question.reasonOfFail}
                       </Typography>
                     </Box>
