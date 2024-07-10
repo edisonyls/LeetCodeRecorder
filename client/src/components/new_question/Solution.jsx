@@ -33,6 +33,21 @@ const Solution = ({
     setShowCodeInput(false);
   };
 
+  const handleTabInTextField = (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault(); // Prevent the default Tab key behavior
+      const cursorPosition = event.target.selectionStart;
+      const beforeTab = thinkingProcess.substring(0, cursorPosition);
+      const afterTab = thinkingProcess.substring(cursorPosition);
+      const updatedText = beforeTab + "        " + afterTab; // Adding 8 spaces
+      handleChange({ target: { name: event.target.name, value: updatedText } });
+      setTimeout(() => {
+        event.target.selectionStart = event.target.selectionEnd =
+          cursorPosition + 8;
+      }, 0); // Set cursor position right after the inserted tab
+    }
+  };
+
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 2 }}>
       <Box
@@ -64,6 +79,7 @@ const Solution = ({
         multiline
         value={thinkingProcess}
         onChange={handleChange}
+        onKeyDown={handleTabInTextField}
         sx={{ marginBottom: 2 }}
       />
 
