@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../config/axiosConfig";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 export const useQuestionHooks = (question, initialQuestion) => {
   const navigate = useNavigate();
@@ -74,24 +75,23 @@ export const useQuestionHooks = (question, initialQuestion) => {
       // Wait for all the image upload promises to complete
       const updatedSolutions = await Promise.all(uploadPromises);
       question.solutions = updatedSolutions;
-      submitRestData(question.id);
-      navigate("/table");
+      const submitResult = await submitRestData(question.id);
+      if (submitResult) {
+        navigate("/table");
+      } else {
+        toast.error("An error occurred during form submission.");
+      }
     } catch (error) {
       console.error("An error occurred during image uploads", error);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const isValidData = validateData();
-    if (!isValidData) {
-      return;
-    }
-    const uploadPromises = question.solutions.map(async (solution, index) => {
+  const uploadFiles = async (solutions, questionNumber) => {
+    const uploadPromises = solutions.map(async (solution, index) => {
       if (solution.file) {
         const fileData = new FormData();
         fileData.append("image", solution.file);
-        fileData.append("questionNumber", question.number);
+        fileData.append("questionNumber", questionNumber);
         try {
           const response = await axiosInstance.post(
             "question/upload-image",
@@ -120,16 +120,43 @@ export const useQuestionHooks = (question, initialQuestion) => {
         return solution; // Return the original solution if there's no file to upload
       }
     });
-    try {
-      // Wait for all the image upload promises to complete
-      const updatedSolutions = await Promise.all(uploadPromises);
-      question.solutions = updatedSolutions;
-      console.log(question);
-      submitRestData();
-      navigate("/table");
-    } catch (error) {
-      console.error("An error occurred during image uploads", error);
-    }
+
+    return await Promise.all(uploadPromises);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    toast.promise(
+      (async () => {
+        const isValidData = validateData();
+        if (!isValidData) {
+          throw new Error("Invalid data");
+        }
+
+        try {
+          const updatedSolutions = await uploadFiles(
+            question.solutions,
+            question.number
+          );
+          question.solutions = updatedSolutions;
+          console.log(question);
+          const submitResult = await submitRestData(question.id);
+          if (submitResult) {
+            navigate("/table");
+          } else {
+            toast.error("An error occurred during form submission.");
+          }
+        } catch (error) {
+          console.error("An error occurred during the process", error);
+        }
+      })(),
+      {
+        pending: "Uploading New Question",
+        success: "Upload Successfully 👌",
+        error: "Upload Failed 🤯",
+      }
+    );
   };
 
   const validateData = () => {
@@ -143,7 +170,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       alert("Time of Completion is required.");
       return false;
     } else if (question.success === "" || question.success === null) {
-      alert("Did you solve the question?");
+      toast.error("Did you solve this LeetCode problem?");
       return false;
     }
     return true;
@@ -175,11 +202,14 @@ export const useQuestionHooks = (question, initialQuestion) => {
       }
       if (response && response.data.serverMessage === "SUCCESS") {
         console.log("Form submission successful", response.data.data);
+        return true;
       } else {
         console.log(response.data);
+        return false;
       }
     } catch (error) {
       console.error("An error occurred during form submission", error);
+      return false;
     }
   };
 

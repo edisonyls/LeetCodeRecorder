@@ -55,7 +55,13 @@ function App() {
                 <Route path="/friends" Component={FriendPage} exact />
               </Routes>
             </Router>
-            <ToastContainer />
+            <ToastContainer
+              autoClose={3000}
+              closeOnClick
+              pauseOnHover={false}
+              limit={5}
+              theme="light"
+            />
           </AlgorithmProvider>
         </DataStructureProvider>
       </UserProvider>

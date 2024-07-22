@@ -225,9 +225,9 @@ const NewQuestionForm = ({ timerValue }) => {
             onClick={() => {
               setQuestion((prev) => ({ ...prev, star: !prev.star }));
               if (question.star) {
-                toast("Unmarked Important");
+                toast.info("Unmarked Important");
               } else {
-                toast("Marked Important");
+                toast.info("Marked Important");
               }
             }}
           >

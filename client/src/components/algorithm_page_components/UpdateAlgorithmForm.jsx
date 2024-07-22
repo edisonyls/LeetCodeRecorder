@@ -238,7 +238,7 @@ const UpdateAlgorithmForm = ({ setDataEntered, algorithm }) => {
       (section) => section.name !== sectionName
     );
     setSections(filteredSections);
-    toast.info("Section " + sectionName + " deleted successfully.", {
+    toast.success("Section " + sectionName + " deleted successfully.", {
       autoClose: 2000,
     });
     setDeleteDialogOpen(false);
