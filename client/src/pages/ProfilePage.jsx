@@ -28,7 +28,7 @@ const ProfilePage = () => {
     e.preventDefault();
     const userId = editedUser.id;
     updateUser(userId, editedUser);
-    toast("Update successfully!");
+    toast.success("Update successfully!");
     setEditMode(false);
   };
 

@@ -67,7 +67,7 @@ const AlgorithmDialog = ({ open, onClose, algorithm }) => {
             alignItems="center"
             height="100%"
           >
-            <CircularProgress />;
+            <CircularProgress />
           </Box>
         );
       }

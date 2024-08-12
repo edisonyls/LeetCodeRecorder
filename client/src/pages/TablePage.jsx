@@ -77,7 +77,7 @@ const TablePage = () => {
         setQuestions(updatedQuestions);
         setOriginalQuestions(updatedQuestions);
         setIsLoading(false);
-        toast("Question deleted successfully!");
+        toast.success("Question deleted successfully!");
       } catch (error) {
         console.error("Error deleting question:", error);
         setIsLoading(false);
