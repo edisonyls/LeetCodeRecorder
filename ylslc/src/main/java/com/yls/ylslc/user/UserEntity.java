@@ -1,7 +1,5 @@
 package com.yls.ylslc.user;
 
-import com.yls.ylslc.question.QuestionEntity;
-import com.yls.ylslc.user.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,14 +7,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue
@@ -30,7 +27,6 @@ public class UserEntity implements UserDetails {
     @Lob
     private String personalInfo;
     private LocalDateTime createdAt;
-
 
     @Enumerated(value = EnumType.STRING)
     private Role role;

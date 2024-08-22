@@ -6,12 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name="node")
+@Table(name = "node")
 public class NodeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +33,3 @@ public class NodeEntity {
         createdAt = LocalDateTime.now();
     }
 }
-
-

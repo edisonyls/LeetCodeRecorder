@@ -1,7 +1,6 @@
 package com.yls.ylslc.algorithm;
 
 import com.yls.ylslc.algorithm.section.SectionEntity;
-import com.yls.ylslc.question.solution.SolutionEntity;
 import com.yls.ylslc.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name="algorithm")
+@Table(name = "algorithm")
 public class AlgorithmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,7 +40,7 @@ public class AlgorithmEntity {
     }
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
 

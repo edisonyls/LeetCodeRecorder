@@ -4,7 +4,6 @@ import com.yls.ylslc.config.s3.S3Buckets;
 import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.question.solution.SolutionService;
 import com.yls.ylslc.user.UserEntity;
-import com.yls.ylslc.user.UserRepository;
 import com.yls.ylslc.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,9 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -27,8 +24,8 @@ public class QuestionServiceImpl implements QuestionService {
     private final SolutionService solutionService;
 
     public QuestionServiceImpl(QuestionRepository theQuestionRepository,
-                               UserService theUserService,
-                               S3Service s3Service, S3Buckets s3Buckets, SolutionService solutionService){
+            UserService theUserService,
+            S3Service s3Service, S3Buckets s3Buckets, SolutionService solutionService) {
         this.questionRepository = theQuestionRepository;
         this.userService = theUserService;
         this.s3Service = s3Service;
@@ -49,10 +46,10 @@ public class QuestionServiceImpl implements QuestionService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UserEntity> currentUser = userService.findOneByUsername(username);
         return currentUser
-                .map(user -> questionRepository.findByUser(user, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort)))
+                .map(user -> questionRepository.findByUser(user,
+                        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort)))
                 .orElse(Page.empty());
     }
-
 
     @Override
     public QuestionEntity createQuestion(QuestionEntity questionEntity) {
@@ -70,12 +67,11 @@ public class QuestionServiceImpl implements QuestionService {
     public void delete(UUID id) {
         // delete bucket if exist
         String username = userService.getCurrentUser().getUsername();
-        QuestionEntity question = questionRepository.findById(id) .orElseThrow(()
-                -> new RuntimeException("Question not found with id: " + id));
+        QuestionEntity question = questionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
         s3Service.deleteObjectsInFolder(
                 s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d".formatted(username, question.getNumber())
-        );
+                "ylslc-question-images/%s/%d".formatted(username, question.getNumber()));
         questionRepository.deleteById(id);
     }
 
@@ -107,25 +103,22 @@ public class QuestionServiceImpl implements QuestionService {
         String username = userService.getCurrentUser().getUsername();
         return s3Service.getObject(
                 s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
-        );
+                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId));
     }
 
     @Override
-    public void deleteImage(Integer questionNumber, String imageId){
+    public void deleteImage(Integer questionNumber, String imageId) {
         String username = userService.getCurrentUser().getUsername();
         s3Service.deleteObject(
                 s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId)
-        );
+                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId));
     }
-
 
     @Override
     public QuestionEntity getQuestionById(UUID id) {
-            // Fetch the question entity by ID
-            return questionRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
+        // Fetch the question entity by ID
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
     }
 
     @Override
@@ -133,9 +126,9 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.findById(id).map(question -> {
             Boolean currentStar = question.getStar();
             if (currentStar == null) {
-                question.setStar(true);  // Set to true if currently null
+                question.setStar(true); // Set to true if currently null
             } else {
-                question.setStar(!currentStar);  // Toggle between true and false
+                question.setStar(!currentStar); // Toggle between true and false
             }
             return questionRepository.save(question);
         }).orElseThrow(() -> new RuntimeException("Question not found"));

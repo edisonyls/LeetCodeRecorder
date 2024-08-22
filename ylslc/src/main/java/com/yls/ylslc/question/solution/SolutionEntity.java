@@ -5,12 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @Entity
-@Table(name="solution")
+@Table(name = "solution")
 public class SolutionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +23,5 @@ public class SolutionEntity {
     @Column(columnDefinition = "TEXT")
     private String codeSnippet;
     private String imageId;
-
-
-
 
 }

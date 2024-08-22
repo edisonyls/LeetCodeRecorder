@@ -1,6 +1,5 @@
 package com.yls.ylslc.question.solution;
 
-import com.yls.ylslc.algorithm.AlgorithmEntity;
 import com.yls.ylslc.question.QuestionEntity;
 import org.springframework.web.multipart.MultipartFile;
 

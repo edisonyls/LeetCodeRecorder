@@ -2,7 +2,6 @@ package com.yls.ylslc.algorithm;
 
 import com.yls.ylslc.config.response.Response;
 import com.yls.ylslc.mappers.Mapper;
-import com.yls.ylslc.question.QuestionEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,34 +13,35 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path="api/algorithm")
+@RequestMapping(path = "api/algorithm")
 @CrossOrigin
 public class AlgorithmController {
     private final AlgorithmService algorithmService;
     private final Mapper<AlgorithmEntity, AlgorithmDto> algorithmMapper;
+
     @GetMapping
-    public Response getAlgorithms(){
+    public Response getAlgorithms() {
         List<AlgorithmEntity> algorithmEntities = algorithmService.getAlgorithms();
         List<AlgorithmDto> algorithmDtos = algorithmEntities.stream().map(algorithmMapper::mapTo).toList();
         return Response.ok(algorithmDtos, "Algorithm retrieved successfully!");
     }
 
     @PostMapping
-    public Response createAlgorithm(@RequestBody AlgorithmDto algorithmDto){
+    public Response createAlgorithm(@RequestBody AlgorithmDto algorithmDto) {
         AlgorithmEntity algorithmEntity = algorithmMapper.mapFrom(algorithmDto);
         AlgorithmEntity savedAlgorithmEntity = algorithmService.createAlgorithm(algorithmEntity);
         AlgorithmDto savedAlgorithm = algorithmMapper.mapTo(savedAlgorithmEntity);
         return Response.ok(savedAlgorithm, "Algorithm created successfully!");
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
-    public Response uploadImages(@RequestPart("image") MultipartFile image){
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "upload-image")
+    public Response uploadImages(@RequestPart("image") MultipartFile image) {
         String imageId = algorithmService.uploadImages(image);
         return Response.ok(imageId, "Image saved successfully!");
     }
 
     @DeleteMapping(path = "/{id}")
-    public Response deleteAlgorithm(@PathVariable("id") UUID id){
+    public Response deleteAlgorithm(@PathVariable("id") UUID id) {
         algorithmService.delete(id);
         return Response.ok("Algorithm deleted!");
     }
@@ -53,18 +53,18 @@ public class AlgorithmController {
             AlgorithmEntity updatedAlgorithmEntity = algorithmService.updateAlgorithm(id, algorithmEntity);
             AlgorithmDto updatedAlgorithm = algorithmMapper.mapTo(updatedAlgorithmEntity);
             return Response.ok(updatedAlgorithm, "Algorithm updated successfully!");
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return Response.failed(HttpStatus.BAD_REQUEST, "Failed to update algorithm.", e.toString());
         }
     }
 
     @DeleteMapping("image/{algorithmId}/{imageId}")
-    public void deleteQuestionImage(@PathVariable String  algorithmId, @PathVariable String imageId) {
+    public void deleteQuestionImage(@PathVariable String algorithmId, @PathVariable String imageId) {
         algorithmService.deleteImage(algorithmId, imageId);
     }
 
     @GetMapping("image/{imageId}")
-    public ResponseEntity<byte[]> getQuestionImage( @PathVariable String imageId) {
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable String imageId) {
         byte[] imageData = algorithmService.getImage(imageId);
 
         HttpHeaders headers = new HttpHeaders();
@@ -74,10 +74,9 @@ public class AlgorithmController {
     }
 
     @GetMapping(path = "/count-algorithm/{id}")
-    public Response countAlgorithm(@PathVariable("id") UUID id){
+    public Response countAlgorithm(@PathVariable("id") UUID id) {
         return Response.ok(algorithmService.countAlgorithm(id), "Count retrieved successfully!");
     }
-
 
     private MediaType getMediaTypeForImageId(String imageId) {
         if (imageId.endsWith(".png")) {
@@ -90,8 +89,8 @@ public class AlgorithmController {
         }
     }
 
-
-    public AlgorithmController(AlgorithmService algorithmService, Mapper<AlgorithmEntity, AlgorithmDto> algorithmMapper) {
+    public AlgorithmController(AlgorithmService algorithmService,
+            Mapper<AlgorithmEntity, AlgorithmDto> algorithmMapper) {
         this.algorithmService = algorithmService;
         this.algorithmMapper = algorithmMapper;
     }

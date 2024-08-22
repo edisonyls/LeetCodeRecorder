@@ -1,6 +1,5 @@
 package com.yls.ylslc.user;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -25,12 +24,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Optional<UserEntity> findOneByUsername(String username){
+    public Optional<UserEntity> findOneByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public void delete(UUID id){
+    public void delete(UUID id) {
         userRepository.deleteById(id);
     }
 
@@ -43,7 +42,8 @@ public class UserServiceImpl implements UserService{
         } else {
             username = principal.toString();
         }
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override

@@ -9,19 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("api/node")
-@CrossOrigin(origins = {"https://ylslc.org", "http://localhost:3000"})
+@CrossOrigin(origins = { "https://ylslc.org", "http://localhost:3000" })
 public class NodeController {
     private final NodeService nodeService;
     private final Mapper<NodeEntity, NodeDto> nodeMapper;
 
     @PostMapping(path = "/{id}")
-    public Response createNode(@PathVariable("id") UUID dataStructureId, @RequestBody NodeDto nodeDto){
+    public Response createNode(@PathVariable("id") UUID dataStructureId, @RequestBody NodeDto nodeDto) {
         NodeEntity nodeEntity = nodeMapper.mapFrom(nodeDto);
         NodeEntity savedNodeEntity = nodeService.createNode(dataStructureId, nodeEntity);
         NodeDto savedNodeDto = nodeMapper.mapTo(savedNodeEntity);
@@ -29,9 +28,9 @@ public class NodeController {
     }
 
     @PatchMapping(path = "/{id}")
-    public Response updateNodeByName(@PathVariable("id") Long id, @RequestBody Map<String, String> updateRequest){
+    public Response updateNodeByName(@PathVariable("id") Long id, @RequestBody Map<String, String> updateRequest) {
         String name = updateRequest.get("name");
-        if (!nodeService.isExist(id)){
+        if (!nodeService.isExist(id)) {
             return Response.failed(HttpStatus.NOT_FOUND, "Node not found!");
         }
         NodeEntity nodeEntity = nodeService.updateName(id, name);
@@ -40,9 +39,9 @@ public class NodeController {
     }
 
     @PatchMapping(path = "content/{id}")
-    public Response updateNodeByContent(@PathVariable("id") Long id, @RequestBody Map<String, String> updateRequest){
+    public Response updateNodeByContent(@PathVariable("id") Long id, @RequestBody Map<String, String> updateRequest) {
         String content = updateRequest.get("content");
-        if (!nodeService.isExist(id)){
+        if (!nodeService.isExist(id)) {
             return Response.failed(HttpStatus.NOT_FOUND, "Node not found!");
         }
         NodeEntity nodeEntity = nodeService.updateContent(id, content);
@@ -50,17 +49,16 @@ public class NodeController {
         return Response.ok(updatedNode, "Node content is updated successfully!");
     }
 
-
     @DeleteMapping(path = "/{id}")
-    public Response deleteNode(@PathVariable("id") Long id){
+    public Response deleteNode(@PathVariable("id") Long id) {
         NodeEntity nodeEntity = nodeService.delete(id);
         NodeDto deletedNode = nodeMapper.mapTo(nodeEntity);
         return Response.ok(deletedNode, deletedNode.getName() + (" deleted successfully!"));
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path="upload-image")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "upload-image")
     public Response uploadContentImages(@RequestPart("image") MultipartFile image,
-                                 @RequestPart("nodeId") String nodeId){
+            @RequestPart("nodeId") String nodeId) {
         String imageId = nodeService.uploadImages(image, nodeId);
         return Response.ok(imageId, "Image saved successfully!");
     }
@@ -76,7 +74,7 @@ public class NodeController {
     }
 
     @DeleteMapping("image/{nodeId}/{imageId}")
-    public Response deleteImage(@PathVariable String nodeId, @PathVariable String imageId){
+    public Response deleteImage(@PathVariable String nodeId, @PathVariable String imageId) {
         Boolean deleted = nodeService.deleteImage(nodeId, imageId);
         if (deleted) {
             return Response.ok(true, "Image deleted successfully!");
@@ -95,7 +93,6 @@ public class NodeController {
             return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
-
 
     public NodeController(NodeService nodeService, Mapper<NodeEntity, NodeDto> nodeMapper) {
         this.nodeService = nodeService;
