@@ -1,13 +1,11 @@
 import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
 import React from "react";
 import AccountNavbar from "../components/navbar/AccountNavbar";
-import {
-  BlackBackgroundButton,
-  WhiteBackgroundButton,
-} from "../components/generic/GenericButton";
+import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import { Link } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { grey } from "@mui/material/colors";
+import Footer from "../components/Footer";
 
 const SignInPage = () => {
   return (
@@ -23,12 +21,13 @@ const SignInPage = () => {
       <AccountNavbar />
       <Box
         sx={{
-          my: 8,
+          my: 4,
           mx: 4,
           display: "flex",
+          flexGrow: 1,
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
+          overflow: "auto",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "black" }}>
@@ -121,6 +120,7 @@ const SignInPage = () => {
           </Grid>
         </Box>
       </Box>
+      <Footer />
     </Box>
   );
 };
