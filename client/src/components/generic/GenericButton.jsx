@@ -49,7 +49,6 @@ export const BlackBackgroundButton = ({
         borderWidth: "1px",
         borderStyle: "solid",
         borderRadius: "20px",
-        marginLeft: 2,
         "&:hover": {
           backgroundColor: "white",
           color: "black",
