@@ -1,13 +1,39 @@
 import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import { Link } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
+import { axiosInstanceNoAuth } from "../config/axiosConfig";
+import { toast } from "react-toastify";
 
 const SignInPage = () => {
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await axiosInstanceNoAuth.post("auth/authenticate", formData);
+      const data = res.data;
+      setLoading(false);
+      if (data.status !== 200) {
+        toast.error(data.message || "An error occurred");
+        return;
+      }
+    } catch (e) {
+      setLoading(false);
+      toast.error(e.message || "An error occurred");
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -49,6 +75,7 @@ const SignInPage = () => {
             width: "100%",
             backgroundColor: "black",
           }}
+          onSubmit={handleSubmit}
         >
           <TextField
             margin="normal"
@@ -59,6 +86,7 @@ const SignInPage = () => {
             name="username"
             autoFocus
             variant="outlined"
+            onChange={handleChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
               style: { color: "white", borderColor: "white" },
@@ -86,6 +114,7 @@ const SignInPage = () => {
             label="Password"
             type="password"
             id="password"
+            onChange={handleChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
               style: { color: "white", borderColor: "white" },
@@ -105,7 +134,21 @@ const SignInPage = () => {
                 },
             }}
           />
-          <BlackBackgroundButton buttonText="Sign In" type="submit" fullWidth />
+          {loading ? (
+            <BlackBackgroundButton
+              disabled={loading}
+              buttonText="Loading..."
+              type="submit"
+              fullWidth
+            />
+          ) : (
+            <BlackBackgroundButton
+              buttonText="Sign In"
+              type="submit"
+              fullWidth
+            />
+          )}
+
           <Grid container sx={{ marginTop: 5 }}>
             <Grid item xs>
               <Link to="#" variant="body2" style={{ color: "white" }}>
