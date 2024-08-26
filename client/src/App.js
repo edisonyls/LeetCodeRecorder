@@ -17,6 +17,7 @@ import UpdateQuestionForm from "./components/new_question/UpdateQuestionForm";
 import TablePage from "./pages/TablePage";
 import Dashboard from "./pages/Dashboard";
 import NewAlgorithmPage from "./pages/NewAlgorithmPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -29,30 +30,36 @@ function App() {
                 <Route path="/" Component={Home} exact />
                 <Route path="/signin" Component={SignInPage} exact />
                 <Route path="/register" Component={RegisterPage} exact />
-                <Route path="/table" Component={TablePage} exact />
-                <Route path="/new" Component={NewQuestion} exact />
-                <Route path="/question/:id" Component={QuestionDetails} exact />
-                <Route path="/profile" Component={ProfilePage} exact />
-                <Route path="/dashboard" Component={Dashboard} exact />
-                <Route path="/algorithm" Component={AlgorithmPage} exact />
-                <Route
-                  path="/new-algorithm"
-                  Component={NewAlgorithmPage}
-                  exact
-                />
-                <Route
-                  path="/edit-question"
-                  Component={UpdateQuestionForm}
-                  exact
-                />
+                <Route Component={PrivateRoute} exact>
+                  <Route path="/table" Component={TablePage} exact />
+                  <Route path="/new" Component={NewQuestion} exact />
+                  <Route
+                    path="/question/:id"
+                    Component={QuestionDetails}
+                    exact
+                  />
+                  <Route path="/profile" Component={ProfilePage} exact />
+                  <Route path="/dashboard" Component={Dashboard} exact />
+                  <Route path="/algorithm" Component={AlgorithmPage} exact />
+                  <Route
+                    path="/new-algorithm"
+                    Component={NewAlgorithmPage}
+                    exact
+                  />
+                  <Route
+                    path="/edit-question"
+                    Component={UpdateQuestionForm}
+                    exact
+                  />
 
-                <Route
-                  path="/data-structure"
-                  Component={DataStructurePage}
-                  exact
-                />
-                <Route path="/algorithm" Component={AlgorithmPage} exact />
-                <Route path="/friends" Component={FriendPage} exact />
+                  <Route
+                    path="/data-structure"
+                    Component={DataStructurePage}
+                    exact
+                  />
+                  <Route path="/algorithm" Component={AlgorithmPage} exact />
+                  <Route path="/friends" Component={FriendPage} exact />
+                </Route>
               </Routes>
             </Router>
             <ToastContainer

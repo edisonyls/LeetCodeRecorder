@@ -6,28 +6,28 @@ import ListIcon from "@mui/icons-material/List";
 import OptionDrawer from "../OptionDrawer";
 import { useUser } from "../../context/userContext";
 import { UserHooks } from "../../hooks/userHooks/UserHooks";
+import { signOut } from "../../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const AuthenticatedNavbar = () => {
   const { state } = useUser();
   const { user, token } = state;
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { logout } = UserHooks();
   const location = useLocation();
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     getCurrentUser(token).catch((error) => {
       alert("User credential expired. Please login again.");
-      logout();
-      navigate("/");
     });
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = () => {
     console.log("Logging out...");
-    logout();
+    dispatch(signOut());
     navigate("/");
   };
 

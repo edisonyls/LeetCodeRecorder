@@ -9,7 +9,7 @@ const PasswordValidator = ({ password }) => {
   const containsLetter = /[A-Za-z]/.test(password);
   return (
     <>
-      <List dense sx={{ mt: 1 }}>
+      <List dense sx={{ mt: -5 }}>
         <ListItem sx={{ py: 0 }}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             {isLengthValid ? (

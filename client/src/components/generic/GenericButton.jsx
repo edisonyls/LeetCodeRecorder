@@ -39,20 +39,25 @@ export const BlackBackgroundButton = ({
   buttonText,
   icon,
   selected,
+  disabled,
   ...props
 }) => {
   return (
     <Button
+      disabled={disabled}
       sx={{
         color: "white",
         borderColor: "white",
         borderWidth: "1px",
         borderStyle: "solid",
         borderRadius: "20px",
-        marginLeft: 2,
         "&:hover": {
           backgroundColor: "white",
           color: "black",
+        },
+        "&:disabled": {
+          color: "grey",
+          backgroundColor: "#fff",
         },
       }}
       {...props}

@@ -1,185 +1,183 @@
-import React, { useEffect, useState } from "react";
-import {
-  Avatar,
-  CssBaseline,
-  TextField,
-  Link,
-  Paper,
-  Box,
-  Grid,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
+import React, { useState } from "react";
 import AccountNavbar from "../components/navbar/AccountNavbar";
-import { WhiteBackgroundButton } from "../components/generic/GenericButton";
-import { useUser } from "../context/userContext";
-import { UserHooks } from "../hooks/userHooks/UserHooks";
-import { userActionTypes } from "../reducer/userActions";
+import { BlackBackgroundButton } from "../components/generic/GenericButton";
+import { Link, useNavigate } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { grey } from "@mui/material/colors";
+import Footer from "../components/Footer";
+import { axiosInstanceNoAuth } from "../config/axiosConfig";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailed,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="#B9BBB6" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        LeetCodeRecorder
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+const SignInPage = () => {
+  const [formData, setFormData] = useState({});
+  const { loading } = useSelector((state) => state.user);
 
-export default function SignInPage() {
   const navigate = useNavigate();
-  const { state, dispatch } = useUser();
-  const { login, getCurrentUser } = UserHooks();
-  const { isAuthenticated, token, user, error } = state;
 
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (error) {
-      toast.error("Invalid login credentials. Try again!");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
-      // Clear the error state after a delay
-      setTimeout(() => {
-        dispatch({ type: userActionTypes.CLEAR_ERROR });
-      }, 5000); // Adjust the delay as needed
-    }
-    if (token) {
-      getCurrentUser(token);
-    }
-    if (isAuthenticated && user && Object.keys(user).length > 0) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(signInStart());
+    try {
+      const res = await axiosInstanceNoAuth.post("auth/authenticate", formData);
+      const data = res.data;
+      if (data.status !== 200) {
+        dispatch(signInFailed(data.message));
+        toast.error(data.message || "An error occurred");
+        return;
+      }
+      dispatch(signInSuccess(data.data));
       navigate("/dashboard");
+    } catch (e) {
+      console.log(e.message);
+      dispatch(signInFailed(e.message));
     }
-  }, [error, isAuthenticated, navigate, user, getCurrentUser, token, dispatch]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData);
-
-    if (!data.username) {
-      toast.error("Please enter your email address!");
-      return;
-    }
-
-    if (!data.password) {
-      toast.error("Please enter your password!");
-      return;
-    }
-
-    // Proceed with login if validation passes
-    login(data);
-  };
-
-  const handleOpenDialog = () => {
-    setOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpen(false);
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        backgroundColor: grey[900],
+        color: "white",
+      }}
+    >
       <AccountNavbar />
-      <CssBaseline />
-      <Grid container component="main" sx={{ height: "100%" }}>
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
+      <Box
+        sx={{
+          my: 4,
+          mx: 4,
+          display: "flex",
+          flexGrow: 1,
+          flexDirection: "column",
+          alignItems: "center",
+          overflow: "auto",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "black" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5" sx={{ marginBottom: 1 }}>
+          Sign in
+        </Typography>
+        <Box
+          component="form"
+          noValidate
           sx={{
-            backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            mt: 1,
+            padding: 5,
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+            maxWidth: "400px",
+            width: "100%",
+            backgroundColor: "black",
           }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+          onSubmit={handleSubmit}
+        >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Email Address"
+            name="username"
+            autoFocus
+            variant="outlined"
+            onChange={handleChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white", borderColor: "white" },
             }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "black" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Email Address"
-                name="username"
-                autoComplete="username"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                sx={{ marginBottom: "2rem" }}
-              />
-              <WhiteBackgroundButton
-                buttonText="Sign In"
-                type="submit"
-                fullWidth
-              />
-              <Grid container sx={{ marginTop: 2 }}>
-                <Grid item xs>
-                  <Link href="#" variant="body2" onClick={handleOpenDialog}>
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="/register" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-              <Copyright sx={{ marginTop: 2 }} />
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-      <Dialog open={open} onClose={handleCloseDialog}>
-        <DialogTitle>{"Feature in Development"}</DialogTitle>
-        <DialogContent>
-          This feature is currently being developed and is not available at the
-          moment. Please check back later!
-        </DialogContent>
-      </Dialog>
+            sx={{
+              marginBottom: 2,
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: grey[900],
+              },
+              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+            }}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            onChange={handleChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white", borderColor: "white" },
+            }}
+            sx={{
+              marginBottom: 5,
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: grey[900],
+              },
+              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "white",
+                },
+            }}
+          />
+          {loading ? (
+            <BlackBackgroundButton
+              disabled={loading}
+              buttonText="Loading..."
+              type="submit"
+              fullWidth
+            />
+          ) : (
+            <BlackBackgroundButton
+              buttonText="Sign In"
+              type="submit"
+              fullWidth
+            />
+          )}
+
+          <Grid container sx={{ marginTop: 5 }}>
+            <Grid item xs>
+              <Link to="#" variant="body2" style={{ color: "white" }}>
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link to="/register" variant="body2" style={{ color: "white" }}>
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+      <Footer />
     </Box>
   );
-}
+};
+
+export default SignInPage;
