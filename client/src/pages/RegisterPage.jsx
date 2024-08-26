@@ -5,7 +5,7 @@ import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { axiosInstanceNoAuth } from "../config/axiosConfig";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,41 +14,95 @@ import {
   registerStart,
   registerSuccess,
 } from "../redux/user/userSlice";
+import PasswordValidator from "../components/PasswordValidator";
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({});
-  const { loading, error } = useSelector((state) => state.user);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const { loading } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+  useEffect(() => {
+    if (password.length > 0 && confirmPassword.length > 0) {
+      if (password !== confirmPassword) {
+        setPasswordsMatch(false);
+      } else {
+        setPasswordsMatch(true);
+      }
+    } else {
+      setPasswordsMatch(true);
+    }
+  }, [password, confirmPassword]);
+
+  const checkData = (data) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!data.firstName) {
+      toast.error("Please fill in your first name!");
+      return false;
+    } else if (!data.lastName) {
+      toast.error("Please fill in your last name!");
+      return false;
+    } else if (!data.username) {
+      toast.error("Please fill in your email address!");
+      return false;
+    } else if (!emailRegex.test(data.username)) {
+      toast.error("Please enter a valid email address.");
+      return false;
+    } else if (!data.password) {
+      toast.error("Please fill in your password!");
+      return false;
+    } else if (!confirmPassword) {
+      toast.error("Please re-enter your password!");
+      return false;
+    }
+    if (!passwordRegex.test(data.password)) {
+      toast.error(
+        "Password must contain letters and numbers, and be 8-16 characters long."
+      );
+      return false;
+    }
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const formatName = ({ name }) => {
+    name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return name;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerStart());
-    const { firstName, lastName, username, password } = formData;
-    const submitData = {
-      firstName,
-      lastName,
-      username,
-      password,
-      role: "USER",
-    };
+
     try {
-      const res = await axiosInstanceNoAuth.post("auth/register", submitData);
-      const data = res.data;
-      if (data.status !== 200) {
-        dispatch(registerFailed(data.message));
-        toast.error(data.message || "An error occurred");
+      const formData = Object.fromEntries(new FormData(e.currentTarget));
+      if (checkData(formData) === false) {
         return;
+      } else {
+        dispatch(registerStart());
+        formData.firstName = formatName({ name: formData.firstName });
+        formData.lastName = formatName({ name: formData.lastName });
+        formData.role = "USER";
+        const res = await axiosInstanceNoAuth.post("auth/register", formData);
+        const data = res.data;
+        if (data.status !== 200) {
+          dispatch(registerFailed(data.message));
+          toast.error(data.message || "An error occurred");
+          return;
+        }
+        dispatch(registerSuccess(data.data));
+        navigate("/dashboard");
       }
-      dispatch(registerSuccess(data.data));
-      navigate("/dashboard");
     } catch (e) {
       console.log(e.message);
+      toast.error("An unexpected error occurred. Please try again.");
       dispatch(registerFailed(e.message));
     }
   };
@@ -103,7 +157,6 @@ const RegisterPage = () => {
                 label="First Name"
                 name="firstName"
                 autoFocus
-                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -111,7 +164,6 @@ const RegisterPage = () => {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
-                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -119,7 +171,6 @@ const RegisterPage = () => {
                 id="username"
                 label="Email Address"
                 name="username"
-                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,7 +179,7 @@ const RegisterPage = () => {
                 label="Password"
                 name="password"
                 type="password"
-                onChange={handleChange}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -137,9 +188,12 @@ const RegisterPage = () => {
                 label="Confirm Password"
                 name="confirmPassword"
                 type="password"
-                onChange={handleChange}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={!passwordsMatch}
+                helperText={!passwordsMatch ? "Passwords do not match." : ""}
                 sx={{ marginBottom: 5 }}
               />
+              {password && <PasswordValidator password={password} />}
             </Grid>
           </Grid>
           {loading ? (
@@ -176,7 +230,7 @@ const CustomTextField = ({
   type = "text",
   autoFocus = false,
   required = true,
-  onChange, // Explicitly accept onChange prop
+  onChange,
   sx = {},
 }) => {
   return (
@@ -188,14 +242,14 @@ const CustomTextField = ({
       required={required}
       autoFocus={autoFocus}
       fullWidth
-      onChange={onChange} // Ensure onChange is correctly set
+      onChange={onChange}
       InputLabelProps={{ style: { color: "white" } }}
       InputProps={{
         style: { color: "white", borderColor: "white" },
       }}
       variant="outlined"
       sx={{
-        marginBottom: 2,
+        marginBottom: "2px",
         "& .MuiOutlinedInput-root": {
           backgroundColor: grey[900],
         },

@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({});
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
