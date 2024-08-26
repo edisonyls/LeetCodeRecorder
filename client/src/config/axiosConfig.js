@@ -1,7 +1,20 @@
 // src/utils/axiosConfig.js
 import axios from "axios";
 
-const token = JSON.parse(localStorage.getItem("user"));
+const getToken = () => {
+  const storedUser = JSON.parse(localStorage.getItem("persist:user"));
+  if (storedUser) {
+    try {
+      const user = JSON.parse(storedUser.user);
+      return user.currentUser || null;
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+      return null;
+    }
+  }
+  return null;
+};
+
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
 const axiosInstanceNoAuth = axios.create({
@@ -11,13 +24,13 @@ const axiosInstanceNoAuth = axios.create({
 const axiosInstance = axios.create({
   baseURL: API_ENDPOINT,
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${getToken()}`,
   },
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = JSON.parse(localStorage.getItem("user"));
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
