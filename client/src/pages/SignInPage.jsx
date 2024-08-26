@@ -7,11 +7,19 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
 import { axiosInstanceNoAuth } from "../config/axiosConfig";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailed,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -19,18 +27,18 @@ const SignInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(signInStart());
     try {
-      setLoading(true);
       const res = await axiosInstanceNoAuth.post("auth/authenticate", formData);
       const data = res.data;
-      setLoading(false);
       if (data.status !== 200) {
+        dispatch(signInFailed(data.message));
         toast.error(data.message || "An error occurred");
         return;
       }
+      dispatch(signInSuccess(data.data));
     } catch (e) {
-      setLoading(false);
-      toast.error(e.message || "An error occurred");
+      dispatch(signInFailed(e));
     }
   };
 
