@@ -14,7 +14,6 @@ const AuthenticatedNavbar = () => {
   const { user, token } = state;
   const { getCurrentUser } = UserHooks();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { logout } = UserHooks();
   const location = useLocation();
 
   const dispatch = useDispatch();

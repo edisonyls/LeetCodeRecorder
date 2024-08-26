@@ -1,5 +1,5 @@
 import { Avatar, TextField, Box, Grid, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
@@ -8,10 +8,19 @@ import Footer from "../components/Footer";
 import { useState } from "react";
 import { axiosInstanceNoAuth } from "../config/axiosConfig";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  registerFailed,
+  registerStart,
+  registerSuccess,
+} from "../redux/user/userSlice";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -19,6 +28,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(registerStart());
     const { firstName, lastName, username, password } = formData;
     const submitData = {
       firstName,
@@ -28,18 +38,18 @@ const RegisterPage = () => {
       role: "USER",
     };
     try {
-      setLoading(true);
       const res = await axiosInstanceNoAuth.post("auth/register", submitData);
       const data = res.data;
-      console.log(data);
-      setLoading(false);
       if (data.status !== 200) {
+        dispatch(registerFailed(data.message));
         toast.error(data.message || "An error occurred");
         return;
       }
+      dispatch(registerSuccess(data.data));
+      navigate("/dashboard");
     } catch (e) {
-      setLoading(false);
-      toast.error(e.message || "An error occurred");
+      console.log(e.message);
+      dispatch(registerFailed(e.message));
     }
   };
 

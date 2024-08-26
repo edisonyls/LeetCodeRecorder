@@ -39,9 +39,10 @@ const SignInPage = () => {
         return;
       }
       dispatch(signInSuccess(data.data));
-      navigate("/table");
+      navigate("/dashboard");
     } catch (e) {
-      dispatch(signInFailed(e));
+      console.log(e.message);
+      dispatch(signInFailed(e.message));
     }
   };
 
