@@ -2,7 +2,7 @@ import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 const SignInPage = () => {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -37,6 +39,7 @@ const SignInPage = () => {
         return;
       }
       dispatch(signInSuccess(data.data));
+      navigate("/table");
     } catch (e) {
       dispatch(signInFailed(e));
     }

@@ -7,7 +7,7 @@ const PrivateRoute = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   if (!currentUser) {
-    toast.error("You need to be authenticated to access this page");
+    toast.error("You need to be authenticated.");
     return <Navigate to="/signin" />;
   }
 
