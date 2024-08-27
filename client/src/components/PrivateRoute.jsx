@@ -1,33 +1,39 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Correct the import here; it should be default import
 import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
-import { signOut } from "../redux/user/userSlice";
 
 const PrivateRoute = () => {
-  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
 
-  if (!currentUser) {
-    toast.error("You need to be authenticated.");
-    return <Navigate to="/signin" />;
-  }
+  const isTokenValid = (token) => {
+    try {
+      if (!token) {
+        toast.error("Not authenticated. Please login again.");
+        return false;
+      }
 
-  try {
-    const decodedToken = jwtDecode(currentUser);
-    if (decodedToken.exp * 1000 < Date.now()) {
-      toast.error("Your session has expired. Please sign in again.");
-      dispatch(signOut());
-      return <Navigate to="/" />;
+      const { exp } = jwtDecode(token);
+
+      if (!exp) {
+        toast.error("Invalid authentication. Please login again.");
+        return false;
+      }
+
+      if (Date.now() > exp * 1000) {
+        toast.error("Your authentication is expired. Please login again.");
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      toast.error("Token is invalid. Please login again.");
+      return false;
     }
-  } catch (error) {
-    toast.error("Invalid token. Please sign in again.");
-    dispatch(signOut());
-    return <Navigate to="/" />;
-  }
+  };
 
-  return <Outlet />;
+  return isTokenValid(currentUser) ? <Outlet /> : <Navigate to="/signin" />;
 };
 
 export default PrivateRoute;
