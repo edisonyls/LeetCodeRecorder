@@ -86,7 +86,7 @@ const HomeNavbar = () => {
             </Drawer>
           </>
         ) : (
-          <Box sx={{ display: "flex", gap: 3 }}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <BlackBackgroundButton
               component={Link}
               to="/signin"
