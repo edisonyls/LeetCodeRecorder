@@ -1,10 +1,13 @@
 // userHooks/UserHooks.js
+import { useNavigate } from "react-router-dom";
 import { axiosInstance, axiosInstanceNoAuth } from "../../config/axiosConfig";
 import { useUser } from "../../context/userContext";
 import { userActionTypes } from "../../reducer/userActions";
 
 export const UserHooks = () => {
   const { dispatch } = useUser();
+
+  const navigate = useNavigate();
 
   const getCurrentUser = async () => {
     dispatch({ type: userActionTypes.PROCESS_START });
@@ -24,25 +27,30 @@ export const UserHooks = () => {
     }
   };
 
-  const login = async (userData) => {
+  const login = async (formData) => {
     dispatch({ type: userActionTypes.PROCESS_START });
     try {
       const response = await axiosInstanceNoAuth.post(
         "auth/authenticate",
-        userData
+        formData
       );
-      const token = response.data.data;
+      const data = response.data;
+      if (data.status !== 200) {
+        dispatch({
+          type: userActionTypes.PROCESS_FAILURE,
+          error: data.message,
+        });
+        return;
+      }
+      const token = data.data;
       localStorage.setItem("user", JSON.stringify(token));
-      const userDetailsResponse = await axiosInstanceNoAuth.get("user", {
-        headers: {
-          Authorization: `Bearer ${token}`, // Manually set the Authorization header for this request
-        },
-      });
+      const userDetailsResponse = await axiosInstance.get("user");
       const user = userDetailsResponse.data.data;
       dispatch({
         type: userActionTypes.SIGN_IN,
         payload: { token, user },
       });
+      navigate("/dashboard");
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
@@ -52,26 +60,30 @@ export const UserHooks = () => {
     }
   };
 
-  const register = async (userData) => {
+  const register = async (formData) => {
     dispatch({ type: userActionTypes.PROCESS_START });
     try {
-      localStorage.removeItem("user");
       const response = await axiosInstanceNoAuth.post(
         "auth/register",
-        userData
+        formData
       );
-      const token = response.data.data;
+      const data = response.data;
+      if (data.status !== 200) {
+        dispatch({
+          type: userActionTypes.PROCESS_FAILURE,
+          error: data.message,
+        });
+        return;
+      }
+      const token = data.data;
       localStorage.setItem("user", JSON.stringify(token));
-      const userDetailsResponse = await axiosInstanceNoAuth.get("user", {
-        headers: {
-          Authorization: `Bearer ${token}`, // Manually set the Authorization header for this request
-        },
-      });
+      const userDetailsResponse = await axiosInstance.get("user");
       const user = userDetailsResponse.data.data;
       dispatch({
         type: userActionTypes.REGISTER,
         payload: { token, user },
       });
+      navigate("/dashboard");
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,

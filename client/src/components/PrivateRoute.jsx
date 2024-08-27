@@ -1,11 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Correct the import here; it should be default import
 import { toast } from "react-toastify";
+import { useUser } from "../context/userContext";
 
 const PrivateRoute = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { state } = useUser();
+  const { token } = state;
 
   const isTokenValid = (token) => {
     try {
@@ -33,7 +34,7 @@ const PrivateRoute = () => {
     }
   };
 
-  return isTokenValid(currentUser) ? <Outlet /> : <Navigate to="/signin" />;
+  return isTokenValid(token) ? <Outlet /> : <Navigate to="/signin" />;
 };
 
 export default PrivateRoute;

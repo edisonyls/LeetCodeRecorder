@@ -1,29 +1,24 @@
 import { Avatar, TextField, Box, Grid, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
-import { axiosInstanceNoAuth } from "../config/axiosConfig";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  registerFailed,
-  registerStart,
-  registerSuccess,
-} from "../redux/user/userSlice";
 import PasswordValidator from "../components/PasswordValidator";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const { loading } = useSelector((state) => state.user);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { state } = useUser();
+  const { loading } = state;
+  const { register } = UserHooks();
 
   useEffect(() => {
     if (password.length > 0 && confirmPassword.length > 0) {
@@ -80,30 +75,14 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const formData = Object.fromEntries(new FormData(e.currentTarget));
-      if (checkData(formData) === false) {
-        return;
-      } else {
-        dispatch(registerStart());
-        formData.firstName = formatName({ name: formData.firstName });
-        formData.lastName = formatName({ name: formData.lastName });
-        formData.role = "USER";
-        const res = await axiosInstanceNoAuth.post("auth/register", formData);
-        const data = res.data;
-        if (data.status !== 200) {
-          dispatch(registerFailed(data.message));
-          toast.error(data.message || "An error occurred");
-          return;
-        }
-        dispatch(registerSuccess(data.data));
-        navigate("/dashboard");
-      }
-    } catch (e) {
-      console.log(e.message);
-      toast.error("An unexpected error occurred. Please try again.");
-      dispatch(registerFailed(e.message));
+    const formData = Object.fromEntries(new FormData(e.currentTarget));
+    if (checkData(formData) === false) {
+      return;
+    } else {
+      formData.firstName = formatName({ name: formData.firstName });
+      formData.lastName = formatName({ name: formData.lastName });
+      formData.role = "USER";
+      register(formData);
     }
   };
 
