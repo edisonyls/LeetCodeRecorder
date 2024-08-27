@@ -6,41 +6,34 @@ import { Link, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { grey } from "@mui/material/colors";
 import Footer from "../components/Footer";
-import { axiosInstanceNoAuth } from "../config/axiosConfig";
-import {
-  signInStart,
-  signInSuccess,
-  signInFailed,
-} from "../redux/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({});
-  const { loading } = useSelector((state) => state.user);
+
+  const { state } = useUser();
+  const { loading } = state;
+  const { login } = UserHooks();
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("persist:user"));
-    if (storedUser) {
-      const token = JSON.parse(storedUser.user).currentUser;
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token);
-          const currentTime = Date.now() / 1000;
+    const token = JSON.parse(localStorage.getItem("user"));
 
-          // Check if the token is expired
-          if (decodedToken.exp > currentTime) {
-            toast.success("You are already logged in");
-            navigate("/dashboard");
-          }
-        } catch (error) {
-          console.error("Invalid token:", error);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        // Check if the token is expired
+        if (decodedToken.exp > currentTime) {
+          toast.success("You are already logged in");
+          navigate("/dashboard");
         }
+      } catch (error) {
+        console.error("Invalid token:", error);
       }
     }
   }, [navigate]);
@@ -51,21 +44,7 @@ const SignInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signInStart());
-    try {
-      const res = await axiosInstanceNoAuth.post("auth/authenticate", formData);
-      const data = res.data;
-      if (data.status !== 200) {
-        dispatch(signInFailed(data.message));
-        toast.error(data.message || "An error occurred");
-        return;
-      }
-      dispatch(signInSuccess(data.data));
-      navigate("/dashboard");
-    } catch (e) {
-      console.log(e.message);
-      dispatch(signInFailed(e.message));
-    }
+    login(formData);
   };
 
   return (
