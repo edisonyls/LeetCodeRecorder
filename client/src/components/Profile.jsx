@@ -17,6 +17,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import UserBadge from "./UserBadge";
 
 export const ProfileView = ({ user }) => {
+  console.log(user.role);
   return (
     <div>
       <Box
@@ -51,7 +52,7 @@ export const ProfileView = ({ user }) => {
           <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
             {user.firstName} {user.lastName}
           </Typography>
-          <UserBadge tier={"Regular"} />
+          <UserBadge tier={user.role} />
         </Box>
         <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {user.username}

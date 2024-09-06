@@ -81,7 +81,7 @@ const RegisterPage = () => {
     } else {
       formData.firstName = formatName({ name: formData.firstName });
       formData.lastName = formatName({ name: formData.lastName });
-      formData.role = "USER";
+      formData.role = "REGULAR";
       register(formData);
     }
   };

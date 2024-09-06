@@ -9,15 +9,15 @@ const UserBadge = ({ tier }) => {
   let color;
 
   switch (tier) {
-    case "Regular":
+    case "REGULAR":
       icon = <AccountBoxIcon sx={{ fontSize: 20 }} />; // Adjust icon size if needed
       color = "#9e9e9e"; // Neutral grey for Regular
       break;
-    case "Premium":
+    case "PREMIUM":
       icon = <FaceRetouchingNaturalIcon sx={{ fontSize: 20 }} />; // Adjust icon size if needed
       color = "#d4af37"; // Luxurious gold for Premium
       break;
-    case "Admin":
+    case "ADMIN":
       icon = <AdminPanelSettingsIcon sx={{ fontSize: 20 }} />; // Adjust icon size if needed
       color = "#1976d2"; // Authoritative blue for Admin
       break;
