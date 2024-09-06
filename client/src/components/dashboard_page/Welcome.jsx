@@ -50,11 +50,11 @@ const Welcome = ({ user }) => {
             You have been with us for{" "}
             <animated.span
               style={{
-                padding: "2px 5px", // Adds space inside the span
-                borderRadius: "5px", // Rounded corners
-                backgroundColor: "limegreen", // White background
+                padding: "2px 5px",
+                borderRadius: "5px",
+                backgroundColor: "limegreen",
                 color: "black",
-                display: "inline-block", // Ensures padding and radius are applied
+                display: "inline-block",
               }}
             >
               {daysWithUsProps.number.to((n) => Math.floor(n))}

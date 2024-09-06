@@ -24,6 +24,11 @@ const ProfilePage = () => {
     setEditMode(true);
   };
 
+  const handleCancel = () => {
+    setEditedUser(user);
+    setEditMode(false);
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     const userId = editedUser.id;
@@ -58,13 +63,13 @@ const ProfilePage = () => {
               ) : (
                 <>
                   <GreyBackgroundButton
-                    onClick={handleSave}
-                    buttonText="Save"
+                    buttonText="Cancel"
+                    onClick={handleCancel}
                   />
 
                   <GreyBackgroundButton
-                    buttonText="Cancel"
-                    onClick={() => setEditMode(false)}
+                    onClick={handleSave}
+                    buttonText="Save"
                   />
                 </>
               )}

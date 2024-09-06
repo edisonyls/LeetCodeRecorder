@@ -18,5 +18,6 @@ public class UserDto {
     private String sex;
     private String mobileNumber;
     private String personalInfo;
+    private Role role;
     private LocalDateTime createdAt;
 }

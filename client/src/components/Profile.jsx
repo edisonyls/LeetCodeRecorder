@@ -14,6 +14,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { grey } from "@mui/material/colors";
 import GenericTextField from "./generic/GenricTextField";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import UserBadge from "./UserBadge";
 
 export const ProfileView = ({ user }) => {
   return (
@@ -40,9 +41,18 @@ export const ProfileView = ({ user }) => {
             ? user.firstName[0] + user.lastName[0]
             : "??"}
         </Avatar>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
-          {user.firstName} {user.lastName}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
+            {user.firstName} {user.lastName}
+          </Typography>
+          <UserBadge tier={"Regular"} />
+        </Box>
         <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {user.username}
         </Typography>

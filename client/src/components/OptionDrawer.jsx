@@ -8,6 +8,7 @@ import {
   Avatar,
   Box,
   Divider,
+  Typography, // Import Typography for text display
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -19,8 +20,15 @@ import DataStructureIcon from "@mui/icons-material/Storage";
 import CodeIcon from "@mui/icons-material/Code";
 import PolylineIcon from "@mui/icons-material/Polyline";
 
-const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
+const OptionDrawer = ({
+  isOpen,
+  toggleDrawer,
+  handleLogout,
+  currentPath,
+  user, // Ensure 'user' is passed in as a prop
+}) => {
   const navigate = useNavigate();
+
   const drawerOptions = [
     {
       text: "Dashboard",
@@ -34,13 +42,6 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       path: "/table",
       onClick: () => navigate("/table"),
     },
-
-    // {
-    //   text: "Friends",
-    //   icon: <Group />,
-    //   path: "/friends",
-    //   onClick: () => navigate("/friends"),
-    // },
     {
       text: "Data Structure",
       icon: <DataStructureIcon />,
@@ -77,7 +78,8 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center", // Center both Avatar and text
           p: 2,
           mt: 2,
         }}
@@ -85,6 +87,10 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
         <Avatar sx={{ backgroundColor: "white", color: "black" }}>
           <Face />
         </Avatar>
+        {/* Add user firstName and lastName below the Avatar */}
+        <Typography variant="h6" color="white" mt={1}>
+          {user?.firstName} {user?.lastName}
+        </Typography>
       </Box>
 
       <List>
