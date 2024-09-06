@@ -14,6 +14,8 @@ export function userReducer(state, action) {
   switch (action.type) {
     case userActionTypes.PROCESS_START:
       return { ...state, loading: true, error: null };
+    case userActionTypes.CLEAR_ERROR:
+      return { ...state, loading: false, error: null };
     case userActionTypes.PROCESS_FAILURE:
       return { ...state, loading: false, error: action.error };
     case userActionTypes.SIGN_IN:

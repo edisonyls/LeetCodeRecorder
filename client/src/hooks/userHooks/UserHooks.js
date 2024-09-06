@@ -27,6 +27,10 @@ export const UserHooks = () => {
     }
   };
 
+  const reset = () => {
+    dispatch({ type: userActionTypes.CLEAR_ERROR });
+  };
+
   const login = async (formData) => {
     dispatch({ type: userActionTypes.PROCESS_START });
     try {
@@ -68,6 +72,7 @@ export const UserHooks = () => {
         formData
       );
       const data = response.data;
+
       if (data.status !== 200) {
         dispatch({
           type: userActionTypes.PROCESS_FAILURE,
@@ -122,5 +127,6 @@ export const UserHooks = () => {
     logout,
     getCurrentUser,
     updateUser,
+    reset,
   };
 };

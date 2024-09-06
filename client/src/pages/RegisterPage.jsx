@@ -17,10 +17,14 @@ const RegisterPage = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(true);
 
   const { state } = useUser();
-  const { loading } = state;
-  const { register } = UserHooks();
+  const { loading, error } = state;
+  const { register, reset } = UserHooks();
 
   useEffect(() => {
+    if (error) {
+      toast.error(error);
+      reset();
+    }
     if (password.length > 0 && confirmPassword.length > 0) {
       if (password !== confirmPassword) {
         setPasswordsMatch(false);
@@ -30,7 +34,7 @@ const RegisterPage = () => {
     } else {
       setPasswordsMatch(true);
     }
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword, error, reset]);
 
   const checkData = (data) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
