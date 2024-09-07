@@ -223,7 +223,12 @@ const displayValueOrPlaceholder = (
   placeholder = "Information not provided"
 ) =>
   value ? (
-    value
+    <Typography
+      variant="body2"
+      sx={{ display: "flex", alignItems: "center", color: grey[50] }}
+    >
+      {value}
+    </Typography>
   ) : (
     <Typography
       variant="body2"

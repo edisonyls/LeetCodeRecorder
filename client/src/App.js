@@ -18,6 +18,7 @@ import TablePage from "./pages/TablePage";
 import Dashboard from "./pages/Dashboard";
 import NewAlgorithmPage from "./pages/NewAlgorithmPage";
 import PrivateRoute from "./components/PrivateRoute";
+import UpgradePage from "./pages/UpgradePage";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
                   />
                   <Route path="/algorithm" Component={AlgorithmPage} exact />
                   <Route path="/friends" Component={FriendPage} exact />
+                  <Route path="/upgrade" Component={UpgradePage} exact />
                 </Route>
               </Routes>
             </Router>

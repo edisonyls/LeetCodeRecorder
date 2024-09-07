@@ -8,6 +8,7 @@ import { GreyBackgroundButton } from "../components/generic/GenericButton";
 import { toast } from "react-toastify";
 import { useUser } from "../context/userContext";
 import { UserHooks } from "../hooks/userHooks/UserHooks";
+import Footer from "../components/Footer";
 
 const ProfilePage = () => {
   const { state } = useUser();
@@ -46,46 +47,60 @@ const ProfilePage = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: grey[900],
-        color: grey[50],
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
         minHeight: "100vh",
       }}
     >
       <AuthenticatedNavbar />
-      <Container component="main" maxWidth="md" sx={{ pt: 8, pb: 6 }}>
-        <Card raised sx={{ backgroundColor: grey[800], color: grey[50] }}>
-          <CardContent>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              {!editMode ? (
-                <GreyBackgroundButton buttonText="Edit" onClick={handleEdit} />
-              ) : (
-                <>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#121212",
+          mt: -4,
+        }}
+      >
+        <Container component="main" maxWidth="md" sx={{ pt: 8, pb: 6 }}>
+          <Card raised sx={{ backgroundColor: grey[800], color: grey[50] }}>
+            <CardContent>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {!editMode ? (
                   <GreyBackgroundButton
-                    buttonText="Cancel"
-                    onClick={handleCancel}
+                    buttonText="Edit"
+                    onClick={handleEdit}
                   />
+                ) : (
+                  <>
+                    <GreyBackgroundButton
+                      buttonText="Cancel"
+                      onClick={handleCancel}
+                    />
 
-                  <GreyBackgroundButton
-                    onClick={handleSave}
-                    buttonText="Save"
-                  />
-                </>
+                    <GreyBackgroundButton
+                      onClick={handleSave}
+                      buttonText="Save"
+                    />
+                  </>
+                )}
+              </Box>
+              {!editMode ? (
+                <ProfileView user={user} onEdit={handleEdit} />
+              ) : (
+                <ProfileEdit
+                  editedUser={editedUser}
+                  handleChange={handleChange}
+                />
               )}
-            </Box>
-            {!editMode ? (
-              <ProfileView user={user} onEdit={handleEdit} />
-            ) : (
-              <ProfileEdit
-                editedUser={editedUser}
-                handleChange={handleChange}
-              />
-            )}
-          </CardContent>
-        </Card>
-      </Container>
-    </div>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
+      <Footer />
+    </Box>
   );
 };
 
