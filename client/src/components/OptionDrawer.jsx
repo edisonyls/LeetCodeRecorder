@@ -8,7 +8,7 @@ import {
   Avatar,
   Box,
   Divider,
-  Typography, // Import Typography for text display
+  Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -62,8 +62,6 @@ const OptionDrawer = ({
     },
   ];
 
-  console.log(user);
-
   return (
     <Drawer
       anchor="right"
@@ -74,6 +72,8 @@ const OptionDrawer = ({
           width: "25%",
           backgroundColor: "black",
           color: "white",
+          overflowX: "hidden", // Prevent horizontal scrolling
+          boxSizing: "border-box", // Ensure padding is included in width
         },
       }}
     >
@@ -81,7 +81,7 @@ const OptionDrawer = ({
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center", // Center both Avatar and text
+          alignItems: "center",
           p: 2,
           mt: 2,
         }}
@@ -89,7 +89,6 @@ const OptionDrawer = ({
         <Avatar sx={{ backgroundColor: "white", color: "black" }}>
           <Face />
         </Avatar>
-        {/* Add user firstName and lastName below the Avatar */}
         <Typography variant="h6" color="white" mt={1}>
           {user?.firstName} {user?.lastName}
         </Typography>
@@ -107,7 +106,7 @@ const OptionDrawer = ({
               backgroundColor:
                 currentPath === option.path
                   ? "rgba(255, 255, 255, 0.2)"
-                  : "inherit", // Highlight if active
+                  : "inherit",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
               },
@@ -119,7 +118,20 @@ const OptionDrawer = ({
         ))}
       </List>
       <Divider color="gray" sx={{ marginY: 2 }} />
-      <Box textAlign="center" position="absolute" bottom={0} width="100%" p={2}>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          padding: 2,
+          gap: 2,
+        }}
+      >
         <BlackBackgroundButton
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
