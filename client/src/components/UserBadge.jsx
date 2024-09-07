@@ -8,8 +8,8 @@ import premiumPlusBadgeGif from "../images/premiumplus.gif";
 import adminBadgeGif from "../images/admin.gif";
 
 const badgeStyle = {
-  width: 40,
-  height: 40,
+  width: 30,
+  height: 30,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

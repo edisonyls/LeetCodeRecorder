@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Button from "@mui/material/Button";
 import { grey } from "@mui/material/colors";
+import { Link } from "react-router-dom";
 
 // GenericButton component
 export const WhiteBackgroundButton = ({
@@ -243,6 +244,31 @@ export const LightGreyBackgroundButton = ({
       {...props}
     >
       {icon && <span style={{ marginTop: 5, marginRight: 5 }}>{icon}</span>}
+      {buttonText}
+    </Button>
+  );
+};
+
+export const SmallNarrowButton = ({ buttonText, icon, selected, ...props }) => {
+  return (
+    <Button
+      component={Link}
+      to="/upgrade"
+      size="small" // Makes the button smaller
+      sx={{
+        minWidth: "40px", // Sets a narrow width
+        padding: "4px", // Reduces padding for a more compact look
+        fontSize: "0.75rem", // Smaller font size
+        lineHeight: 1, // Adjusts line height to match smaller size
+        backgroundColor: "#B9F2FF",
+        color: "black",
+        "&:hover": {
+          borderColor: "#00FF00",
+          backgroundColor: "#00FF00",
+          color: "black",
+        },
+      }}
+    >
       {buttonText}
     </Button>
   );

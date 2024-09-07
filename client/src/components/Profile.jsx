@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Typography,
   Box,
@@ -9,14 +10,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Button,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { grey } from "@mui/material/colors";
 import GenericTextField from "./generic/GenricTextField";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import UserBadge from "./UserBadge";
+import { SmallNarrowButton } from "./generic/GenericButton";
 
 export const ProfileView = ({ user }) => {
+  const showUpgradeButton = user?.role === "REGULAR" || user.role === "PREMIUM";
   return (
     <div>
       <Box
@@ -53,6 +57,7 @@ export const ProfileView = ({ user }) => {
           </Typography>
           <UserBadge tier={user.role} />
         </Box>
+        {showUpgradeButton && <SmallNarrowButton buttonText="Upgrade" />}
         <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {user.username}
         </Typography>
