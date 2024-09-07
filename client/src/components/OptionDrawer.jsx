@@ -25,7 +25,7 @@ const OptionDrawer = ({
   toggleDrawer,
   handleLogout,
   currentPath,
-  user, // Ensure 'user' is passed in as a prop
+  user,
 }) => {
   const navigate = useNavigate();
 
@@ -61,6 +61,8 @@ const OptionDrawer = ({
       onClick: () => navigate("/profile"),
     },
   ];
+
+  console.log(user);
 
   return (
     <Drawer

@@ -48,7 +48,7 @@ export const ProfileView = ({ user }) => {
             gap: 1,
           }}
         >
-          <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
+          <Typography variant="h4" sx={{ fontWeight: "medium" }}>
             {user.firstName} {user.lastName}
           </Typography>
           <UserBadge tier={user.role} />
@@ -67,7 +67,7 @@ export const ProfileView = ({ user }) => {
           >
             Sex
           </Typography>
-          <Typography>{displayValueOrPlaceholder(user.sex)}</Typography>
+          {displayValueOrPlaceholder(user.sex)}
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography
@@ -77,9 +77,7 @@ export const ProfileView = ({ user }) => {
           >
             Mobile Number
           </Typography>
-          <Typography>
-            {displayValueOrPlaceholder(user.mobileNumber)}
-          </Typography>
+          {displayValueOrPlaceholder(user.mobileNumber)}
         </Grid>
         <Grid item xs={12}>
           <Typography
@@ -89,12 +87,10 @@ export const ProfileView = ({ user }) => {
           >
             Personal Info
           </Typography>
-          <Typography>
-            {displayValueOrPlaceholder(
-              user.personalInfo,
-              "No personal information provided"
-            )}
-          </Typography>
+          {displayValueOrPlaceholder(
+            user.personalInfo,
+            "No personal information provided"
+          )}
         </Grid>
       </Grid>
     </div>
