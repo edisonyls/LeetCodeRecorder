@@ -17,7 +17,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import UserBadge from "./UserBadge";
 
 export const ProfileView = ({ user }) => {
-  console.log(user.role);
   return (
     <div>
       <Box
