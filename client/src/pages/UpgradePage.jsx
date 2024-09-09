@@ -1,14 +1,7 @@
 import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
-import {
-  Box,
-  Typography,
-  Switch,
-  Grid,
-  Paper,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Typography, Switch, Grid, Paper } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import StarIcon from "@mui/icons-material/Star"; // New icon for extra features
 import Footer from "../components/Footer";
