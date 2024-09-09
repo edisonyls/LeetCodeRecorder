@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import StarIcon from "@mui/icons-material/Star"; // New icon for extra features
 import Footer from "../components/Footer";
 import { GreyBackgroundButton } from "../components/generic/GenericButton";
 import { useUser } from "../context/userContext";
@@ -25,9 +26,9 @@ const UpgradePage = () => {
       monthlyPrice: "Free",
       yearlyPrice: "Free",
       feature: [
-        "Record coding problems",
-        "Details of each problem",
-        "Image Uploading",
+        { text: "Record coding problems", isExtra: false },
+        { text: "Details of each problem", isExtra: false },
+        { text: "Image Uploading", isExtra: false },
       ],
       available: false,
     },
@@ -36,10 +37,10 @@ const UpgradePage = () => {
       monthlyPrice: "$4.99",
       yearlyPrice: "$39.99",
       feature: [
-        "Record coding problems",
-        "Details of each problem",
-        "Image Uploading",
-        "Statistics Analysis",
+        { text: "Record coding problems", isExtra: false },
+        { text: "Details of each problem", isExtra: false },
+        { text: "Image Uploading", isExtra: false },
+        { text: "Statistics Analysis", isExtra: true }, // Extra feature
       ],
       available: user.role !== "PREMIUM" && user.role !== "PREPLUS",
     },
@@ -48,12 +49,12 @@ const UpgradePage = () => {
       monthlyPrice: "$9.99",
       yearlyPrice: "$69.99",
       feature: [
-        "Record coding problems",
-        "Details of each problem",
-        "Image Uploading",
-        "Statistics Analysis",
-        "Data Structure Recording",
-        "Algorithm Recording",
+        { text: "Record coding problems", isExtra: false },
+        { text: "Details of each problem", isExtra: false },
+        { text: "Image Uploading", isExtra: false },
+        { text: "Statistics Analysis", isExtra: true }, // Extra feature
+        { text: "Data Structure Recording", isExtra: true }, // Extra feature
+        { text: "Algorithm Recording", isExtra: true }, // Extra feature
       ],
       available: user.role !== "PREPLUS",
     },
@@ -185,8 +186,12 @@ const UpgradePage = () => {
                             marginBottom: "8px",
                           }}
                         >
-                          <CheckCircleIcon sx={{ mr: 2, color: "#00FF00" }} />
-                          {feat}
+                          {feat.isExtra ? (
+                            <StarIcon sx={{ mr: 2, color: "#FFD700" }} /> // New icon for extra features
+                          ) : (
+                            <CheckCircleIcon sx={{ mr: 2, color: "#00FF00" }} />
+                          )}
+                          {feat.text}
                         </li>
                       ))}
                     </ul>

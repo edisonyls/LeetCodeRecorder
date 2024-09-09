@@ -54,7 +54,12 @@ export const UserHooks = () => {
         type: userActionTypes.SIGN_IN,
         payload: { token, user },
       });
-      navigate("/dashboard");
+      console.log(user);
+      if (user.role === "REGULAR") {
+        navigate("/table");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,
@@ -88,7 +93,7 @@ export const UserHooks = () => {
         type: userActionTypes.REGISTER,
         payload: { token, user },
       });
-      navigate("/dashboard");
+      navigate("/table");
     } catch (error) {
       dispatch({
         type: userActionTypes.PROCESS_FAILURE,

@@ -254,12 +254,12 @@ export const SmallNarrowButton = ({ buttonText, icon, selected, ...props }) => {
     <Button
       component={Link}
       to="/upgrade"
-      size="small" // Makes the button smaller
+      size="small"
       sx={{
-        minWidth: "40px", // Sets a narrow width
-        padding: "4px", // Reduces padding for a more compact look
-        fontSize: "0.75rem", // Smaller font size
-        lineHeight: 1, // Adjusts line height to match smaller size
+        minWidth: "40px",
+        padding: "4px",
+        fontSize: "0.75rem",
+        lineHeight: 1,
         backgroundColor: "#B9F2FF",
         color: "black",
         "&:hover": {

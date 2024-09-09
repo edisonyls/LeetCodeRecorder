@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { grey } from "@mui/material/colors";
@@ -50,6 +49,7 @@ export const ProfileView = ({ user }) => {
             display: "flex",
             alignItems: "center",
             gap: 1,
+            mb: 1,
           }}
         >
           <Typography variant="h4" sx={{ fontWeight: "medium" }}>
@@ -57,6 +57,18 @@ export const ProfileView = ({ user }) => {
           </Typography>
           <UserBadge tier={user.role} />
         </Box>
+        <Typography
+          variant="subtitle2"
+          sx={{ fontSize: "0.75rem", mb: "1px", color: "#B9F2FF" }}
+        >
+          {user.role === "REGULAR"
+            ? "Free Tier"
+            : user.role === "PREMIUM"
+            ? "Premium Tier"
+            : user.role === "PREPLUS"
+            ? "Premium Plus Tier"
+            : "Admin"}
+        </Typography>
         {showUpgradeButton && <SmallNarrowButton buttonText="Upgrade" />}
         <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {user.username}

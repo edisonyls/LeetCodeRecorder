@@ -35,32 +35,42 @@ const OptionDrawer = ({
       icon: <DashboardIcon />,
       path: "/dashboard",
       onClick: () => navigate("/dashboard"),
+      roles: ["PREMIUM", "PREPLUS", "ADMIN"], // only for PREMIUM and PREPLUS
     },
     {
       text: "LeetCode",
       icon: <CodeIcon />,
       path: "/table",
       onClick: () => navigate("/table"),
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
     },
     {
       text: "Data Structure",
       icon: <DataStructureIcon />,
       path: "/data-structure",
       onClick: () => navigate("/data-structure"),
+      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS
     },
     {
       text: "Algorithm",
       icon: <PolylineIcon />,
       path: "/algorithm",
       onClick: () => navigate("/algorithm"),
+      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS (you can adjust this as needed)
     },
     {
       text: "Profile",
       icon: <AccountCircleIcon />,
       path: "/profile",
       onClick: () => navigate("/profile"),
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
     },
   ];
+
+  // Filter options based on user role
+  const filteredOptions = drawerOptions.filter((option) =>
+    option.roles.includes(user?.role)
+  );
 
   return (
     <Drawer
@@ -95,7 +105,7 @@ const OptionDrawer = ({
       </Box>
 
       <List>
-        {drawerOptions.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <ListItem
             key={index}
             onClick={option.onClick}
