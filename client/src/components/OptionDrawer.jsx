@@ -8,6 +8,7 @@ import {
   Avatar,
   Box,
   Divider,
+  Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -19,47 +20,57 @@ import DataStructureIcon from "@mui/icons-material/Storage";
 import CodeIcon from "@mui/icons-material/Code";
 import PolylineIcon from "@mui/icons-material/Polyline";
 
-const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
+const OptionDrawer = ({
+  isOpen,
+  toggleDrawer,
+  handleLogout,
+  currentPath,
+  user,
+}) => {
   const navigate = useNavigate();
+
   const drawerOptions = [
     {
       text: "Dashboard",
       icon: <DashboardIcon />,
       path: "/dashboard",
       onClick: () => navigate("/dashboard"),
+      roles: ["PREMIUM", "PREPLUS", "ADMIN"], // only for PREMIUM and PREPLUS
     },
     {
       text: "LeetCode",
       icon: <CodeIcon />,
       path: "/table",
       onClick: () => navigate("/table"),
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
     },
-
-    // {
-    //   text: "Friends",
-    //   icon: <Group />,
-    //   path: "/friends",
-    //   onClick: () => navigate("/friends"),
-    // },
     {
       text: "Data Structure",
       icon: <DataStructureIcon />,
       path: "/data-structure",
       onClick: () => navigate("/data-structure"),
+      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS
     },
     {
       text: "Algorithm",
       icon: <PolylineIcon />,
       path: "/algorithm",
       onClick: () => navigate("/algorithm"),
+      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS (you can adjust this as needed)
     },
     {
       text: "Profile",
       icon: <AccountCircleIcon />,
       path: "/profile",
       onClick: () => navigate("/profile"),
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
     },
   ];
+
+  // Filter options based on user role
+  const filteredOptions = drawerOptions.filter((option) =>
+    option.roles.includes(user?.role)
+  );
 
   return (
     <Drawer
@@ -71,13 +82,16 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
           width: "25%",
           backgroundColor: "black",
           color: "white",
+          overflowX: "hidden", // Prevent horizontal scrolling
+          boxSizing: "border-box", // Ensure padding is included in width
         },
       }}
     >
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
           p: 2,
           mt: 2,
         }}
@@ -85,10 +99,13 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
         <Avatar sx={{ backgroundColor: "white", color: "black" }}>
           <Face />
         </Avatar>
+        <Typography variant="h6" color="white" mt={1}>
+          {user?.firstName} {user?.lastName}
+        </Typography>
       </Box>
 
       <List>
-        {drawerOptions.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <ListItem
             key={index}
             onClick={option.onClick}
@@ -99,7 +116,7 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
               backgroundColor:
                 currentPath === option.path
                   ? "rgba(255, 255, 255, 0.2)"
-                  : "inherit", // Highlight if active
+                  : "inherit",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
               },
@@ -111,7 +128,20 @@ const OptionDrawer = ({ isOpen, toggleDrawer, handleLogout, currentPath }) => {
         ))}
       </List>
       <Divider color="gray" sx={{ marginY: 2 }} />
-      <Box textAlign="center" position="absolute" bottom={0} width="100%" p={2}>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          padding: 2,
+          gap: 2,
+        }}
+      >
         <BlackBackgroundButton
           startIcon={<LogoutIcon />}
           onClick={handleLogout}

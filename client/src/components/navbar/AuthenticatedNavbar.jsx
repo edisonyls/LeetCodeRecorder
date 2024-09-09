@@ -105,6 +105,7 @@ const AuthenticatedNavbar = () => {
           toggleDrawer={toggleDrawer}
           handleLogout={handleLogout}
           currentPath={location.pathname}
+          user={user}
         />
       </Toolbar>
     </AppBar>

@@ -93,9 +93,10 @@ const DataStructurePage = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#121212",
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
         minHeight: "100vh",
       }}
     >
@@ -107,68 +108,76 @@ const DataStructurePage = () => {
       </Backdrop>
 
       <AuthenticatedNavbar />
-      <Container
-        component="main"
-        maxWidth="lg"
-        sx={{ pt: 2, pb: 6, minHeight: "83vh" }}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#121212",
+          mt: -4,
+          pt: 2,
+          pb: 6,
+        }}
       >
-        <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
-          Data Structures
-        </Typography>
+        <Container component="main" maxWidth="lg" sx={{ pt: 2, pb: 6 }}>
+          <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>
+            Data Structures
+          </Typography>
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Box
-              sx={{
-                display: "flex",
-                bgcolor: grey[800],
-                color: grey[50],
-                borderRadius: 1,
-                minHeight: 300,
-                overflow: "auto",
-              }}
-            >
-              <DataStructureList
-                sx={{ flex: 1 }}
-                dataStructure={dataStructures}
-                handleStructureClick={handleStructureClick}
-                addClicked={addClicked}
-              />
-              <NodeList
-                sx={{ flex: 1 }}
-                selectedStructure={selectedStructure}
-                dataStructure={dataStructures}
-                handleNodeClick={handleNodeClick}
-                addClicked={addClicked}
-                selectedNodeId={selectedNode ? selectedNode.id : null}
-              />
-            </Box>
-          </Grid>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: "flex",
+                  bgcolor: grey[800],
+                  color: grey[50],
+                  borderRadius: 1,
+                  minHeight: 300,
+                  overflow: "auto",
+                }}
+              >
+                <DataStructureList
+                  sx={{ flex: 1 }}
+                  dataStructure={dataStructures}
+                  handleStructureClick={handleStructureClick}
+                  addClicked={addClicked}
+                />
+                <NodeList
+                  sx={{ flex: 1 }}
+                  selectedStructure={selectedStructure}
+                  dataStructure={dataStructures}
+                  handleNodeClick={handleNodeClick}
+                  addClicked={addClicked}
+                  selectedNodeId={selectedNode ? selectedNode.id : null}
+                />
+              </Box>
+            </Grid>
 
-          <Grid item xs={12} md={8}>
-            <Box
-              sx={{
-                bgcolor: grey[800],
-                color: grey[50],
-                p: 2,
-                borderRadius: 1,
-                minHeight: 365,
-                overflow: "auto",
-              }}
-            >
-              <ContentDisplay
-                selectedStructure={selectedStructure}
-                selectedNode={selectedNode}
-                addClicked={addClicked}
-                setAddClicked={setAddClicked}
-                content={content}
-              />
-            </Box>
+            <Grid item xs={12} md={8}>
+              <Box
+                sx={{
+                  bgcolor: grey[800],
+                  color: grey[50],
+                  p: 2,
+                  borderRadius: 1,
+                  minHeight: 365,
+                  overflow: "auto",
+                }}
+              >
+                <ContentDisplay
+                  selectedStructure={selectedStructure}
+                  selectedNode={selectedNode}
+                  addClicked={addClicked}
+                  setAddClicked={setAddClicked}
+                  content={content}
+                />
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
       <Footer />
-    </div>
+    </Box>
   );
 };
 

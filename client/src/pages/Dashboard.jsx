@@ -68,7 +68,7 @@ const Dashboard = () => {
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                flexWrap: "wrap", // Ensure boxes wrap if necessary
+                flexWrap: "wrap",
                 width: "100%",
               }}
             >

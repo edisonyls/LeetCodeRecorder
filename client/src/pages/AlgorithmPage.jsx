@@ -75,18 +75,21 @@ const AlgorithmPage = () => {
   return (
     <Box
       sx={{
+        display: "flex",
+        flexDirection: "column",
         minHeight: "100vh",
-        background: "#121212",
       }}
     >
       <AuthenticatedNavbar />
+
       <Box
         sx={{
+          flex: 1,
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "#121212",
+          mt: -4,
           alignItems: "center",
-          marginBottom: "2rem",
-          minHeight: "79vh",
         }}
       >
         <Box
@@ -96,6 +99,7 @@ const AlgorithmPage = () => {
             alignItems: "center",
             width: "80%",
             mb: 2,
+            mt: 4,
           }}
         >
           <Typography variant="h4" gutterBottom sx={{ color: grey[50] }}>

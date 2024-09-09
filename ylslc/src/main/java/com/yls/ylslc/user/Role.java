@@ -1,6 +1,8 @@
 package com.yls.ylslc.user;
 
 public enum Role {
-    USER,
+    REGULAR,
+    PREMIUM,
+    PREPLUS,
     ADMIN
 }

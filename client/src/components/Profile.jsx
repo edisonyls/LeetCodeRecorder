@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Typography,
   Box,
@@ -14,8 +15,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import { grey } from "@mui/material/colors";
 import GenericTextField from "./generic/GenricTextField";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import UserBadge from "./UserBadge";
+import { SmallNarrowButton } from "./generic/GenericButton";
 
 export const ProfileView = ({ user }) => {
+  const showUpgradeButton = user?.role === "REGULAR" || user.role === "PREMIUM";
   return (
     <div>
       <Box
@@ -40,9 +44,32 @@ export const ProfileView = ({ user }) => {
             ? user.firstName[0] + user.lastName[0]
             : "??"}
         </Avatar>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: "medium" }}>
-          {user.firstName} {user.lastName}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mb: 1,
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: "medium" }}>
+            {user.firstName} {user.lastName}
+          </Typography>
+          <UserBadge tier={user.role} />
+        </Box>
+        <Typography
+          variant="subtitle2"
+          sx={{ fontSize: "0.75rem", mb: "1px", color: "#B9F2FF" }}
+        >
+          {user.role === "REGULAR"
+            ? "Free Tier"
+            : user.role === "PREMIUM"
+            ? "Premium Tier"
+            : user.role === "PREPLUS"
+            ? "Premium Plus Tier"
+            : "Admin"}
         </Typography>
+        {showUpgradeButton && <SmallNarrowButton buttonText="Upgrade" />}
         <Typography variant="subtitle1" sx={{ color: grey[400], mt: 1 }}>
           Email: {user.username}
         </Typography>
@@ -57,7 +84,7 @@ export const ProfileView = ({ user }) => {
           >
             Sex
           </Typography>
-          <Typography>{displayValueOrPlaceholder(user.sex)}</Typography>
+          {displayValueOrPlaceholder(user.sex)}
         </Grid>
         <Grid item xs={12} sm={6}>
           <Typography
@@ -67,9 +94,7 @@ export const ProfileView = ({ user }) => {
           >
             Mobile Number
           </Typography>
-          <Typography>
-            {displayValueOrPlaceholder(user.mobileNumber)}
-          </Typography>
+          {displayValueOrPlaceholder(user.mobileNumber)}
         </Grid>
         <Grid item xs={12}>
           <Typography
@@ -79,12 +104,10 @@ export const ProfileView = ({ user }) => {
           >
             Personal Info
           </Typography>
-          <Typography>
-            {displayValueOrPlaceholder(
-              user.personalInfo,
-              "No personal information provided"
-            )}
-          </Typography>
+          {displayValueOrPlaceholder(
+            user.personalInfo,
+            "No personal information provided"
+          )}
         </Grid>
       </Grid>
     </div>
@@ -212,7 +235,12 @@ const displayValueOrPlaceholder = (
   placeholder = "Information not provided"
 ) =>
   value ? (
-    value
+    <Typography
+      variant="body2"
+      sx={{ display: "flex", alignItems: "center", color: grey[50] }}
+    >
+      {value}
+    </Typography>
   ) : (
     <Typography
       variant="body2"
