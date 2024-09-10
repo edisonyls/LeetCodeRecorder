@@ -12,12 +12,11 @@ import java.io.IOException;
 public class S3Service {
     private final S3Client s3;
 
-
     public S3Service(S3Client s3) {
         this.s3 = s3;
     }
 
-    public void putObject(String bucketName, String key, byte[] file, String contentType){
+    public void putObject(String bucketName, String key, byte[] file, String contentType) {
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -26,7 +25,7 @@ public class S3Service {
         s3.putObject(objectRequest, RequestBody.fromBytes(file));
     }
 
-    public byte[] getObject(String bucketName, String key){
+    public byte[] getObject(String bucketName, String key) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -50,7 +49,7 @@ public class S3Service {
     public void deleteObjectsInFolder(String bucketName, String folderKey) {
         ListObjectsV2Request listObjects = ListObjectsV2Request.builder()
                 .bucket(bucketName)
-                .prefix(folderKey)  // List all objects under this folder path
+                .prefix(folderKey)
                 .build();
 
         ListObjectsV2Response listObjectsResponse = s3.listObjectsV2(listObjects);
@@ -62,6 +61,5 @@ public class S3Service {
             s3.deleteObject(deleteObjectRequest);
         }
     }
-
 
 }

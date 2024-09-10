@@ -94,8 +94,8 @@ export const GreyBackgroundDialog = ({
         "& .MuiDialog-paper": {
           backgroundColor: grey[800],
           color: "#fff",
-          width: "40%", // Set the width of the dialog
-          maxWidth: "40%", // Ensure the dialog does not exceed this width
+          width: "40%",
+          maxWidth: "40%",
         },
         "& .MuiDialogContentText-root, & .MuiDialogTitle-root": {
           color: "#fff",

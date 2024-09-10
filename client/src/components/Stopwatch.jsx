@@ -6,7 +6,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { GenericDialog } from "./generic/GenericDialog";
 
-const MAX_TIME = 59999; // Maximum time in seconds (999 minutes and 59 seconds)
+const MAX_TIME = 59999;
 
 const Stopwatch = ({ onTimeSubmit }) => {
   const [time, setTime] = useState(0);
@@ -19,7 +19,7 @@ const Stopwatch = ({ onTimeSubmit }) => {
 
   useEffect(() => {
     let interval = null;
-    let lastSecond = 0; // Track the last full second that was displayed
+    let lastSecond = 0;
 
     if (isRunning) {
       interval = setInterval(() => {
@@ -78,7 +78,7 @@ const Stopwatch = ({ onTimeSubmit }) => {
   const handleReset = () => {
     setTime(0);
     setStartTime(Date.now());
-    setIsRunning(true); // Optionally reset the timer to start running immediately
+    setIsRunning(true);
     setOpenResetDialog(false);
   };
 

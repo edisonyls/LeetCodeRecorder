@@ -159,7 +159,7 @@ const AlgorithmForm = ({ setDataEntered }) => {
     toast.success("Section " + sectionName + " deleted successfully.", {
       autoClose: 2000,
     });
-    setDeleteDialogOpen(false); // Close the dialog after deletion
+    setDeleteDialogOpen(false);
   };
 
   const openDeleteDialog = (sectionName) => {

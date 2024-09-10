@@ -81,7 +81,6 @@ const MenuBar = ({
               imageFile,
               selectedNode.id
             );
-            //   // Replace the src with the new imageId or URL from the backend
             node.attrs.src = imageId;
           }
         }
@@ -128,7 +127,7 @@ const MenuBar = ({
         return `Heading ${level}`;
       }
     }
-    return "Normal Text"; // Default to "Normal Text" if no other formats match
+    return "Normal Text";
   };
 
   const handleColorChange = (color) => {

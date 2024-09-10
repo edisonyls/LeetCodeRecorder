@@ -130,8 +130,8 @@ const AlgorithmCard = ({ algorithm, onOpen, onDelete, onEdit }) => {
               color: "black",
               borderColor: "#00FF00",
               backgroundColor: "#00FF00",
-              boxShadow: "0px 0px 8px #00FF00, 0px 0px 10px #00FF00 inset", // Outer and inner glow
-              textShadow: "0px 0px 8px #00FF00", // Neon-like text glow
+              boxShadow: "0px 0px 8px #00FF00, 0px 0px 10px #00FF00 inset",
+              textShadow: "0px 0px 8px #00FF00",
             },
           }}
           onClick={() => onOpen(algorithm)}

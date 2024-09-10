@@ -57,8 +57,8 @@ const ServiceCard = ({ title, text, imageSrc }) => {
           top: "400px",
           left: "30px",
           fontSize: {
-            xs: "16px", // smartphones
-            xl: "18px", // large screens
+            xs: "16px",
+            xl: "18px",
           },
           color: "#ffff8d",
         }}

@@ -100,16 +100,16 @@ const AlgorithmDialog = ({ open, onClose, algorithm }) => {
           background: "#00FF00",
           color: "black",
           padding: "10px 15px",
-          display: "flex", // Add flex display to align title and button
-          alignItems: "center", // Align items vertically
-          justifyContent: "space-between", // Space between title and close button
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         {algorithm.title}
         <IconButton
-          onClick={onClose} // Use onClose prop to handle click
+          onClick={onClose}
           aria-label="close"
-          sx={{ color: "black" }} // Set the icon color
+          sx={{ color: "black" }}
         >
           <CloseIcon />
         </IconButton>

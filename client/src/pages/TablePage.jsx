@@ -60,10 +60,10 @@ const TablePage = () => {
   };
 
   const handleDelete = (id, event) => {
-    event.stopPropagation(); // Stop the event from propagating to the row click event
+    event.stopPropagation();
     event.preventDefault();
-    setQuestionToDeleteId(id); // Set the ID of the question to delete
-    setOpenDeleteDialog(true); // Open the delete confirmation dialog
+    setQuestionToDeleteId(id);
+    setOpenDeleteDialog(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -114,7 +114,7 @@ const TablePage = () => {
     } catch (error) {
       console.error("Error fetching questions:", error);
     } finally {
-      setIsFetching(false); // Ensure fetching state is updated regardless of success or error
+      setIsFetching(false);
     }
   };
 
@@ -134,7 +134,6 @@ const TablePage = () => {
       </>
     );
   } else if (originalQuestions === null) {
-    // Check if originalQuestions is null and render "No Data"
     return (
       <Box
         sx={{
@@ -246,7 +245,7 @@ const TablePage = () => {
               }}
             >
               <Pagination
-                count={Math.ceil(totalQuestions / pageSize)} // Ensure the value is always a valid number
+                count={Math.ceil(totalQuestions / pageSize)}
                 page={page}
                 onChange={(event, value) => setPage(value)}
                 color="primary"
@@ -296,7 +295,7 @@ const TablePage = () => {
           isOpen={openDeleteDialog}
           onClose={() => {
             setOpenDeleteDialog(false);
-            setQuestionToDeleteId(null); // Optionally reset the ID here as well
+            setQuestionToDeleteId(null);
           }}
           onConfirm={handleConfirmDelete}
           title="Delete Question?"

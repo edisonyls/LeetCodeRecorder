@@ -89,7 +89,6 @@ public class NodeController {
         } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
             return MediaType.IMAGE_JPEG;
         } else {
-            // Default or fallback content type
             return MediaType.APPLICATION_OCTET_STREAM;
         }
     }

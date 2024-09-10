@@ -35,13 +35,6 @@ public class QuestionController {
         this.questionMapper = questionMapper;
     }
 
-    // @GetMapping
-    // public Response getQuestions(){
-    // List<QuestionEntity> questions = questionService.getQuestions();
-    // List<QuestionDto> questionDtos =
-    // questions.stream().map(questionMapper::mapTo).toList();
-    // return Response.ok(questionDtos, "Question retrieved successfully!");
-    // }
     @GetMapping
     public Response getQuestions(
             @RequestParam(defaultValue = "0") int page,
@@ -172,7 +165,6 @@ public class QuestionController {
         } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
             return MediaType.IMAGE_JPEG;
         } else {
-            // Default or fallback content type
             return MediaType.APPLICATION_OCTET_STREAM;
         }
     }

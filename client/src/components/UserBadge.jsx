@@ -1,7 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-// Importing custom GIF images for each badge
 import regularBadgeGif from "../images/regular.gif";
 import premiumBadgeGif from "../images/premium.gif";
 import premiumPlusBadgeGif from "../images/premiumplus.gif";

@@ -8,7 +8,7 @@ export const ContentHooks = () => {
   async function convertBlobUrlToFile(blobUrl) {
     const response = await fetch(blobUrl);
     const blob = await response.blob();
-    return new File([blob], "image.jpg", { type: "image/jpeg" }); // Customize filename and mimetype as needed
+    return new File([blob], "image.jpg", { type: "image/jpeg" });
   }
 
   const uploadImageToBackend = async (imageFile, nodeId) => {

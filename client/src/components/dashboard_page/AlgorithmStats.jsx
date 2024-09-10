@@ -1,4 +1,3 @@
-// components/AlgorithmStats.js
 import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import { useSpring, animated } from "react-spring";
@@ -18,7 +17,7 @@ const AlgorithmStats = ({ userId }) => {
     boxSizing: "border-box",
     margin: "10px",
     delay: 1800,
-    width: "48%", // Adjust width to half of the available space
+    width: "48%",
   });
 
   return (

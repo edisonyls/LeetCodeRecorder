@@ -131,7 +131,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             width: 90,
             height: 90,
             fontSize: "2rem",
-            mb: 2, // Added margin-bottom for spacing
+            mb: 2,
           }}
         >
           {editedUser.firstName && editedUser.lastName

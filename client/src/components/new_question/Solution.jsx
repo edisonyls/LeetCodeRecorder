@@ -35,11 +35,11 @@ const Solution = ({
 
   const handleTabInTextField = (event) => {
     if (event.key === "Tab") {
-      event.preventDefault(); // Prevent the default Tab key behavior
+      event.preventDefault();
       const cursorPosition = event.target.selectionStart;
       const beforeTab = thinkingProcess.substring(0, cursorPosition);
       const afterTab = thinkingProcess.substring(cursorPosition);
-      const updatedText = beforeTab + "        " + afterTab; // Adding 8 spaces
+      const updatedText = beforeTab + "        " + afterTab;
       handleChange({ target: { name: event.target.name, value: updatedText } });
       setTimeout(() => {
         event.target.selectionStart = event.target.selectionEnd =

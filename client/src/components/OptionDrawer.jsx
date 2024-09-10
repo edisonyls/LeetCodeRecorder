@@ -35,35 +35,35 @@ const OptionDrawer = ({
       icon: <DashboardIcon />,
       path: "/dashboard",
       onClick: () => navigate("/dashboard"),
-      roles: ["PREMIUM", "PREPLUS", "ADMIN"], // only for PREMIUM and PREPLUS
+      roles: ["PREMIUM", "PREPLUS", "ADMIN"],
     },
     {
       text: "LeetCode",
       icon: <CodeIcon />,
       path: "/table",
       onClick: () => navigate("/table"),
-      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"],
     },
     {
       text: "Data Structure",
       icon: <DataStructureIcon />,
       path: "/data-structure",
       onClick: () => navigate("/data-structure"),
-      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS
+      roles: ["PREPLUS", "ADMIN"],
     },
     {
       text: "Algorithm",
       icon: <PolylineIcon />,
       path: "/algorithm",
       onClick: () => navigate("/algorithm"),
-      roles: ["PREPLUS", "ADMIN"], // only for PREPLUS (you can adjust this as needed)
+      roles: ["PREPLUS", "ADMIN"],
     },
     {
       text: "Profile",
       icon: <AccountCircleIcon />,
       path: "/profile",
       onClick: () => navigate("/profile"),
-      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"], // available for all
+      roles: ["REGULAR", "PREMIUM", "PREPLUS", "ADMIN"],
     },
   ];
 
@@ -82,8 +82,8 @@ const OptionDrawer = ({
           width: "25%",
           backgroundColor: "black",
           color: "white",
-          overflowX: "hidden", // Prevent horizontal scrolling
-          boxSizing: "border-box", // Ensure padding is included in width
+          overflowX: "hidden",
+          boxSizing: "border-box",
         },
       }}
     >

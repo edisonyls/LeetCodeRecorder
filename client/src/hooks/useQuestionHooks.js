@@ -68,7 +68,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
           return solution;
         }
       } else {
-        return solution; // Return the original solution if there's no file to upload
+        return solution;
       }
     });
     try {
@@ -182,7 +182,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       dateOfCompletion: question.dateOfCompletion
         ? question.dateOfCompletion.format("YYYY-MM-DD")
         : "",
-      timeOfCompletion: formatTime(question.timeOfCompletion), // Apply the format here
+      timeOfCompletion: formatTime(question.timeOfCompletion),
       solutions: question.solutions.map((solution) => ({
         thinkingProcess: solution.thinkingProcess,
         codeSnippet: solution.codeSnippet,
@@ -192,7 +192,6 @@ export const useQuestionHooks = (question, initialQuestion) => {
     if (formattedData.success === true) {
       formattedData.reasonOfFail = "";
     }
-    // console.log(formattedData);
     try {
       let response = null;
       if (id) {

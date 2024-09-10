@@ -97,7 +97,6 @@ const jsonToHtml = async (node, nodeId) => {
               break;
             case "textStyle":
               if (mark.attrs && mark.attrs.color) {
-                // Apply the textStyle color attribute to the text
                 text = `<span style="color: ${mark.attrs.color};">${text}</span>`;
               }
               break;
@@ -267,8 +266,8 @@ const ContentArea = ({ safeHtml, name, setAddClicked }) => (
     <Box
       sx={{
         display: "flex",
-        alignItems: "center", // This centers the items vertically.
-        justifyContent: "center", // Initially center everything
+        alignItems: "center",
+        justifyContent: "center",
         width: "100%",
         mb: 4,
       }}

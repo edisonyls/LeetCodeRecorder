@@ -52,10 +52,6 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         }
         String imageId = UUID.randomUUID() + fileExtension;
 
-        // Determines the content type (MIME type) of the file. If the content type is
-        // available, it uses that;
-        // otherwise, it defaults to "application/octet-stream", a generic binary
-        // stream.
         String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
 
         String username = userService.getCurrentUser().getUsername();
@@ -65,8 +61,7 @@ public class AlgorithmServiceImpl implements AlgorithmService {
                     s3Buckets.getStorageLocation(),
                     String.format("ylslc-algorithm-images/%s/%s", username, imageId),
                     image.getBytes(),
-                    contentType // Pass the content type here
-            );
+                    contentType);
             return imageId;
         } catch (IOException e) {
             return "FAILED";

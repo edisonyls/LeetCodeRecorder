@@ -55,7 +55,6 @@ public class NodeServiceImpl implements NodeService {
     public NodeEntity delete(Long id) {
         NodeEntity nodeEntity = nodeRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Node not found!"));
-        // Example of removing a NodeEntity from its parent
         DataStructureEntity parent = nodeEntity.getDataStructure();
         parent.getNodes().remove(nodeEntity);
         dataStructureRepository.save(parent);
@@ -93,10 +92,6 @@ public class NodeServiceImpl implements NodeService {
         }
         String imageId = UUID.randomUUID() + fileExtension;
 
-        // Determines the content type (MIME type) of the file. If the content type is
-        // available, it uses that;
-        // otherwise, it defaults to "application/octet-stream", a generic binary
-        // stream.
         String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
 
         String username = userService.getCurrentUser().getUsername();
@@ -106,8 +101,7 @@ public class NodeServiceImpl implements NodeService {
                     s3Buckets.getStorageLocation(),
                     String.format("content-images/%s/%s/%s", username, nodeId, imageId),
                     image.getBytes(),
-                    contentType // Pass the content type here
-            );
+                    contentType);
             return imageId;
         } catch (IOException e) {
             return "FAILED";

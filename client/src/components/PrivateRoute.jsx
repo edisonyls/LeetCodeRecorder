@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Correct the import here; it should be default import
+import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import { useUser } from "../context/userContext";
 

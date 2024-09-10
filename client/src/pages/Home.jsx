@@ -22,11 +22,11 @@ function Home() {
               <Typography
                 sx={{
                   fontSize: {
-                    xs: "1.5rem", // smartphones
-                    sm: "2rem", // tablets
-                    md: "2.5rem", // small laptops
-                    lg: "3rem", // desktops
-                    xl: "3.5rem", // large screens
+                    xs: "1.5rem",
+                    sm: "2rem",
+                    md: "2.5rem",
+                    lg: "3rem",
+                    xl: "3.5rem",
                   },
                   backgroundColor: "transparent",
                   backgroundImage:
@@ -42,11 +42,11 @@ function Home() {
               <Typography
                 sx={{
                   fontSize: {
-                    xs: "1.5rem", // smartphones
-                    sm: "2rem", // tablets
-                    md: "2.5rem", // small laptops
-                    lg: "3rem", // desktops
-                    xl: "3.5rem", // large screens
+                    xs: "1.5rem",
+                    sm: "2rem",
+                    md: "2.5rem",
+                    lg: "3rem",
+                    xl: "3.5rem",
                   },
                   backgroundColor: "transparent",
                   backgroundImage:
@@ -62,11 +62,11 @@ function Home() {
               <Typography
                 sx={{
                   fontSize: {
-                    xs: "0.75rem", // smartphones
-                    sm: "1rem", // tablets
-                    md: "1.3rem", // small laptops
-                    lg: "1.7rem", // desktops
-                    xl: "2rem", // large screens
+                    xs: "0.75rem",
+                    sm: "1rem",
+                    md: "1.3rem",
+                    lg: "1.7rem",
+                    xl: "2rem",
                   },
                   fontWeight: "700",
                   fontFamily: "Jet Brain",
@@ -133,7 +133,7 @@ function Home() {
 
 const MainContainerBox = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr", // Default to two columns
+  gridTemplateColumns: "1fr 1fr",
   alignItems: "center",
   justifySelf: "center",
   margin: "0 auto",
@@ -203,8 +203,8 @@ const ServicesBox = styled(Box)(({ theme }) => ({
 }));
 
 const ServicesTypoH1 = styled(Typography)(({ theme }) => ({
-  backgroundColor: "#8e2de2", // Deep violet
-  backgroundImage: "linear-gradient(to top, #8e2de2 0%, #4a00e0 100%)", // From deep violet to lighter purple
+  backgroundColor: "#8e2de2",
+  backgroundImage: "linear-gradient(to top, #8e2de2 0%, #4a00e0 100%)",
   backgroundSize: "100%",
   marginBottom: "5rem",
   fontSize: "2.5rem",

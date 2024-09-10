@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import { grey } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 
-// GenericButton component
 export const WhiteBackgroundButton = ({
   buttonText,
   icon,

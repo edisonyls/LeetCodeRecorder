@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AuthenticatedNavbar from "../components/navbar/AuthenticatedNavbar";
 import { Box, Typography, Switch, Grid, Paper } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import StarIcon from "@mui/icons-material/Star"; // New icon for extra features
+import StarIcon from "@mui/icons-material/Star";
 import Footer from "../components/Footer";
 import { GreyBackgroundButton } from "../components/generic/GenericButton";
 import { useUser } from "../context/userContext";
@@ -33,7 +33,7 @@ const UpgradePage = () => {
         { text: "Record coding problems", isExtra: false },
         { text: "Details of each problem", isExtra: false },
         { text: "Image Uploading", isExtra: false },
-        { text: "Statistics Analysis", isExtra: true }, // Extra feature
+        { text: "Statistics Analysis", isExtra: true },
       ],
       available: user.role !== "PREMIUM" && user.role !== "PREPLUS",
     },
@@ -45,9 +45,9 @@ const UpgradePage = () => {
         { text: "Record coding problems", isExtra: false },
         { text: "Details of each problem", isExtra: false },
         { text: "Image Uploading", isExtra: false },
-        { text: "Statistics Analysis", isExtra: true }, // Extra feature
-        { text: "Data Structure Recording", isExtra: true }, // Extra feature
-        { text: "Algorithm Recording", isExtra: true }, // Extra feature
+        { text: "Statistics Analysis", isExtra: true },
+        { text: "Data Structure Recording", isExtra: true },
+        { text: "Algorithm Recording", isExtra: true },
       ],
       available: user.role !== "PREPLUS",
     },
@@ -136,7 +136,7 @@ const UpgradePage = () => {
                     textAlign: "center",
                     display: "flex",
                     flexDirection: "column",
-                    height: "100%", // Makes sure the card takes up the full height
+                    height: "100%",
                   }}
                 >
                   <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
@@ -166,8 +166,8 @@ const UpgradePage = () => {
                   >
                     <ul
                       style={{
-                        listStyleType: "none", // Removes the default bullet points
-                        paddingLeft: 0, // Removes any default padding from the list
+                        listStyleType: "none",
+                        paddingLeft: 0,
                       }}
                     >
                       {pkg.feature.map((feat, idx) => (
@@ -180,7 +180,7 @@ const UpgradePage = () => {
                           }}
                         >
                           {feat.isExtra ? (
-                            <StarIcon sx={{ mr: 2, color: "#FFD700" }} /> // New icon for extra features
+                            <StarIcon sx={{ mr: 2, color: "#FFD700" }} />
                           ) : (
                             <CheckCircleIcon sx={{ mr: 2, color: "#00FF00" }} />
                           )}

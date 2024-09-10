@@ -33,10 +33,6 @@ public class SolutionServiceImpl implements SolutionService {
         }
         String imageId = UUID.randomUUID() + fileExtension;
 
-        // Determines the content type (MIME type) of the file. If the content type is
-        // available, it uses that;
-        // otherwise, it defaults to "application/octet-stream", a generic binary
-        // stream.
         String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
 
         String username = userService.getCurrentUser().getUsername();
@@ -46,8 +42,7 @@ public class SolutionServiceImpl implements SolutionService {
                     s3Buckets.getStorageLocation(),
                     String.format("ylslc-question-images/%s/%s/%s", username, questionNumber, imageId),
                     image.getBytes(),
-                    contentType // Pass the content type here
-            );
+                    contentType);
             return imageId;
         } catch (IOException e) {
             return "FAILED";
@@ -56,7 +51,6 @@ public class SolutionServiceImpl implements SolutionService {
 
     @Override
     public void updateSolutions(QuestionEntity existingQuestion, List<SolutionEntity> newSolutions) {
-        // Remove solutions not present in the new list
         existingQuestion.getSolutions().removeIf(solution -> newSolutions.stream()
                 .noneMatch(newSol -> newSol.getId() != null && newSol.getId().equals(solution.getId())));
 

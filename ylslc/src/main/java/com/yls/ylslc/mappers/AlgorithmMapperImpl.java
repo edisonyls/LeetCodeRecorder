@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class AlgorithmMapperImpl implements Mapper<AlgorithmEntity, AlgorithmDto>{
+public class AlgorithmMapperImpl implements Mapper<AlgorithmEntity, AlgorithmDto> {
     private final ModelMapper modelMapper;
 
     public AlgorithmMapperImpl(ModelMapper modelMapper) {
@@ -21,7 +21,7 @@ public class AlgorithmMapperImpl implements Mapper<AlgorithmEntity, AlgorithmDto
     @Override
     public AlgorithmDto mapTo(AlgorithmEntity algorithmEntity) {
         AlgorithmDto algorithmDto = modelMapper.map(algorithmEntity, AlgorithmDto.class);
-        if (algorithmDto.getSections() != null && !algorithmEntity.getSections().isEmpty()){
+        if (algorithmDto.getSections() != null && !algorithmEntity.getSections().isEmpty()) {
             List<SectionDto> sectionDtos = algorithmEntity.getSections().stream()
                     .map(sectionEntity -> modelMapper.map(sectionEntity, SectionDto.class))
                     .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class AlgorithmMapperImpl implements Mapper<AlgorithmEntity, AlgorithmDto
         List<SectionEntity> sectionEntities = algorithmDto.getSections().stream()
                 .map(sectionDto -> {
                     SectionEntity section = modelMapper.map(sectionDto, SectionEntity.class);
-                    section.setAlgorithm(algorithmEntity); // Maintain back-reference if necessary
+                    section.setAlgorithm(algorithmEntity);
                     return section;
                 })
                 .collect(Collectors.toList());

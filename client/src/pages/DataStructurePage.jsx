@@ -25,13 +25,10 @@ const DataStructurePage = () => {
   const [content, setContent] = useState(null);
   const { fetchDataStructures } = DataStructureHooks();
 
-  // fetch the data structures when the component first mounts.
-  // It runs only once after the initial render
   useEffect(() => {
     fetchDataStructures();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // This hook listens for changes in dataStructures or selectedStructure.
   useEffect(() => {
     if (selectedStructure) {
       // Find the selected structure from the data structure

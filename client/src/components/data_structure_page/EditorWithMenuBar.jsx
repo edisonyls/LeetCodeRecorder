@@ -15,8 +15,6 @@ const extensions = [
   Image,
 ];
 
-// const content = ``;
-
 const EditorWithMenuBar = ({
   onClose,
   selectedNode,

@@ -1,4 +1,3 @@
-// userHooks/UserHooks.js
 import { useNavigate } from "react-router-dom";
 import { axiosInstance, axiosInstanceNoAuth } from "../../config/axiosConfig";
 import { useUser } from "../../context/userContext";

@@ -116,7 +116,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionEntity getQuestionById(UUID id) {
-        // Fetch the question entity by ID
         return questionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
     }
@@ -126,9 +125,9 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.findById(id).map(question -> {
             Boolean currentStar = question.getStar();
             if (currentStar == null) {
-                question.setStar(true); // Set to true if currently null
+                question.setStar(true);
             } else {
-                question.setStar(!currentStar); // Toggle between true and false
+                question.setStar(!currentStar);
             }
             return questionRepository.save(question);
         }).orElseThrow(() -> new RuntimeException("Question not found"));
