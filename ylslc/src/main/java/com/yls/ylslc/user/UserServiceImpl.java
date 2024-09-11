@@ -58,4 +58,18 @@ public class UserServiceImpl implements UserService {
                     return userRepository.save(userEntity);
                 }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }
+
+    public void updateUserRole(UUID id, String newRole) {
+        Role role;
+        try {
+            role = Role.valueOf(newRole.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid role provided: " + newRole);
+        }
+        userRepository.findById(id)
+                .map(userEntity -> {
+                    userEntity.setRole(role);
+                    return userRepository.save(userEntity);
+                }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
 }

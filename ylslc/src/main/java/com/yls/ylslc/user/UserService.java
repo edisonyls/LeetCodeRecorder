@@ -14,4 +14,6 @@ public interface UserService {
     UserEntity getCurrentUser();
 
     UserEntity updateUser(UUID id, UserEntity userEntity);
+
+    void updateUserRole(UUID id, String newRole);
 }
