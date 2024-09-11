@@ -5,10 +5,7 @@ import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/payment")
+@CrossOrigin(origins = { "https://ylslc.org", "http://localhost:3000" })
 public class PaymentController {
     private final UserService userService;
     private static final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
