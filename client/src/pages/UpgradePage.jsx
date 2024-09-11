@@ -73,10 +73,11 @@ const UpgradePage = () => {
 
   const handleUpgrade = async () => {
     const currentRole = user?.role;
-    if (pkgName === "Premium-Plus") {
-      setPkgName("PREPLUS");
+    var newRole = pkgName.toUpperCase();
+    if (newRole === "PREMIUM-PLUS") {
+      newRole = "PREPLUS";
     }
-    const newRole = pkgName.toUpperCase();
+    console.log(newRole);
 
     if (currentRole === newRole) {
       console.log("User is already in the selected role.");
@@ -91,10 +92,13 @@ const UpgradePage = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response.data.status === 200) {
         console.log("Upgrade successful:", response.data);
         toast.success("Upgrade successfully!");
         navigate("/profile");
+      } else {
+        console.log("Upgrade failed:", response.data);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.log("Upgrade failed:", error);

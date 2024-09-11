@@ -158,6 +158,7 @@ export const GreyBackgroundDialogWithInput = ({
   };
 
   const handleConfirm = () => {
+    setInput("");
     onConfirm(input);
   };
 
