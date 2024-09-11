@@ -9,19 +9,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "api/payment")
-@CrossOrigin(origins = { "https://ylslc.org", "https://api.ylslc.org", "http://localhost:3000" })
+@CrossOrigin(origins = { "https://ylslc.org", "http://localhost:3000" })
 public class PaymentController {
     private final UserService userService;
     private final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
     private final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
 
     @PostMapping
-    public Response processPayment(@RequestParam String currentRole,
-                                   @RequestParam String upgradeRole){
+    public Response processPayment(@RequestBody Map<String, String> payload){
+        String currentRole = payload.get("currentRole");
+        String upgradeRole = payload.get("upgradeRole");
+
         UserEntity user = userService.getCurrentUser();
         if (!user.getRole().toString().equals(currentRole)){
             return Response.failed(HttpStatus.BAD_REQUEST, "Provided currentRole does not match!");
