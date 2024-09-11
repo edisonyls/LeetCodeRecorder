@@ -7,11 +7,20 @@ import StarIcon from "@mui/icons-material/Star";
 import Footer from "../components/Footer";
 import { GreyBackgroundButton } from "../components/generic/GenericButton";
 import { useUser } from "../context/userContext";
+import { axiosInstance } from "../config/axiosConfig";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { GreyBackgroundDialogWithInput } from "../components/generic/GenericDialog";
 
 const UpgradePage = () => {
   const [isYearly, setIsYearly] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pkgName, setPkgName] = useState("");
+
+  const expectedSecretKey = "Nice";
   const { state } = useUser();
   const { user } = state;
+  const navigate = useNavigate();
 
   const packages = [
     {
@@ -52,6 +61,50 @@ const UpgradePage = () => {
       available: user.role !== "PREPLUS",
     },
   ];
+
+  const handleConfirm = (enteredKey) => {
+    if (enteredKey === expectedSecretKey) {
+      handleUpgrade();
+      setDialogOpen(false);
+    } else {
+      toast.error("Wrong secret key! Contact admin.");
+    }
+  };
+
+  const handleUpgrade = async () => {
+    const currentRole = user?.role;
+    if (pkgName === "Premium-Plus") {
+      setPkgName("PREPLUS");
+    }
+    const newRole = pkgName.toUpperCase();
+
+    if (currentRole === newRole) {
+      console.log("User is already in the selected role.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("payment", null, {
+        params: {
+          currentRole: currentRole,
+          upgradeRole: newRole,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("Upgrade successful:", response.data);
+        toast.success("Upgrade successfully!");
+        navigate("/profile");
+      }
+    } catch (error) {
+      console.log("Upgrade failed:", error);
+    }
+  };
+
+  const handleDialogOpen = (name) => {
+    setDialogOpen(true);
+    setPkgName(name);
+  };
 
   return (
     <Box
@@ -192,6 +245,7 @@ const UpgradePage = () => {
 
                   <GreyBackgroundButton
                     buttonText="Subscribe"
+                    onClick={() => handleDialogOpen(pkg.name)}
                     disabled={pkg.available !== true}
                   />
                 </Paper>
@@ -200,6 +254,13 @@ const UpgradePage = () => {
           </Grid>
         </Box>
       </Box>
+      <GreyBackgroundDialogWithInput
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={(enteredKey) => handleConfirm(enteredKey)}
+        title="Enter secret key"
+        content="Please enter the secret key to proceed."
+      />
       <Footer />
     </Box>
   );
