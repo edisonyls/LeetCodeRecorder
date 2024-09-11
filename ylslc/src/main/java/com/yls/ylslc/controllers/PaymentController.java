@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -21,10 +20,8 @@ public class PaymentController {
     private final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
 
     @PostMapping
-    public Response processPayment(@RequestBody Map<String, String> payload){
-        String currentRole = payload.get("currentRole");
-        String upgradeRole = payload.get("upgradeRole");
-
+    public Response processPayment(@RequestParam String currentRole,
+                                   @RequestParam String upgradeRole){
         UserEntity user = userService.getCurrentUser();
         if (!user.getRole().toString().equals(currentRole)){
             return Response.failed(HttpStatus.BAD_REQUEST, "Provided currentRole does not match!");

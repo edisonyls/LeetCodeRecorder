@@ -85,9 +85,11 @@ const UpgradePage = () => {
     }
 
     try {
-      const response = await axiosInstance.post("payment", {
-        currentRole: currentRole,
-        upgradeRole: newRole,
+      const response = await axiosInstance.post("payment", null, {
+        params: {
+          currentRole: currentRole,
+          upgradeRole: newRole,
+        },
       });
 
       if (response.data.status === 200) {
