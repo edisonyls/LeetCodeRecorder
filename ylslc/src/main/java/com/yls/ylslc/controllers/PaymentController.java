@@ -16,8 +16,8 @@ import java.util.UUID;
 @CrossOrigin(origins = { "https://ylslc.org", "https://api.ylslc.org", "http://localhost:3000" })
 public class PaymentController {
     private final UserService userService;
-    private static final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
-    private static final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
+    private final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
+    private final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
 
     @PostMapping
     public Response processPayment(@RequestParam String currentRole,
