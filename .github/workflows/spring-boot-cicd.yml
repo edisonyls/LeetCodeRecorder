@@ -43,3 +43,4 @@ jobs:
               -e DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
               -e JWT_KEY="${{ secrets.JWT_KEY }}" \
               edisonyls/ylslc-spring:latest
+            sudo docker image prune -f
