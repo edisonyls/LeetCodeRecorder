@@ -19,7 +19,7 @@ public class PaymentController {
     private final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
     private final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
 
-    @GetMapping
+    @PostMapping
     public Response processPayment(@RequestParam String currentRole,
                                    @RequestParam String upgradeRole){
         UserEntity user = userService.getCurrentUser();

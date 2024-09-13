@@ -1,16 +1,13 @@
 package com.yls.ylslc.controllers;
 
 import com.yls.ylslc.config.response.Response;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "api/test")
-@CrossOrigin(origins = { "https://ylslc.org", "http://localhost:3000" })
+@CrossOrigin(origins = { "https://my-website.org", "http://localhost:3000" })
 public class TestController {
-    @PostMapping
+    @GetMapping
     public Response test(){
         return Response.ok("Test successful");
     }

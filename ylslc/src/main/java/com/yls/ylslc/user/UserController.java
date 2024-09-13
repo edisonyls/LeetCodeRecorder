@@ -5,6 +5,7 @@ import com.yls.ylslc.mappers.Mapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,6 +71,50 @@ public class UserController {
         UserEntity updatedUser = userService.updateUser(id, userEntity);
         return Response.ok(userMapper.mapTo(updatedUser),
                 "User " + updatedUser.getUsername() + " updated successfully!");
+    }
+
+    private final List<String> validRoles = Arrays.asList("REGULAR", "PREMIUM", "PREPLUS");
+    private final List<String> upgradeRoles = Arrays.asList("PREMIUM", "PREPLUS");
+
+    @PostMapping(path = "payment")
+    public Response processPayment(@RequestParam String currentRole,
+                                   @RequestParam String upgradeRole){
+        UserEntity user = userService.getCurrentUser();
+        if (!user.getRole().toString().equals(currentRole)){
+            return Response.failed(HttpStatus.BAD_REQUEST, "Provided currentRole does not match!");
+        }
+        if (!validRoles.contains(currentRole)) {
+            return Response.failed(HttpStatus.BAD_REQUEST,"Invalid current role provided.");
+        }
+
+        // Validate upgrade role
+        if (!upgradeRoles.contains(upgradeRole)) {
+            return Response.failed(HttpStatus.BAD_REQUEST, "Invalid upgrade role provided.");
+        }
+
+        // Check if the upgrade is valid
+        if (currentRole.equals(upgradeRole)) {
+            return Response.failed(HttpStatus.BAD_REQUEST,"User is already in the requested role.");
+        } else if (currentRole.equals("PREMIUM") && upgradeRole.equals("REGULAR")) {
+            return Response.failed(HttpStatus.BAD_REQUEST, "Downgrade is not allowed.");
+        } else if (currentRole.equals("PREPLUS") && (upgradeRole.equals("REGULAR") || upgradeRole.equals("PREMIUM"))){
+            return Response.failed(HttpStatus.BAD_REQUEST, "Downgrade is not allowed.");
+        }
+
+        // Simulate role upgrade
+        // In a real-world scenario, you would update the user's role in the database
+        userService.updateUserRole(user.getId(), upgradeRole);
+
+
+        return Response.ok("Payment successful! User role updated to " + upgradeRole);
+    }
+
+    @PostMapping("/payment/upgrade-admin")
+    public Response upgradeToAdmin(UUID userId){
+        UserEntity user = userService.getCurrentUser();
+        if (!user.getRole().toString().equals("ADMIN")) return Response.failed(HttpStatus.BAD_REQUEST, "This action can only be performed by admin.");
+        userService.updateUserRole(userId, "ADMIN");
+        return Response.ok("Upgrade user <" + userId + "> to admin!");
     }
 
     public UserController(UserService userService, Mapper<UserEntity, UserDto> userMapper) {
