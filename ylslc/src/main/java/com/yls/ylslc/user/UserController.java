@@ -32,7 +32,7 @@ public class UserController {
         return Response.ok(userDto, "Current user retrieved successfully!");
     }
 
-    @GetMapping(path = "/{username}")
+    @GetMapping(path = "/find/{username}")
     public Response getUserByUsername(@PathVariable("username") String username) {
         Optional<UserEntity> foundUser = userService.findOneByUsername(username);
         return foundUser.map(userEntity -> {
