@@ -198,15 +198,14 @@ const ServicesBox = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   height: "auto",
-
-  paddingBottom: theme.spacing(10),
+  paddingBottom: "3rem",
 }));
 
 const ServicesTypoH1 = styled(Typography)(({ theme }) => ({
   backgroundColor: "#8e2de2",
   backgroundImage: "linear-gradient(to top, #8e2de2 0%, #4a00e0 100%)",
   backgroundSize: "100%",
-  marginBottom: "5rem",
+  marginBottom: "2rem",
   fontSize: "2.5rem",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
