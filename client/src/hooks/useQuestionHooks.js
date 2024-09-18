@@ -77,7 +77,8 @@ export const useQuestionHooks = (question, initialQuestion) => {
       question.solutions = updatedSolutions;
       const submitResult = await submitRestData(question.id);
       if (submitResult) {
-        navigate("/table");
+        navigate(-1);
+        toast.success("Question updated successfully!");
       } else {
         toast.error("An error occurred during form submission.");
       }
@@ -153,7 +154,7 @@ export const useQuestionHooks = (question, initialQuestion) => {
       })(),
       {
         pending: "Uploading New Question",
-        success: "Upload Successfully 👌",
+        success: "Created Successfully 👌",
         error: "Upload Failed 🤯",
       }
     );
