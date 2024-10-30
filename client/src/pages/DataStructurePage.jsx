@@ -35,7 +35,7 @@ const DataStructurePage = () => {
       const updatedStructure = dataStructures.find(
         (ds) => ds.id === selectedStructure.id
       );
-      // Update selectedStructure if it has been found in the global state and is different
+      // Update selectedStructure if it has been found in global state and is different
       if (
         updatedStructure &&
         JSON.stringify(updatedStructure) !== JSON.stringify(selectedStructure)
