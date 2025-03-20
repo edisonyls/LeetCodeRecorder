@@ -17,7 +17,7 @@
     "@tiptap/pm": "^2.2.4",
     "@tiptap/react": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
-    "apexcharts": "^3.49.1",
+    "apexcharts": "^4.5.0",
     "axios": "^1.6.7",
     "canvas-confetti": "^1.9.2",
     "dayjs": "^1.11.10",
