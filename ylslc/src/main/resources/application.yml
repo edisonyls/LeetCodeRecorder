@@ -28,5 +28,5 @@ server:
 logging:
   level:
     root: warn
-
-
+payment:
+  secret-key: ${UPGRADE_SECRET_KEY}

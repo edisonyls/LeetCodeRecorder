@@ -17,7 +17,6 @@ const UpgradePage = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pkgName, setPkgName] = useState("");
 
-  const expectedSecretKey = "Nice";
   const { state } = useUser();
   const { user } = state;
   const navigate = useNavigate();
@@ -62,12 +61,21 @@ const UpgradePage = () => {
     },
   ];
 
-  const handleConfirm = (enteredKey) => {
-    if (enteredKey === expectedSecretKey) {
-      handleUpgrade();
-      setDialogOpen(false);
-    } else {
-      toast.error("Wrong secret key! Contact admin.");
+  const handleConfirm = async (enteredKey) => {
+    try {
+      const response = await axiosInstance.post(
+        `/payment/verify?secretKey=${encodeURIComponent(enteredKey)}`
+      );
+
+      if (response.data.serverMessage === "SUCCESS") {
+        handleUpgrade();
+        setDialogOpen(false);
+      } else {
+        toast.error("Wrong secret key! Contact admin.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while verifying.");
+      console.error(error);
     }
   };
 
@@ -77,7 +85,6 @@ const UpgradePage = () => {
     if (newRole === "PREMIUM-PLUS") {
       newRole = "PREPLUS";
     }
-    console.log(newRole);
 
     if (currentRole === newRole) {
       console.log("User is already in the selected role.");
@@ -93,7 +100,6 @@ const UpgradePage = () => {
       });
 
       if (response.data.status === 200) {
-        console.log("Upgrade successful:", response.data);
         toast.success("Upgrade successfully!");
         navigate("/profile");
       } else {
