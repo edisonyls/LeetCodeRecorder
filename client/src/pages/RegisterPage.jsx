@@ -37,7 +37,7 @@ const RegisterPage = () => {
   }, [password, confirmPassword, error, reset]);
 
   const checkData = (data) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,16}$/;
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
     if (!data.firstName) {
       toast.error("Please fill in your first name!");
