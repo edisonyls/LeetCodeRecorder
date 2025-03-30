@@ -125,7 +125,8 @@ public class QuestionServiceImpl implements QuestionService {
         try {
             String rawUsername = userService.getCurrentUser().getUsername();
             String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
-            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
+            Path imagePath = Paths.get(
+                    "/srv/ylslc_images/solution_images", username,
                     String.valueOf(questionNumber), imageId);
             return Files.readAllBytes(imagePath);
         } catch (IOException e) {
@@ -138,7 +139,8 @@ public class QuestionServiceImpl implements QuestionService {
         try {
             String rawUsername = userService.getCurrentUser().getUsername();
             String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
-            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
+            Path imagePath = Paths.get(
+                    "/srv/ylslc_images/solution_images", username,
                     String.valueOf(questionNumber), imageId);
             Files.deleteIfExists(imagePath);
         } catch (IOException e) {
