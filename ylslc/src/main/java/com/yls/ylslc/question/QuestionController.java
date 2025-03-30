@@ -83,6 +83,33 @@ public class QuestionController {
         return Response.ok(imageId, "Image saved successfully!");
     }
 
+    @GetMapping("image/{questionId}/{imageId}")
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
+        byte[] imageData = questionService.getImage(questionEntity.getNumber(), imageId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(getMediaTypeForImageId(imageId));
+
+        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    }
+
+    private MediaType getMediaTypeForImageId(String imageId) {
+        if (imageId.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
+            return MediaType.IMAGE_JPEG;
+        } else {
+            return MediaType.APPLICATION_OCTET_STREAM;
+        }
+    }
+
+    @DeleteMapping("image/{questionId}/{imageId}")
+    public void deleteQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
+        questionService.deleteImage(questionEntity.getNumber(), imageId);
+    }
+
     @PostMapping
     public Response createQuestion(@RequestBody QuestionDto questionDto) {
         QuestionEntity questionEntity = questionMapper.mapFrom(questionDto);
@@ -126,23 +153,6 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("image/{questionId}/{imageId}")
-    public ResponseEntity<byte[]> getQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
-        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
-        byte[] imageData = questionService.getImage(questionEntity.getNumber(), imageId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(getMediaTypeForImageId(imageId));
-
-        return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
-    }
-
-    @DeleteMapping("image/{questionId}/{imageId}")
-    public void deleteQuestionImage(@PathVariable UUID questionId, @PathVariable String imageId) {
-        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
-        questionService.deleteImage(questionEntity.getNumber(), imageId);
-    }
-
     @PutMapping("/toggleStar/{id}")
     public Response toggleStar(@PathVariable UUID id) {
         try {
@@ -159,13 +169,4 @@ public class QuestionController {
         return Response.ok(questionService.getQuestionStats(userId), "Data retrieved successfully!");
     }
 
-    private MediaType getMediaTypeForImageId(String imageId) {
-        if (imageId.endsWith(".png")) {
-            return MediaType.IMAGE_PNG;
-        } else if (imageId.endsWith(".jpg") || imageId.endsWith(".jpeg")) {
-            return MediaType.IMAGE_JPEG;
-        } else {
-            return MediaType.APPLICATION_OCTET_STREAM;
-        }
-    }
 }

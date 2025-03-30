@@ -4,10 +4,15 @@ import com.yls.ylslc.config.s3.S3Buckets;
 import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.question.QuestionEntity;
 import com.yls.ylslc.user.UserService;
+
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,29 +28,51 @@ public class SolutionServiceImpl implements SolutionService {
         this.s3Buckets = s3Buckets;
     }
 
-    @Override
+    // @Override
+    // public String uploadImages(MultipartFile image, String questionNumber) {
+    // String originalImageName = image.getOriginalFilename();
+    // String fileExtension = "";
+
+    // if (originalImageName != null && originalImageName.contains(".")) {
+    // fileExtension =
+    // originalImageName.substring(originalImageName.lastIndexOf("."));
+    // }
+    // String imageId = UUID.randomUUID() + fileExtension;
+
+    // String contentType = image.getContentType() != null ? image.getContentType()
+    // : "application/octet-stream";
+
+    // String username = userService.getCurrentUser().getUsername();
+
+    // try {
+    // s3Service.putObject(
+    // s3Buckets.getStorageLocation(),
+    // String.format("ylslc-question-images/%s/%s/%s", username, questionNumber,
+    // imageId),
+    // image.getBytes(),
+    // contentType);
+    // return imageId;
+    // } catch (IOException e) {
+    // return "FAILED";
+    // }
+    // }
     public String uploadImages(MultipartFile image, String questionNumber) {
-        String originalImageName = image.getOriginalFilename();
-        String fileExtension = "";
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+        String uuid = UUID.randomUUID().toString();
+        String filename = uuid + "." + extension;
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
 
-        if (originalImageName != null && originalImageName.contains(".")) {
-            fileExtension = originalImageName.substring(originalImageName.lastIndexOf("."));
-        }
-        String imageId = UUID.randomUUID() + fileExtension;
-
-        String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
-
-        String username = userService.getCurrentUser().getUsername();
-
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/solution_images";
+        Path uploadDir = Paths.get(baseDir, username, questionNumber);
         try {
-            s3Service.putObject(
-                    s3Buckets.getStorageLocation(),
-                    String.format("ylslc-question-images/%s/%s/%s", username, questionNumber, imageId),
-                    image.getBytes(),
-                    contentType);
-            return imageId;
+            Files.createDirectories(uploadDir);
+            Path filePath = uploadDir.resolve(filename);
+            image.transferTo(filePath.toFile());
+            return filename;
         } catch (IOException e) {
-            return "FAILED";
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save image", e);
         }
     }
 

@@ -13,6 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -98,20 +102,48 @@ public class QuestionServiceImpl implements QuestionService {
         }).orElseThrow(() -> new RuntimeException("Question not found"));
     }
 
+    // @Override
+    // public byte[] getImage(Integer questionNumber, String imageId) {
+    // String username = userService.getCurrentUser().getUsername();
+    // return s3Service.getObject(
+    // s3Buckets.getStorageLocation(),
+    // "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber,
+    // imageId));
+    // }
+
+    // @Override
+    // public void deleteImage(Integer questionNumber, String imageId) {
+    // String username = userService.getCurrentUser().getUsername();
+    // s3Service.deleteObject(
+    // s3Buckets.getStorageLocation(),
+    // "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber,
+    // imageId));
+    // }
+
     @Override
     public byte[] getImage(Integer questionNumber, String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        return s3Service.getObject(
-                s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId));
+        try {
+            String rawUsername = userService.getCurrentUser().getUsername();
+            String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
+                    String.valueOf(questionNumber), imageId);
+            return Files.readAllBytes(imagePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read image", e);
+        }
     }
 
     @Override
     public void deleteImage(Integer questionNumber, String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        s3Service.deleteObject(
-                s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d/%s".formatted(username, questionNumber, imageId));
+        try {
+            String rawUsername = userService.getCurrentUser().getUsername();
+            String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
+                    String.valueOf(questionNumber), imageId);
+            Files.deleteIfExists(imagePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete image", e);
+        }
     }
 
     @Override
