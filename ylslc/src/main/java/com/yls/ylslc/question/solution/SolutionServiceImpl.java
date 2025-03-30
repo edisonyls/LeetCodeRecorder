@@ -63,7 +63,7 @@ public class SolutionServiceImpl implements SolutionService {
         String rawUsername = userService.getCurrentUser().getUsername();
         String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
 
-        String baseDir = "/srv/ylslc_images/solution_images";
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/solution_images";
         Path uploadDir = Paths.get(baseDir, username, questionNumber);
         try {
             Files.createDirectories(uploadDir);

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,11 +72,25 @@ public class QuestionServiceImpl implements QuestionService {
     public void delete(UUID id) {
         // delete bucket if exist
         String username = userService.getCurrentUser().getUsername();
+        String sanitizedUsername = username.replaceAll("[^a-zA-Z0-9_-]", "_");
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
-        s3Service.deleteObjectsInFolder(
-                s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%d".formatted(username, question.getNumber()));
+        Path imageFolderPath = Paths.get(
+                System.getProperty("user.home"),
+                "ylslc_images",
+                "solution_images",
+                sanitizedUsername,
+                String.valueOf(question.getNumber()));
+        try {
+            if (Files.exists(imageFolderPath)) {
+                Files.walk(imageFolderPath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete local image files for question: " + id, e);
+        }
         questionRepository.deleteById(id);
     }
 
@@ -125,8 +140,7 @@ public class QuestionServiceImpl implements QuestionService {
         try {
             String rawUsername = userService.getCurrentUser().getUsername();
             String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
-            Path imagePath = Paths.get(
-                    "/srv/ylslc_images/solution_images", username,
+            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
                     String.valueOf(questionNumber), imageId);
             return Files.readAllBytes(imagePath);
         } catch (IOException e) {
@@ -139,8 +153,7 @@ public class QuestionServiceImpl implements QuestionService {
         try {
             String rawUsername = userService.getCurrentUser().getUsername();
             String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
-            Path imagePath = Paths.get(
-                    "/srv/ylslc_images/solution_images", username,
+            Path imagePath = Paths.get(System.getProperty("user.home") + "/ylslc_images/solution_images", username,
                     String.valueOf(questionNumber), imageId);
             Files.deleteIfExists(imagePath);
         } catch (IOException e) {
