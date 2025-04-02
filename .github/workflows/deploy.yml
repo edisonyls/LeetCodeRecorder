@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.VM_CLIENT_PORT }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            cd ~/dev/LeetCodeRecorder/client
+            cd ~/LeetCodeRecorder/client
             git pull
             npm install
             npm run build
