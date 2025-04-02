@@ -15,7 +15,7 @@ jobs:
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
-          port: ${{ secrets.VM_PORT }}
+          port: ${{ secrets.VM_CLIENT_PORT }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             cd ~/dev/LeetCodeRecorder/client
