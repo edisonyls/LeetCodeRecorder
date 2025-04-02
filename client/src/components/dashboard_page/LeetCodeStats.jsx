@@ -221,7 +221,7 @@ const LeetCodeStats = ({ userId }) => {
     colors: ["#fff"],
     labels:
       createdAtStatsLast10Days.length > 0
-        ? createdAtStatsLast10Days.map((item) => item.createdAtDate)
+        ? createdAtStatsLast10Days.map((item) => item.dateOfCompletion)
         : ["No Data"],
     legend: {
       labels: {
@@ -240,7 +240,7 @@ const LeetCodeStats = ({ userId }) => {
     xaxis: {
       categories:
         createdAtStatsLast10Days.length > 0
-          ? createdAtStatsLast10Days.map((item) => item.createdAtDate)
+          ? createdAtStatsLast10Days.map((item) => item.dateOfCompletion)
           : ["No Data"],
       labels: {
         style: {
