@@ -6,6 +6,9 @@ import { axiosInstance } from "../../config/axiosConfig";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import CalendarHeatmap from "react-calendar-heatmap";
+import "react-calendar-heatmap/dist/styles.css";
+import ReactTooltip from "react-tooltip";
 
 const LeetCodeStats = ({ userId }) => {
   const [questionStats, setQuestionStats] = useState({
@@ -183,132 +186,6 @@ const LeetCodeStats = ({ userId }) => {
       ? questionStats.successDistribution.map((item) => item.count)
       : [0];
 
-  // Function to fill missing dates with count 0
-  const fillMissingDates = (stats) => {
-    if (stats.length === 0) return [];
-
-    const startDate = moment(stats[stats.length - 1].createdAtDate);
-    const endDate = moment(stats[0].createdAtDate);
-    const dateRange = [];
-
-    let currentDate = startDate;
-    while (currentDate <= endDate) {
-      dateRange.push(currentDate.format("YYYY-MM-DD"));
-      currentDate = currentDate.add(1, "days");
-    }
-
-    return dateRange.map((date) => {
-      const stat = stats.find((item) => item.createdAtDate === date);
-      return {
-        createdAtDate: date,
-        count: stat ? stat.count : 0,
-      };
-    });
-  };
-
-  // Filter to get only the last 10 days of createdAtStats and fill missing dates
-  const createdAtStatsLast10Days = fillMissingDates(
-    questionStats.createdAtStats
-  ).slice(-10);
-
-  const createdAtChartOptions = {
-    chart: {
-      type: "line",
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: ["#fff"],
-    labels:
-      createdAtStatsLast10Days.length > 0
-        ? createdAtStatsLast10Days.map((item) => item.dateOfCompletion)
-        : ["No Data"],
-    legend: {
-      labels: {
-        colors: "white",
-      },
-      position: "bottom",
-    },
-    title: {
-      text: "Questions Recorded Over Last 10 Days",
-      align: "center",
-      style: {
-        fontSize: "14px",
-        color: "cyan",
-      },
-    },
-    xaxis: {
-      categories:
-        createdAtStatsLast10Days.length > 0
-          ? createdAtStatsLast10Days.map((item) => item.dateOfCompletion)
-          : ["No Data"],
-      labels: {
-        style: {
-          colors: "white",
-        },
-      },
-      axisBorder: {
-        color: "white",
-      },
-      axisTicks: {
-        color: "white",
-      },
-    },
-    yaxis: {
-      min: 0,
-      tickAmount: Math.max(
-        ...createdAtStatsLast10Days.map((item) => item.count)
-      ),
-      labels: {
-        style: {
-          colors: "white",
-        },
-        formatter: function (value) {
-          return Math.ceil(value);
-        },
-      },
-    },
-    markers: {
-      size: 2,
-      colors: ["#00ffff"],
-      strokeColors: "white",
-      strokeWidth: 2,
-      hover: {
-        size: 6,
-      },
-    },
-    stroke: {
-      width: 2,
-      curve: "smooth",
-    },
-    tooltip: {
-      enabled: true,
-    },
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 300,
-          },
-          legend: {
-            position: "bottom",
-          },
-        },
-      },
-    ],
-  };
-
-  const createdAtChartSeries = [
-    {
-      name: "Questions",
-      data:
-        createdAtStatsLast10Days.length > 0
-          ? createdAtStatsLast10Days.map((item) => item.count)
-          : [1],
-    },
-  ];
-
   const renderAverageTime = () => {
     const difficulties = ["Easy", "Medium", "Hard"];
 
@@ -405,12 +282,139 @@ const LeetCodeStats = ({ userId }) => {
         mt={2}
       >
         <animated.div style={chartSpring1}>
-          <Chart
-            options={createdAtChartOptions}
-            series={createdAtChartSeries}
-            type="line"
-            width="100%"
-          />
+          <animated.div style={chartSpring1}>
+            <animated.div style={chartSpring1}>
+              <Box
+                sx={{
+                  "& .react-calendar-heatmap text": {
+                    fill: "white",
+                    fontSize: "10px",
+                  },
+                  "& .react-calendar-heatmap .color-empty": {
+                    fill: "#dcdcdc",
+                  },
+                  "& .react-calendar-heatmap .color-github-1": {
+                    fill: "#b5d5c5",
+                  },
+                  "& .react-calendar-heatmap .color-github-2": {
+                    fill: "#73c2a1",
+                  },
+                  "& .react-calendar-heatmap .color-github-3": {
+                    fill: "#3b9c80",
+                  },
+                  "& .react-calendar-heatmap .color-github-4": {
+                    fill: "#15695c",
+                  },
+                  "& .react-calendar-heatmap rect": {
+                    pointerEvents: "auto",
+                    cursor: "default",
+                  },
+                  "& .react-calendar-heatmap rect:focus": {
+                    outline: "none",
+                  },
+                  "& .react-calendar-heatmap rect:hover": {
+                    stroke: "#333",
+                    strokeWidth: 1,
+                    cursor: "pointer",
+                  },
+                  "& .__react_component_tooltip": {
+                    backgroundColor: "#333",
+                    color: "white",
+                    borderRadius: "4px",
+                    padding: "10px 10px",
+                    fontSize: "12px",
+                    textAlign: "center",
+
+                    whiteSpace: "nowrap",
+                  },
+                }}
+              >
+                <CalendarHeatmap
+                  startDate={moment().subtract(6, "months").toDate()}
+                  endDate={new Date()}
+                  values={questionStats.createdAtStats.map((item) => ({
+                    date: item.dateOfCompletion,
+                    count: item.count,
+                  }))}
+                  classForValue={(value) => {
+                    if (!value) return "color-empty";
+                    if (value.count >= 3) return "color-github-4";
+                    if (value.count === 2) return "color-github-3";
+                    if (value.count === 1) return "color-github-2";
+                    return "color-github-1";
+                  }}
+                  tooltipDataAttrs={(value) => ({
+                    "data-tip": value.date
+                      ? `${value.count} questions recorded on ${moment(
+                          value.date
+                        ).format("MMM Do")}`
+                      : "No question recorded",
+                  })}
+                />
+                <ReactTooltip
+                  place="top"
+                  type="dark"
+                  effect="solid"
+                  offset={{ top: 8 }}
+                />
+                <Box
+                  mt={2}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    flexWrap: "wrap",
+                    fontSize: "12px",
+                    color: "white",
+                  }}
+                >
+                  <span>Less</span>
+                  <Box
+                    sx={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "#dcdcdc",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "#b5d5c5",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "#73c2a1",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "#3b9c80",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "#15695c",
+                      borderRadius: "2px",
+                    }}
+                  />
+                  <span>More</span>
+                </Box>
+              </Box>
+            </animated.div>
+          </animated.div>
         </animated.div>
         <animated.div style={chartSpring2}>
           <Chart
