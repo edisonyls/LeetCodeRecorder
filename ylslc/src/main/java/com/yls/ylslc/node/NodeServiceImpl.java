@@ -1,16 +1,16 @@
 package com.yls.ylslc.node;
 
-import com.yls.ylslc.config.s3.S3Buckets;
-import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.data_structure.DataStructureEntity;
 import com.yls.ylslc.data_structure.DataStructureRepository;
 import com.yls.ylslc.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -18,8 +18,7 @@ public class NodeServiceImpl implements NodeService {
     private final NodeRepository nodeRepository;
     private final DataStructureRepository dataStructureRepository;
     private final UserService userService;
-    private final S3Service s3Service;
-    private final S3Buckets s3Buckets;
+
 
     @Override
     public NodeEntity createNode(UUID dataStructureEntityId, NodeEntity nodeEntity) {
@@ -64,20 +63,30 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public byte[] getImage(String nodeId, String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        return s3Service.getObject(
-                s3Buckets.getStorageLocation(),
-                "content-images/%s/%s/%s".formatted(username, nodeId, imageId));
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/data_structure_images";
+        Path imagePath = Paths.get(baseDir, username, nodeId, imageId);
+
+        try {
+            return Files.readAllBytes(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to read image file", e);
+        }
     }
 
     @Override
     public Boolean deleteImage(String nodeId, String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        String key = String.format("content-images/%s/%s/%s", username, nodeId, imageId);
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/data_structure_images";
+        Path imagePath = Paths.get(baseDir, username, nodeId, imageId);
+
         try {
-            s3Service.deleteObject(s3Buckets.getStorageLocation(), key);
-            return true;
-        } catch (S3Exception e) {
+            return Files.deleteIfExists(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -91,29 +100,25 @@ public class NodeServiceImpl implements NodeService {
             fileExtension = originalImageName.substring(originalImageName.lastIndexOf("."));
         }
         String imageId = UUID.randomUUID() + fileExtension;
-
-        String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
-
-        String username = userService.getCurrentUser().getUsername();
-
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/data_structure_images";
+        Path uploadDir = Paths.get(baseDir, username, nodeId);
         try {
-            s3Service.putObject(
-                    s3Buckets.getStorageLocation(),
-                    String.format("content-images/%s/%s/%s", username, nodeId, imageId),
-                    image.getBytes(),
-                    contentType);
+            Files.createDirectories(uploadDir);
+            Path filePath = uploadDir.resolve(imageId);
+            image.transferTo(filePath.toFile());
             return imageId;
         } catch (IOException e) {
-            return "FAILED";
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save image", e);
         }
     }
 
     public NodeServiceImpl(NodeRepository nodeRepository, DataStructureRepository dataStructureRepository,
-            UserService userService, S3Service s3Service, S3Buckets s3Buckets) {
+            UserService userService) {
         this.nodeRepository = nodeRepository;
         this.dataStructureRepository = dataStructureRepository;
         this.userService = userService;
-        this.s3Service = s3Service;
-        this.s3Buckets = s3Buckets;
     }
 }

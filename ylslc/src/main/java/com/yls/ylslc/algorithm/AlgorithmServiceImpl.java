@@ -1,8 +1,6 @@
 package com.yls.ylslc.algorithm;
 
 import com.yls.ylslc.algorithm.section.SectionService;
-import com.yls.ylslc.config.s3.S3Buckets;
-import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,14 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
 public class AlgorithmServiceImpl implements AlgorithmService {
     private final UserService userService;
     private final AlgorithmRepository algorithmRepository;
-    private final S3Service s3Service;
-    private final S3Buckets s3Buckets;
     private final SectionService sectionService;
 
     @Override
@@ -51,31 +50,42 @@ public class AlgorithmServiceImpl implements AlgorithmService {
             fileExtension = originalImageName.substring(originalImageName.lastIndexOf("."));
         }
         String imageId = UUID.randomUUID() + fileExtension;
-
-        String contentType = image.getContentType() != null ? image.getContentType() : "application/octet-stream";
-
-        String username = userService.getCurrentUser().getUsername();
-
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/algorithm_images";
+        Path uploadDir = Paths.get(baseDir, username, imageId);
         try {
-            s3Service.putObject(
-                    s3Buckets.getStorageLocation(),
-                    String.format("ylslc-algorithm-images/%s/%s", username, imageId),
-                    image.getBytes(),
-                    contentType);
+            Files.createDirectories(uploadDir);
+            Path filePath = uploadDir.resolve(imageId);
+            image.transferTo(filePath.toFile());
             return imageId;
         } catch (IOException e) {
-            return "FAILED";
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save image", e);
         }
     }
 
     @Override
     public void delete(UUID id) {
-        String username = userService.getCurrentUser().getUsername();
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+
         AlgorithmEntity algorithmToDelete = algorithmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Algorithm not found with id: " + id));
-        s3Service.deleteObjectsInFolder(
-                s3Buckets.getStorageLocation(),
-                "ylslc-algorithm-images/%s/%s".formatted(username, algorithmToDelete.getImageId()));
+
+        String imageId = algorithmToDelete.getImageId(); // Ensure AlgorithmEntity has getImageId()
+
+        if (imageId != null && !imageId.isBlank()) {
+            String baseDir = System.getProperty("user.home") + "/ylslc_images/algorithm_images";
+            Path imagePath = Paths.get(baseDir, username, imageId, imageId);
+            try {
+                Files.deleteIfExists(imagePath);
+                Files.deleteIfExists(imagePath.getParent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         algorithmRepository.deleteById(id);
     }
 
@@ -97,11 +107,25 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 
     @Override
     public void deleteImage(String algorithmId, String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        s3Service.deleteObject(
-                s3Buckets.getStorageLocation(),
-                "ylslc-question-images/%s/%s".formatted(username, imageId));
+        if (imageId == null || imageId.equals("undefined") || imageId.isBlank()) {
+            throw new IllegalArgumentException("Invalid imageId provided");
+        }
+
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/algorithm_images";
+        Path imagePath = Paths.get(baseDir, username, imageId, imageId);
+
+        try {
+            Files.deleteIfExists(imagePath);
+            // Optional: delete parent folder if empty
+            Files.deleteIfExists(imagePath.getParent());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete image file", e);
+        }
     }
+
 
     @Override
     public Long countAlgorithm(UUID userId) {
@@ -110,18 +134,26 @@ public class AlgorithmServiceImpl implements AlgorithmService {
 
     @Override
     public byte[] getImage(String imageId) {
-        String username = userService.getCurrentUser().getUsername();
-        return s3Service.getObject(
-                s3Buckets.getStorageLocation(),
-                "ylslc-algorithm-images/%s/%s".formatted(username, imageId));
+        if (imageId == null || imageId.equals("undefined") || imageId.isBlank()) {
+            throw new IllegalArgumentException("Invalid imageId provided");
+        }
+
+        String rawUsername = userService.getCurrentUser().getUsername();
+        String username = rawUsername.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String baseDir = System.getProperty("user.home") + "/ylslc_images/algorithm_images";
+        Path imagePath = Paths.get(baseDir, username, imageId, imageId);
+
+        try {
+            return Files.readAllBytes(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to read image file", e);
+        }
     }
 
-    public AlgorithmServiceImpl(UserService userService, AlgorithmRepository algorithmRepository, S3Service s3Service,
-            S3Buckets s3Buckets, SectionService sectionService) {
+    public AlgorithmServiceImpl(UserService userService, AlgorithmRepository algorithmRepository, SectionService sectionService) {
         this.userService = userService;
         this.algorithmRepository = algorithmRepository;
-        this.s3Service = s3Service;
-        this.s3Buckets = s3Buckets;
         this.sectionService = sectionService;
     }
 }

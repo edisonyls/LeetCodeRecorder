@@ -16,7 +16,7 @@ export const ContentHooks = () => {
     fileData.append("image", imageFile);
     fileData.append("nodeId", nodeId);
     try {
-      const response = await axiosInstance.post("nofr/upload-image", fileData, {
+      const response = await axiosInstance.post("node/upload-image", fileData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
