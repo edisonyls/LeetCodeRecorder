@@ -12,6 +12,19 @@ export const useQuestionHooks = (question, initialQuestion) => {
     if (!isValidData) {
       return;
     }
+
+    for (let i = 0; i < question.solutions.length; i++) {
+      const file = question.solutions[i].file;
+      if (file && file.size > 5 * 1024 * 1024) {
+        toast.error(
+          `Image in Solution ${
+            i + 1
+          } exceeds 5MB. Please upload a smaller file.`
+        );
+        return;
+      }
+    }
+
     const originalImageIds = initialQuestion.solutions.map(
       (solution) => solution.imageId
     );
@@ -133,6 +146,18 @@ export const useQuestionHooks = (question, initialQuestion) => {
         const isValidData = validateData();
         if (!isValidData) {
           throw new Error("Invalid data");
+        }
+
+        for (let i = 0; i < question.solutions.length; i++) {
+          const file = question.solutions[i].file;
+          if (file && file.size > 5 * 1024 * 1024) {
+            toast.error(
+              `Image in Solution ${
+                i + 1
+              } exceeds 5MB. Please upload a smaller file.`
+            );
+            throw new Error("Image file too large");
+          }
         }
 
         try {
