@@ -1,14 +1,11 @@
 package com.yls.ylslc.node;
 
-import com.yls.ylslc.config.s3.S3Buckets;
-import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.data_structure.DataStructureEntity;
 import com.yls.ylslc.data_structure.DataStructureRepository;
 import com.yls.ylslc.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,8 +18,7 @@ public class NodeServiceImpl implements NodeService {
     private final NodeRepository nodeRepository;
     private final DataStructureRepository dataStructureRepository;
     private final UserService userService;
-    private final S3Service s3Service;
-    private final S3Buckets s3Buckets;
+
 
     @Override
     public NodeEntity createNode(UUID dataStructureEntityId, NodeEntity nodeEntity) {
@@ -120,11 +116,9 @@ public class NodeServiceImpl implements NodeService {
     }
 
     public NodeServiceImpl(NodeRepository nodeRepository, DataStructureRepository dataStructureRepository,
-            UserService userService, S3Service s3Service, S3Buckets s3Buckets) {
+            UserService userService) {
         this.nodeRepository = nodeRepository;
         this.dataStructureRepository = dataStructureRepository;
         this.userService = userService;
-        this.s3Service = s3Service;
-        this.s3Buckets = s3Buckets;
     }
 }

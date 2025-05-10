@@ -1,8 +1,3 @@
-aws:
-  region: ap-southeast-2
-  s3:
-    buckets:
-      storageLocation: ylslc-images
 jwt:
   secret: ${JWT_SECRET}
 spring:

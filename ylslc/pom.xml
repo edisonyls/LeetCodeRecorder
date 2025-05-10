@@ -72,11 +72,11 @@
 			<version>2.16.1</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 		<groupId>software.amazon.awssdk</groupId>
 		<artifactId>s3</artifactId>
 			<version>2.25.1</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

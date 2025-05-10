@@ -1,8 +1,6 @@
 package com.yls.ylslc.algorithm;
 
 import com.yls.ylslc.algorithm.section.SectionService;
-import com.yls.ylslc.config.s3.S3Buckets;
-import com.yls.ylslc.config.s3.S3Service;
 import com.yls.ylslc.user.UserEntity;
 import com.yls.ylslc.user.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +17,6 @@ import java.util.*;
 public class AlgorithmServiceImpl implements AlgorithmService {
     private final UserService userService;
     private final AlgorithmRepository algorithmRepository;
-    private final S3Service s3Service;
-    private final S3Buckets s3Buckets;
     private final SectionService sectionService;
 
     @Override
@@ -155,12 +151,9 @@ public class AlgorithmServiceImpl implements AlgorithmService {
         }
     }
 
-    public AlgorithmServiceImpl(UserService userService, AlgorithmRepository algorithmRepository, S3Service s3Service,
-            S3Buckets s3Buckets, SectionService sectionService) {
+    public AlgorithmServiceImpl(UserService userService, AlgorithmRepository algorithmRepository, SectionService sectionService) {
         this.userService = userService;
         this.algorithmRepository = algorithmRepository;
-        this.s3Service = s3Service;
-        this.s3Buckets = s3Buckets;
         this.sectionService = sectionService;
     }
 }
