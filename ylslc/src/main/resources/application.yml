@@ -1,5 +1,27 @@
-aws:
-  region: ap-southeast-2
-  s3:
-    buckets:
-      storageLocation: ylslc-image-storage
+jwt:
+  secret: ${JWT_SECRET}
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/ylslc
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  error:
+    include-message: always
+  address: 0.0.0.0
+logging:
+  level:
+    root: warn
+payment:
+  secret-key: ${UPGRADE_SECRET_KEY}

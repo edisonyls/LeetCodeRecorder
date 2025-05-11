@@ -6,7 +6,6 @@ import {
   InputAdornment,
   IconButton,
   Paper,
-  TextareaAutosize,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
@@ -27,11 +26,26 @@ const Solution = ({
   handleDeleteImage,
   showDeleteButton,
 }) => {
-  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [showCodeInput, setShowCodeInput] = useState(codeSnippet !== "");
 
   const handleOnClick = () => {
     deleteCodeSnippet();
     setShowCodeInput(false);
+  };
+
+  const handleTabInTextField = (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      const cursorPosition = event.target.selectionStart;
+      const beforeTab = thinkingProcess.substring(0, cursorPosition);
+      const afterTab = thinkingProcess.substring(cursorPosition);
+      const updatedText = beforeTab + "        " + afterTab;
+      handleChange({ target: { name: event.target.name, value: updatedText } });
+      setTimeout(() => {
+        event.target.selectionStart = event.target.selectionEnd =
+          cursorPosition + 8;
+      }, 0); // Set cursor position right after the inserted tab
+    }
   };
 
   return (
@@ -51,56 +65,66 @@ const Solution = ({
           </IconButton>
         )}
       </Box>
+
+      <Typography
+        variant="body2"
+        sx={{ marginBottom: "1rem", marginLeft: "1rem" }}
+      >
+        Thinking Process
+      </Typography>
       <TextField
-        margin="normal"
         fullWidth
-        label="Thinking Process"
+        label="Enter your thinking process"
         name="thinkingProcess"
         multiline
         value={thinkingProcess}
         onChange={handleChange}
+        onKeyDown={handleTabInTextField}
         sx={{ marginBottom: 2 }}
-        inputProps={{
-          inputComponent: TextareaAutosize,
-          inputProps: {
-            minRows: 2,
-          },
-        }}
       />
-      <Typography variant="h8">Code Snippet</Typography>
+
       <Box
         sx={{
           display: "flex",
           flexDirection: showCodeInput || imagePreviewUrl ? "column" : "row",
-
           alignItems: "center",
           justifyContent: "center",
           gap: 2,
         }}
       >
         {showCodeInput ? (
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Paste your code snippet here"
-            name="codeSnippet"
-            multiline
-            value={codeSnippet}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleOnClick} edge="end">
-                    <DeleteForeverIcon style={{ color: "black" }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              inputComponent: TextareaAutosize,
-              inputProps: {
-                minRows: 6,
-              },
+          <Box
+            sx={{
+              alignItems: "flex-start",
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
             }}
-          />
+          >
+            <Typography
+              variant="body2"
+              sx={{ marginBottom: "1rem", marginLeft: "1rem" }}
+            >
+              Code Snippet
+            </Typography>
+            <TextField
+              fullWidth
+              label="Paste your code snippet here"
+              name="codeSnippet"
+              multiline
+              value={codeSnippet}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleOnClick} edge="end">
+                      <DeleteForeverIcon style={{ color: "black" }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
         ) : (
           <WhiteBackgroundButton
             buttonText="Upload Code"
@@ -111,8 +135,13 @@ const Solution = ({
         )}
 
         {imagePreviewUrl ? (
-          <Paper elevation={0} sx={{ mt: 2, width: "96%", padding: 2 }}>
-            <Typography variant="body2">Image Preview:</Typography>
+          <Paper
+            elevation={0}
+            sx={{ width: "96%", padding: 2, marginTop: "-1rem" }}
+          >
+            <Typography variant="body2" sx={{ marginBottom: "8px" }}>
+              Image Preview:
+            </Typography>
             <img
               src={imagePreviewUrl}
               alt="Preview"
@@ -120,6 +149,7 @@ const Solution = ({
                 width: "100%",
                 maxHeight: "300px",
                 objectFit: "contain",
+                marginBottom: "1rem",
               }}
             />
             <WarningButton

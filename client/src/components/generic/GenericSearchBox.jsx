@@ -1,38 +1,45 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
+import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
-function GenericSearchBox({ label = "Search...", onChange }) {
+const GenericSearchBox = ({ label, onSearch }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      onSearch(inputValue);
+    }
+  };
+
+  const handleSearchClick = () => {
+    onSearch(inputValue);
+  };
+
   return (
-    <TextField
-      label={label}
-      variant="outlined"
-      size="small"
-      sx={{
-        width: "240px",
-        "& .MuiOutlinedInput-root": {
-          "& fieldset": {
-            borderColor: "black",
-          },
-          "&:hover fieldset": {
-            borderColor: "black",
-          },
-          "&.Mui-focused fieldset": {
-            borderColor: "black",
-          },
-        },
-      }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-      onChange={onChange}
-    />
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <TextField
+        label={label}
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyPress={handleKeyPress}
+        variant="outlined"
+        size="small"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleSearchClick}>
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Box>
   );
-}
+};
 
 export default GenericSearchBox;

@@ -5,16 +5,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @Entity
-@Table(name="solution")
+@Table(name = "solution")
 public class SolutionEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -25,12 +23,5 @@ public class SolutionEntity {
     @Column(columnDefinition = "TEXT")
     private String codeSnippet;
     private String imageId;
-
-
-    public SolutionEntity(){
-        this.id = UUID.randomUUID();
-    }
-
-
 
 }

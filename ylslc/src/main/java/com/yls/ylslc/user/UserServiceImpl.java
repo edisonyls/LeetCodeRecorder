@@ -1,6 +1,5 @@
 package com.yls.ylslc.user;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -25,12 +24,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Optional<UserEntity> findOneByUsername(String username){
+    public Optional<UserEntity> findOneByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Override
-    public void delete(UUID id){
+    public void delete(UUID id) {
         userRepository.deleteById(id);
     }
 
@@ -43,6 +42,40 @@ public class UserServiceImpl implements UserService{
         } else {
             username = principal.toString();
         }
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserEntity getCurrentUserById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
+    @Override
+    public UserEntity updateUser(UUID id, UserEntity updatedUser) {
+        return userRepository.findById(id)
+                .map(userEntity -> {
+                    userEntity.setFirstName(updatedUser.getFirstName());
+                    userEntity.setLastName(updatedUser.getLastName());
+                    userEntity.setSex(updatedUser.getSex());
+                    userEntity.setMobileNumber(updatedUser.getMobileNumber());
+                    userEntity.setPersonalInfo(updatedUser.getPersonalInfo());
+                    return userRepository.save(userEntity);
+                }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
+
+    public void updateUserRole(UUID id, String newRole) {
+        Role role;
+        try {
+            role = Role.valueOf(newRole.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid role provided: " + newRole);
+        }
+        userRepository.findById(id)
+                .map(userEntity -> {
+                    userEntity.setRole(role);
+                    return userRepository.save(userEntity);
+                }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }
 }

@@ -18,7 +18,14 @@ const CodeSnippet = ({ code }) => {
         wordBreak: "break-all",
       }}
     >
-      <Typography component="code" sx={{ wordBreak: "break-all" }}>
+      <Typography
+        variant="body2"
+        component="code"
+        sx={{
+          wordBreak: "break-all",
+          fontFamily: '"JetBrains Mono", monospace',
+        }}
+      >
         {code}
       </Typography>
     </Box>

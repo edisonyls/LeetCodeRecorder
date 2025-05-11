@@ -1,1 +1,8 @@
 .DS_Store
+node_modules
+.idea
+
+.fake
+.env
+.env.local
+.env.production

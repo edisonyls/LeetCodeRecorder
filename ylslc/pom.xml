@@ -25,12 +25,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.16.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -68,11 +72,11 @@
 			<version>2.16.1</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 		<groupId>software.amazon.awssdk</groupId>
 		<artifactId>s3</artifactId>
 			<version>2.25.1</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -90,6 +94,15 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>static</directory>
+				<targetPath>static</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

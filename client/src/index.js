@@ -6,10 +6,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Comic Neue, cursive",
-    fontWeightBold: 700,
+    fontFamily: '"Saira Semi Condensed","JetBrains Mono", sans-serif',
+    fontWeightBold: 600,
     allVariants: {
-      fontWeight: 700,
+      fontWeight: 600,
     },
   },
 });

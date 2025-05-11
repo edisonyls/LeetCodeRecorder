@@ -19,6 +19,7 @@ const RandomQuote = () => {
         alignItems: "center",
         textAlign: "center",
         mt: 5,
+        mb: 5,
       }}
     >
       <Typography variant="h8" sx={{ color: "gray" }}>

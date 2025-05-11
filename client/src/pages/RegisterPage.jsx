@@ -1,194 +1,252 @@
-import { useEffect } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import { Avatar, TextField, Box, Grid, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { register, reset } from "../auth/authSlice";
 import AccountNavbar from "../components/navbar/AccountNavbar";
+import { BlackBackgroundButton } from "../components/generic/GenericButton";
+import { grey } from "@mui/material/colors";
+import Footer from "../components/Footer";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import PasswordValidator from "../components/PasswordValidator";
+import { useUser } from "../context/userContext";
+import { UserHooks } from "../hooks/userHooks/UserHooks";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        LeetCodeRecorder
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+const RegisterPage = () => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
 
-export default function RegisterPage() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const { user, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
+  const { state } = useUser();
+  const { loading, error } = state;
+  const { register, reset } = UserHooks();
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
+    if (error) {
+      toast.error(error);
+      reset();
     }
-    if (isSuccess || user) {
-      navigate("/dashboard");
+    if (password.length > 0 && confirmPassword.length > 0) {
+      if (password !== confirmPassword) {
+        setPasswordsMatch(false);
+      } else {
+        setPasswordsMatch(true);
+      }
+    } else {
+      setPasswordsMatch(true);
+    }
+  }, [password, confirmPassword, error, reset]);
+
+  const checkData = (data) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,16}$/;
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!data.firstName) {
+      toast.error("Please fill in your first name!");
+      return false;
+    } else if (!data.lastName) {
+      toast.error("Please fill in your last name!");
+      return false;
+    } else if (!data.username) {
+      toast.error("Please fill in your email address!");
+      return false;
+    } else if (!emailRegex.test(data.username)) {
+      toast.error("Please enter a valid email address.");
+      return false;
+    } else if (!data.password) {
+      toast.error("Please fill in your password!");
+      return false;
+    } else if (!confirmPassword) {
+      toast.error("Please re-enter your password!");
+      return false;
+    }
+    if (!passwordRegex.test(data.password)) {
+      toast.error(
+        "Password must contain letters and numbers, and be 8-16 characters long."
+      );
+      return false;
+    }
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return false;
     }
 
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+    return true;
+  };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const dataArray = [...formData];
-    const data = Object.fromEntries(dataArray);
-    data.role = "USER";
-    dispatch(register(data));
+  const formatName = ({ name }) => {
+    name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    return name;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(e.currentTarget));
+    if (checkData(formData) === false) {
+      return;
+    } else {
+      formData.firstName = formatName({ name: formData.firstName });
+      formData.lastName = formatName({ name: formData.lastName });
+      formData.role = "REGULAR";
+      register(formData);
+    }
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        backgroundColor: grey[900],
+        color: "white",
+      }}
+    >
       <AccountNavbar />
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <Grid container sx={{ height: "100%" }}>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              backgroundImage:
-                "url(https://source.unsplash.com/random?wallpapers)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <LockOutlinedIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Register
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 3 }}
-              >
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      autoComplete="given-name"
-                      name="firstName"
-                      required
-                      fullWidth
-                      id="firstName"
-                      label="First Name"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="lastName"
-                      label="Last Name"
-                      name="lastName"
-                      autoComplete="family-name"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="username"
-                      label="Username"
-                      name="username"
-                      autoComplete="username"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox value="allowExtraEmails" color="primary" />
-                      }
-                      label="Clicking on this box to receive updates via email."
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign Up
-                </Button>
-                <Grid container justifyContent="flex-end">
-                  <Grid item>
-                    <Link href="/signin" variant="body2">
-                      Already have an account? Sign in
-                    </Link>
-                  </Grid>
-                </Grid>
-                <Copyright sx={{ mt: 3 }} />
-              </Box>
-            </Box>
+      <Box
+        sx={{
+          my: 4,
+          mx: 4,
+          display: "flex",
+          flexGrow: 1,
+          flexDirection: "column",
+          alignItems: "center",
+          overflow: "auto",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "black" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5" sx={{ marginBottom: 1 }}>
+          Register
+        </Typography>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{
+            mt: 1,
+            padding: 5,
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+            maxWidth: "400px",
+            width: "100%",
+            backgroundColor: "black",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                id="firstName"
+                label="First Name"
+                name="firstName"
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CustomTextField
+                id="lastName"
+                label="Last Name"
+                name="lastName"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomTextField
+                id="username"
+                label="Email Address"
+                name="username"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomTextField
+                id="password"
+                label="Password"
+                name="password"
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomTextField
+                id="confirmPassword"
+                label="Confirm Password"
+                name="confirmPassword"
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={!passwordsMatch}
+                helperText={!passwordsMatch ? "Passwords do not match." : ""}
+                sx={{ marginBottom: 5 }}
+              />
+              {password && <PasswordValidator password={password} />}
+            </Grid>
           </Grid>
-        </Grid>
+          {loading ? (
+            <BlackBackgroundButton
+              disabled={loading}
+              buttonText="Loading..."
+              fullWidth
+            />
+          ) : (
+            <BlackBackgroundButton
+              buttonText="Sign Up"
+              type="submit"
+              fullWidth
+            />
+          )}
+          <Grid container justifyContent="flex-end" sx={{ marginTop: 2 }}>
+            <Grid item>
+              <Link to="/signin" variant="body2" style={{ color: "white" }}>
+                {"Already have an account? Sign in"}
+              </Link>
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
+      <Footer />
     </Box>
   );
-}
+};
+
+const CustomTextField = ({
+  id,
+  label,
+  name,
+  type = "text",
+  autoFocus = false,
+  required = true,
+  onChange,
+  sx = {},
+}) => {
+  return (
+    <TextField
+      id={id}
+      label={label}
+      name={name}
+      type={type}
+      required={required}
+      autoFocus={autoFocus}
+      fullWidth
+      onChange={onChange}
+      InputLabelProps={{ style: { color: "white" } }}
+      InputProps={{
+        style: { color: "white", borderColor: "white" },
+      }}
+      variant="outlined"
+      sx={{
+        marginBottom: "2px",
+        "& .MuiOutlinedInput-root": {
+          backgroundColor: grey[900],
+        },
+        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "white",
+        },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+          {
+            borderColor: "white",
+          },
+        ...sx,
+      }}
+    />
+  );
+};
+
+export default RegisterPage;

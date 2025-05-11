@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,14 +15,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name="question")
+@Table(name = "question")
 public class QuestionEntity {
     @Id
     @GeneratedValue
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -34,8 +35,16 @@ public class QuestionEntity {
     private Boolean success;
     private Integer attempts;
     private String timeOfCompletion;
+    private Boolean star;
+    @Column(columnDefinition = "TEXT")
+    private String reasonOfFail;
+    private LocalDateTime createdAt;
 
-    // Add helper methods to manage bi-directional relationship
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
     public void addSolution(SolutionEntity solution) {
         solutions.add(solution);
         solution.setQuestion(this);
@@ -46,7 +55,7 @@ public class QuestionEntity {
         solution.setQuestion(null);
     }
 
-    public QuestionEntity(){
+    public QuestionEntity() {
         this.id = UUID.randomUUID();
     }
 }

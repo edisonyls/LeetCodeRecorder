@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SolutionDto {
+    private Long id;
     private String thinkingProcess;
     private String codeSnippet;
     private String imageId;

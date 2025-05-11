@@ -24,7 +24,6 @@ const quotes = [
     text: "Of course, bad code can be cleaned up. But it’s very expensive.",
     author: "Robert C. Martin",
   },
-  // Adding new quotes below
   {
     text: "Programming is the art of algorithm design and the craft of debugging errant code.",
     author: "Ellen Ullman",

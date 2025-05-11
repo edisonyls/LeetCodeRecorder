@@ -1,8 +1,9 @@
 package com.yls.ylslc.question;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,9 +11,7 @@ import java.util.UUID;
 // this is a service component
 public interface QuestionService {
 
-    List<QuestionEntity> getQuestions();
-
-    List<QuestionEntity> getQuestionsByUser();
+    Page<QuestionEntity> getQuestionsByUser(Pageable pageable, Sort sort);
 
     QuestionEntity createQuestion(QuestionEntity questionEntity);
 
@@ -26,5 +25,13 @@ public interface QuestionService {
 
     byte[] getImage(Integer questionNumber, String imageId);
 
+    void deleteImage(Integer questionNumber, String imageId);
+
     QuestionEntity getQuestionById(UUID id);
+
+    QuestionEntity updateStar(UUID id);
+
+    Page<QuestionEntity> searchQuestions(String searchQuery, Pageable pageable);
+
+    public Map<String, Object> getQuestionStats(UUID userId);
 }
