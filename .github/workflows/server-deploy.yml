@@ -21,6 +21,11 @@ jobs:
           key: ${{ secrets.SERVER_VM_SSH_KEY }}
           port: 2223
           script: |
+            export DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}"
+            export DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
+            export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+            export UPGRADE_SECRET_KEY="${{ secrets.UPGRADE_SECRET_KEY }}"
+
             cd LeetCodeRecorder
             git pull
             cd ylslc
