@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - "client/**"
+      - ".github/workflows/react-deploy.yml"
 
 jobs:
   deploy-frontend:

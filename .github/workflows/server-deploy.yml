@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - "server/**"
+      - ".github/workflows/server-deploy.yml"
 
 jobs:
   deploy:
