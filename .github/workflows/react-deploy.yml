@@ -15,6 +15,7 @@ jobs:
           host: ${{ secrets.REACT_VM_HOST }}
           username: ${{ secrets.REACT_VM_USER }}
           key: ${{ secrets.REACT_VM_SSH_KEY }}
+          port: 2222
           script: |
             cd /home/edisonyls/LeetCodeRecorder/client
             git pull origin main
