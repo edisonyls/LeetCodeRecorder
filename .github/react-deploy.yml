@@ -1,0 +1,24 @@
+name: Deploy React Frontend
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Frontend VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.REACT_VM_HOST }}
+          username: ${{ secrets.REACT_VM_USER }}
+          key: ${{ secrets.REACT_VM_SSH_KEY }}
+          script: |
+            cd /home/edisonyls/LeetCodeRecorder/client
+            git pull origin main
+            npm install
+            npm run build
+            sudo rm -rf /var/www/ylslc
+            sudo mv build /var/www/ylslc
