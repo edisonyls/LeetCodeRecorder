@@ -23,6 +23,27 @@ const LeetCodeStats = ({ userId }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (questionStats.difficultyDistribution.length > 0) {
+      // Delay so animation completes and then chart resizes
+      const timeout = setTimeout(() => {
+        window.dispatchEvent(new Event("resize"));
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [questionStats.difficultyDistribution]);
+
+  useEffect(() => {
+    if (questionStats.successDistribution.length > 0) {
+      const timeout = setTimeout(() => {
+        window.dispatchEvent(new Event("resize"));
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [questionStats.successDistribution]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(`question/stats/${userId}`);
