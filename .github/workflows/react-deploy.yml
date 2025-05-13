@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Frontend VM
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.REACT_VM_HOST }}
-          username: ${{ secrets.REACT_VM_USER }}
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
           key: ${{ secrets.REACT_VM_SSH_KEY }}
           port: 2222
           script: |

@@ -1,0 +1,32 @@
+name: Deploy Spring Boot App
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Remote VM via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.REACT_VM_SSH_KEY }}
+          port: 2223
+          script: |
+            cd LeetCodeRecorder
+            git pull
+            cd ylslc
+            ./mvnw clean package
+            cd target
+            rm ylslc-0.0.1-SNAPSHOT.jar.original || true
+            cd ..
+            sudo cp target/ylslc-0.0.1-SNAPSHOT.jar /opt/ylslc/ylslc-0.0.1-SNAPSHOT.jar
+            sudo systemctl restart ylslc.service
