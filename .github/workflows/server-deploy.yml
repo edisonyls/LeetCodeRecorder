@@ -18,7 +18,7 @@ jobs:
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.REACT_VM_SSH_KEY }}
+          key: ${{ secrets.SERVER_VM_SSH_KEY }}
           port: 2223
           script: |
             cd LeetCodeRecorder
