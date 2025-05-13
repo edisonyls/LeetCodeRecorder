@@ -18,7 +18,7 @@ jobs:
           port: 2222
           script: |
             cd /home/edisonyls/LeetCodeRecorder/client
-            git pull
+            git pull --no-rebase
             npm install
             npm run build
             sudo rm -rf /var/www/ylslc
