@@ -18,7 +18,7 @@ jobs:
 
       - name: Stop service
         run: |
-          sudo systemctl stop lc-recorder
+          systemctl stop lc-recorder
 
       - name: Build Spring Boot Application
         run: |
@@ -56,5 +56,5 @@ jobs:
 
       - name: Start service
         run: |
-          sudo systemctl start lc-recorder
-          sudo systemctl status lc-recorder --no-pager
+          systemctl start lc-recorder
+          systemctl status lc-recorder --no-pager
