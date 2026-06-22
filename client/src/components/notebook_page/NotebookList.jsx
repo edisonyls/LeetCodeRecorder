@@ -12,7 +12,7 @@ import {
   Tooltip,
   Divider,
 } from "@mui/material";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutlined";
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ActionDialog, WarningDialog } from "./NotebookDialogs";

@@ -207,7 +207,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 2 }}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<CodeIcon />}
             title="Total Problems"
@@ -216,7 +216,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
             color={theme.palette.primary.main}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<EmojiEventsIcon />}
             title="Solved"
@@ -225,7 +225,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
             color={theme.palette.success.main}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<TimerIcon />}
             title="Avg Time"
@@ -234,7 +234,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
             color={theme.palette.info.main}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<TrendingUpIcon />}
             title="Starred"
@@ -247,7 +247,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
 
       <Grid container spacing={3} sx={{ mb: 2 }}>
         {/* Difficulty Distribution Chart */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
@@ -303,7 +303,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
         </Grid>
 
         {/* Success vs Failure Chart */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
@@ -368,7 +368,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
         </Grid>
 
         {/* Average Time by Difficulty Chart */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
@@ -466,7 +466,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
 
       <Grid container spacing={3} sx={{ mb: 2 }}>
         {/* Activity Heatmap - now full width */}
-        <Grid item xs={12} md={12}>
+        <Grid size={{ xs: 12, md: 12 }}>
           <Card sx={{ height: "auto", minHeight: "200px" }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
@@ -620,7 +620,7 @@ const LeetCodeStats = ({ userId, stats: propsStats }) => {
           {totalProblems > 0 ? (
             <Grid container spacing={3}>
               {difficultyData.map((item) => (
-                <Grid item xs={12} md={4} key={item.name}>
+                <Grid size={{ xs: 12, md: 4 }} key={item.name}>
                   <Box sx={{ mb: 2 }}>
                     <Box
                       sx={{

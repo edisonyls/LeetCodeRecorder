@@ -1,8 +1,8 @@
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react";
 import {
-  CheckCircleOutline as CheckCircleOutlineIcon,
-  ErrorOutline as ErrorOutlineIcon,
+  CheckCircleOutlined as CheckCircleOutlineIcon,
+  ErrorOutlined as ErrorOutlineIcon,
 } from "@mui/icons-material";
 
 const PasswordValidator = ({ password }) => {

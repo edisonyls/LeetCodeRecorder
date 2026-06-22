@@ -398,10 +398,12 @@ const UpdateQuestionForm = ({ initialQuestion }) => {
               onChange={(e) => handleTimeChange("minutes", e.target.value)}
               sx={{ flexGrow: 1 }}
               required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">minutes</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">minutes</InputAdornment>
+                  ),
+                },
               }}
             />
 
@@ -412,10 +414,12 @@ const UpdateQuestionForm = ({ initialQuestion }) => {
               onChange={(e) => handleTimeChange("seconds", e.target.value)}
               sx={{ flexGrow: 1 }}
               required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">seconds</InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">seconds</InputAdornment>
+                  ),
+                },
               }}
             />
           </Box>

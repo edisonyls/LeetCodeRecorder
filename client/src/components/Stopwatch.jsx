@@ -3,7 +3,7 @@ import { IconButton, Box, Typography, Tooltip, Paper, Chip } from "@mui/material
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ReplayIcon from "@mui/icons-material/Replay";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 import TimerIcon from "@mui/icons-material/Timer";
 import { GenericDialog } from "./generic/GenericDialog";
 

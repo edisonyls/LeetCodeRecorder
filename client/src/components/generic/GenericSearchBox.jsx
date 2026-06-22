@@ -28,14 +28,16 @@ const GenericSearchBox = ({ label, onSearch }) => {
         onKeyPress={handleKeyPress}
         variant="outlined"
         size="small"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={handleSearchClick}>
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleSearchClick}>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
         }}
       />
     </Box>

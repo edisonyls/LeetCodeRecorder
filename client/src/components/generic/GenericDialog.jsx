@@ -10,7 +10,7 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutlined";
 import { BlackBackgroundButton } from "./GenericButton";
 import { grey } from "@mui/material/colors";
 

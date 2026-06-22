@@ -374,17 +374,7 @@ const UpgradePage = () => {
               sx={{ mt: 1, justifyContent: "center" }}
             >
               {packages.map((pkg, i) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={i} sx={{ display: "flex", flexDirection: "column", }}>
                   <Paper
                     elevation={pkg.popular ? 20 : 8}
                     sx={{
@@ -781,7 +771,8 @@ const UpgradePage = () => {
                     },
                   },
                 }}
-                InputProps={{
+                slotProps={{
+                  input: {
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon sx={{ color: grey[400] }} />
@@ -802,6 +793,7 @@ const UpgradePage = () => {
                       </IconButton>
                     </InputAdornment>
                   ),
+                  },
                 }}
               />
             </Box>

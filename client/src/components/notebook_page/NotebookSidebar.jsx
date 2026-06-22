@@ -35,7 +35,7 @@ import {
   FiberManualRecord as DotIcon,
   Close as CloseIcon,
   DataObject as DataObjectIcon,
-  AddCircleOutline as AddCircleOutlineIcon,
+  AddCircleOutlined as AddCircleOutlineIcon,
 } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
 import { ActionDialog, WarningDialog } from "./NotebookDialogs";
@@ -486,12 +486,14 @@ const NotebookSidebar = ({
             placeholder="Search pages..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: 16, color: grey[500] }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ fontSize: 16, color: grey[500] }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {

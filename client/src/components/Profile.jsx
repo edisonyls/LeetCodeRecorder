@@ -77,7 +77,7 @@ export const ProfileView = ({ user }) => {
       </Box>
       <Divider />
       <Grid container spacing={4} sx={{ mt: 3, px: 4 }}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Typography
             gutterBottom
             variant="subtitle2"
@@ -87,7 +87,7 @@ export const ProfileView = ({ user }) => {
           </Typography>
           {displayValueOrPlaceholder(user.sex)}
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Typography
             gutterBottom
             variant="subtitle2"
@@ -97,7 +97,7 @@ export const ProfileView = ({ user }) => {
           </Typography>
           {displayValueOrPlaceholder(user.mobileNumber)}
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography
             gutterBottom
             variant="subtitle2"
@@ -145,7 +145,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
         </Typography>
       </Box>
       <Grid container spacing={4} sx={{ px: 4, mb: 3 }}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <GenericTextField
             fullWidth
             label="First Name"
@@ -156,7 +156,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             inputColor={grey[50]}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <GenericTextField
             fullWidth
             label="Last Name"
@@ -171,7 +171,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
       </Grid>
       <Divider />
       <Grid container spacing={4} sx={{ mt: 3, px: 4, mb: 4 }}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl fullWidth>
             <InputLabel style={{ color: grey[400] }}>Sex</InputLabel>
             <Select
@@ -203,7 +203,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <GenericTextField
             fullWidth
             label="Mobile Number"
@@ -214,7 +214,7 @@ export const ProfileEdit = ({ editedUser, handleChange }) => {
             inputColor={grey[50]}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <GenericTextField
             fullWidth
             label="Personal Info"

@@ -134,7 +134,7 @@ const RegisterPage = () => {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 id="firstName"
                 label="First Name"
@@ -142,21 +142,21 @@ const RegisterPage = () => {
                 autoFocus
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 id="lastName"
                 label="Last Name"
                 name="lastName"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CustomTextField
                 id="username"
                 label="Email Address"
                 name="username"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CustomTextField
                 id="password"
                 label="Password"
@@ -165,7 +165,7 @@ const RegisterPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <CustomTextField
                 id="confirmPassword"
                 label="Confirm Password"
@@ -193,7 +193,7 @@ const RegisterPage = () => {
             />
           )}
           <Grid container justifyContent="flex-end" sx={{ marginTop: 2 }}>
-            <Grid item>
+            <Grid>
               <Link to="/signin" variant="body2" style={{ color: "white" }}>
                 {"Already have an account? Sign in"}
               </Link>
@@ -226,9 +226,9 @@ const CustomTextField = ({
       autoFocus={autoFocus}
       fullWidth
       onChange={onChange}
-      InputLabelProps={{ style: { color: "white" } }}
-      InputProps={{
-        style: { color: "white", borderColor: "white" },
+      slotProps={{
+        inputLabel: { style: { color: "white" } },
+        input: { style: { color: "white", borderColor: "white" } },
       }}
       variant="outlined"
       sx={{

@@ -15,14 +15,16 @@ const GenericTextField = ({
       name={name}
       value={value}
       onChange={onChange}
-      InputLabelProps={{
-        sx: {
-          color: inputLabelColor,
+      slotProps={{
+        inputLabel: {
+          sx: {
+            color: inputLabelColor,
+          },
         },
-      }}
-      InputProps={{
-        sx: {
-          color: inputColor,
+        input: {
+          sx: {
+            color: inputColor,
+          },
         },
       }}
     />

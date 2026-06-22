@@ -171,7 +171,7 @@ const QuestionDetails = () => {
           <CardContent sx={{ pt: 0 }}>
             {/* Question Stats Grid */}
             <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Paper
                   elevation={0}
                   sx={{
@@ -203,7 +203,7 @@ const QuestionDetails = () => {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Paper
                   elevation={0}
                   sx={{
@@ -228,7 +228,7 @@ const QuestionDetails = () => {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Paper
                   elevation={0}
                   sx={{
@@ -255,7 +255,7 @@ const QuestionDetails = () => {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Paper
                   elevation={0}
                   sx={{

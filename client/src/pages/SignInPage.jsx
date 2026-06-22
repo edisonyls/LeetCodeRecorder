@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
+import { Avatar, Box, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AccountNavbar from "../components/navbar/AccountNavbar";
 import { BlackBackgroundButton } from "../components/generic/GenericButton";
@@ -107,9 +107,9 @@ const SignInPage = () => {
             autoFocus
             variant="outlined"
             onChange={handleChange}
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              style: { color: "white", borderColor: "white" },
+            slotProps={{
+              inputLabel: { style: { color: "white" } },
+              input: { style: { color: "white", borderColor: "white" } },
             }}
             sx={{
               marginBottom: 2,
@@ -135,9 +135,9 @@ const SignInPage = () => {
             type="password"
             id="password"
             onChange={handleChange}
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              style: { color: "white", borderColor: "white" },
+            slotProps={{
+              inputLabel: { style: { color: "white" } },
+              input: { style: { color: "white", borderColor: "white" } },
             }}
             sx={{
               marginBottom: 5,
@@ -169,18 +169,30 @@ const SignInPage = () => {
             />
           )}
 
-          <Grid container sx={{ marginTop: 5 }}>
-            <Grid item xs>
-              <Link to="#" variant="body2" style={{ color: "white" }}>
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link to="/register" variant="body2" style={{ color: "white" }}>
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              gap: 1,
+              marginTop: 5,
+            }}
+          >
+            <Link
+              to="#"
+              variant="body2"
+              style={{ color: "white", whiteSpace: "nowrap" }}
+            >
+              Forgot password?
+            </Link>
+            <Link
+              to="/register"
+              variant="body2"
+              style={{ color: "white", whiteSpace: "nowrap" }}
+            >
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Box>
         </Box>
       </Box>
       <Footer />

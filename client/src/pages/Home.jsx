@@ -42,7 +42,7 @@ function Home() {
       <HeroSection>
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center" minHeight="90vh">
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <motion.div
                 initial="initial"
                 animate="animate"
@@ -117,7 +117,7 @@ function Home() {
               </motion.div>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -188,7 +188,7 @@ function Home() {
 
           <Grid container spacing={4} sx={{ mt: 4 }}>
             {features.map((feature, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}

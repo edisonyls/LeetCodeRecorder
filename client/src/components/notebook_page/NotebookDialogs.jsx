@@ -68,11 +68,13 @@ export const ActionDialog = ({
             variant="outlined"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            InputLabelProps={{
-              style: { color: grey[50] },
-            }}
-            inputProps={{
-              style: { color: grey[50] },
+            slotProps={{
+              inputLabel: {
+                style: { color: grey[50] },
+              },
+              htmlInput: {
+                style: { color: grey[50] },
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
